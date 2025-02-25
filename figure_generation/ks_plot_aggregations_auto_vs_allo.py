@@ -6,12 +6,12 @@ from pathlib import Path
 import numpy as np
 from matplotlib import pyplot as plt, image as mpimg
 import config
-import ks_modeling
+from figure_generation import ks_modeling
 
-from data_aggregation.coalescent_plot_aggregation import get_run_time_in_minutes, read_data_csv,\
+from figure_generation.coalescent_plot_aggregation import get_run_time_in_minutes, read_data_csv,\
     add_mrca_annotations
 
-from data_aggregation.histogram_plotter import read_Ks_csv
+from figure_generation.histogram_plotter import read_Ks_csv
 
 def plot_mrca_for_Autos_and_Allos(this_ax, allo_mrcas_by_gene, auto_mrcas_by_gene,
                                   theoretical_mrcas_by_gene,
@@ -216,7 +216,7 @@ def add_Ks_annotations(this_ax, config_used,dgks_Ks_results,dgks_hist_results,
     if len(dgks_Ks_results) <= 0:
         return
 
-    ks_fits=ks_modeling.Ks_modeling_fits(dgks_Ks_results,dgks_hist_results,bins)
+    ks_fits= ks_modeling.Ks_modeling_fits(dgks_Ks_results, dgks_hist_results, bins)
 
     #compare simulated and predicted Ks means
     theoretical_ks_mean_now_as_string="Expected Ks mean ({:.2E})".format(ks_predictions.theoretical_ks_mean_now)

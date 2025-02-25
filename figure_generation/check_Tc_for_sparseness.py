@@ -1,10 +1,5 @@
-import os
 import unittest
-import glob
-from matplotlib import pyplot as plt
-import config
-from data_aggregation.coalescent_plot_aggregation import plot_mrca, read_data_csv, get_run_time_in_minutes, \
-    make_Tc_fig_with_subplots
+from figure_generation.coalescent_plot_aggregation import make_Tc_fig_with_subplots
 
 
 class TestTCoalForSparseness(unittest.TestCase):

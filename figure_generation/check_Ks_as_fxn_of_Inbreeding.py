@@ -1,6 +1,6 @@
 import unittest
 
-from data_aggregation.ks_plot_aggregations import make_Tc_Ks_fig_with_subplots
+from figure_generation.ks_plot_aggregations import make_Tc_Ks_fig_with_subplots
 
 
 class TestKsByInb(unittest.TestCase):
@@ -13,28 +13,29 @@ class TestKsByInb(unittest.TestCase):
 
         run_list_name = "Ks_for_varying_inbreeding"
         demographics_run_list = [False,
-                                 'Inb30v1_m02d21y2025_h11m15s37',
-            'Inb31v1_m02d21y2025_h13m39s16',
-            'Inb32v1_m02d21y2025_h13m39s19',
-            'Inb33v1_m02d21y2025_h13m39s22',]
+                                 'Inb30v1_m02d24y2025_h16m28s49',
+                    'Inb31v1_m02d24y2025_h16m28s46',
+                    'Inb32v1_m02d24y2025_h16m28s41',
+                    'Inb33v1_m02d24y2025_h16m28s38']
 
 
         specks_TE5_run_list = [False, False, False, False, False,False,False]
 
 
         #xmax_Ks = [0.01,0.05,0.05,0.1,0.5,1]
-        xmax_Ks = [0.02 for f in demographics_run_list]
+        xmax_Ks = [0.01 for f in demographics_run_list]
         bin_sizes_Ks = [xmax_KS_i/25 for xmax_KS_i in xmax_Ks]
 
         #xmax_Tc = [5000,5000,5000,10000,50000,100000]
         xmax_Tc = [10000 for f in demographics_run_list ]
+        xmax_Tc[4] = 100
         bin_sizes_Tc = [xmax_Tc_i/25 for xmax_Tc_i in xmax_Tc]
 
 
 
         #ymax_KS = [1500 for f in demographics_run_list]
-        ymax_KS = [500 for f in demographics_run_list]
-        ymax_Tc = [500 for f in demographics_run_list]
+        ymax_KS = [2000 for f in demographics_run_list]
+        ymax_Tc = [2000 for f in demographics_run_list]
 
         show_KS_predictions = [False, False, False]
         suptitle = "Ks histograms\n"

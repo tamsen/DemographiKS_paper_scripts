@@ -8,8 +8,8 @@ from matplotlib import pyplot as plt
 
 import config
 
-from data_aggregation.coalescent_plot_aggregation import plot_mrca, read_data_csv, get_run_time_in_minutes
-from data_aggregation.histogram_plotter import read_Ks_csv
+from figure_generation.coalescent_plot_aggregation import read_data_csv, get_run_time_in_minutes
+from figure_generation.histogram_plotter import read_Ks_csv
 
 class MyTestCase2(unittest.TestCase):
 

@@ -1,6 +1,6 @@
 import unittest
 
-from data_aggregation.ks_plot_aggregations_auto_vs_allo import make_Tc_Ks_Allo_vs_Auto_fig_with_subplots
+from figure_generation.ks_plot_aggregations_auto_vs_allo import make_Tc_Ks_Allo_vs_Auto_fig_with_subplots
 
 
 class TestAlloVsAuto_Tdiv(unittest.TestCase):

@@ -1,6 +1,6 @@
 import unittest
 
-from data_aggregation.ks_plot_aggregations import make_Tc_Ks_fig_with_subplots
+from figure_generation.ks_plot_aggregations import make_Tc_Ks_fig_with_subplots
 
 
 class MyTestCase(unittest.TestCase):

@@ -2,17 +2,14 @@ import glob
 import math
 import os
 import unittest
-from pathlib import Path
 
-import numpy as np
 from matplotlib import pyplot as plt
 
 import config
-from data_aggregation import curve_fitting
-from data_aggregation.coalescent_plot_aggregation import plot_mrca, read_data_csv, get_run_time_in_minutes
-from data_aggregation.curve_fitting import fit_curve_to_xs_and_ys, travelling_exp
-from data_aggregation.histogram_plotter import read_Ks_csv
-from data_aggregation.ks_plot_aggregations import plot_ks, plot_expository_images, predict_Ks
+from figure_generation import curve_fitting
+from figure_generation.coalescent_plot_aggregation import plot_mrca, read_data_csv, get_run_time_in_minutes
+from figure_generation.histogram_plotter import read_Ks_csv
+from figure_generation.ks_plot_aggregations import predict_Ks
 
 
 class TestMathematicalModelsOld(unittest.TestCase):

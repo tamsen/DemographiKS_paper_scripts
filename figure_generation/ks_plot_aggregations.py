@@ -1,20 +1,16 @@
 import glob
-import math
 import os
 import unittest
 from pathlib import Path
 import numpy as np
 from matplotlib import pyplot as plt
 import matplotlib.image as mpimg
-from scipy.optimize import curve_fit
 
 import config
-import ks_modeling
-from data_aggregation import curve_fitting
-from data_aggregation.coalescent_plot_aggregation import get_run_time_in_minutes, read_data_csv, plot_mrca, \
+from figure_generation import ks_modeling
+from figure_generation.coalescent_plot_aggregation import get_run_time_in_minutes, read_data_csv, plot_mrca, \
     add_mrca_annotations
-from data_aggregation.curve_fitting import gaussian_modified_exponential
-from data_aggregation.histogram_plotter import read_Ks_csv,make_simple_histogram
+from figure_generation.histogram_plotter import read_Ks_csv
 
 
 class TestKsPlotAgg(unittest.TestCase):
@@ -335,7 +331,7 @@ def add_Ks_annotations(this_ax, config_used,dgks_Ks_results,dgks_hist_results,
                        bins,show_predictions):
 
     ks_predictions = ks_modeling.Ks_modeling_predictions(config_used, bins)
-    ks_fits=ks_modeling.Ks_modeling_fits(dgks_Ks_results,dgks_hist_results,bins)
+    ks_fits= ks_modeling.Ks_modeling_fits(dgks_Ks_results, dgks_hist_results, bins)
 
     #compare simulated and predicted Ks means
     theoretical_ks_mean_now_as_string="Expected Ks mean ({:.2E})".format(ks_predictions.theoretical_ks_mean_now)

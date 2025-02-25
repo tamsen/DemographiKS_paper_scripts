@@ -5,10 +5,11 @@ import process_wrapper
 
 class MyDGXDataFetcher(unittest.TestCase):
 
-    def test_fetch_demographics_data(self):
+    def test_fetch_demographiKS_data(self):
 
         #/usr/scratch2/userdata2/tdunn/DemographiKS_Output
-        run_list = ['Inb33v1_m02d21y2025_h13m39s22']
+        run_list = ['Inb32v1_m02d24y2025_h16m28s41',
+                    'Inb33v1_m02d24y2025_h16m28s38']
 
         run_collection_name = "TE"
         me_at_remote_URL = 'mesx_cluster'

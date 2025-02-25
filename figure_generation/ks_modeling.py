@@ -1,5 +1,5 @@
 import math
-import curve_fitting
+from figure_generation import curve_fitting
 from scipy.ndimage import gaussian_filter
 
 class Ks_modeling_predictions:

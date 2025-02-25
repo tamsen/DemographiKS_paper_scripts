@@ -1,46 +1,76 @@
 import unittest
 
-from data_aggregation.ks_plot_aggregations import make_Tc_Ks_fig_with_subplots
+from figure_generation.ks_plot_aggregations import make_Tc_Ks_fig_with_subplots
 
 
-class TestKsByNe(unittest.TestCase):
+class TestKsByMig(unittest.TestCase):
 
-    def test_Ks_for_varying_Ne_no_bottleneck(self):
-        demographiKS_out_path = '/home/tamsen/Data/DemographiKS_output_from_mesx/KS_vs_Ne'
-        specks_out_path = '/home/tamsen/Data/Specks_output_from_mesx'
+    # Would like to see the impace of migration,
+    # Mig rate =0, 10% directly after TDIV,   10% directly after 1/2 TDIV,  50% directly after 1/2 TDIV,
+    def test_Ks_for_varying_Migration(self):
+        demographiKS_out_path = '/home/tamsen/Data/DemographiKS_output_from_mesx/KS_vs_Mg'
 
-        #full, w/Ne 10K
+        #When Migration is halfway between DIV and NOW, for 100 years.
+        #run_list_name = "Ks_for_100yr_of_Mig_with_varying_rates"
+        #demographics_run_list = [False,
+        #                         'Mig14v4_m02d14y2025_h09m46s25',
+        #                         'Mig13v4_m02d14y2025_h09m46s25',
+        #                         'Mig12v4_m02d14y2025_h09m46s25',
+        #                         'Mig11v4_m02d14y2025_h09m46s25']
+
+
+
+        #run_list_name = "Ks_for_5yr_of_Mig_with_varying_rates"
+        #demographics_run_list = [False,
+        #                        'Mig14v4_m02d14y2025_h09m46s25','Mig15v4_m02d15y2025_h17m50s44',
+        #                         'Mig16v4_m02d15y2025_h17m50s37','Mig17v4_m02d15y2025_h17m50s41']
+
+
+        #run_list_name = "Ks_for_gradual_speciation_ie_Mig_with_varying_duration_10percent"
+        #demographics_run_list = [False,
+        #                         'Mig14v4_m02d14y2025_h09m46s25',
+        #                         'Mig26v4_m02d16y2025_h14m03s20',
+        #                         'Mig27v4_m02d16y2025_h14m03s22',
+        #                         'Mig28v4_m02d16y2025_h14m03s34',
+        #                         'Mig29v4_m02d16y2025_h14m03s57']
+
+        #run_list_name = "Ks_for_gradual_speciation_ie_Mig_with_varying_duration_1percent"
+        #demographics_run_list = [False,
+        # 'Mig14v4_m02d14y2025_h09m46s25','Mig26v4p1_m02d17y2025_h18m42s39',
+        #  'Mig27v4p1_m02d17y2025_h18m42s40',
+        # 'Mig28v4p1_m02d17y2025_h18m42s43', 'Mig29v4p1_m02d17y2025_h18m42s46']
+
+        run_list_name = "Ks_for_gradual_speciation_ie_Mig_with_varying_duration_0p1percent"
         demographics_run_list = [False,
-                'KSvs100Ne_m01d26y2025_h18m19s06','KSvs500Ne_m01d26y2025_h18m18s55',
-                                 'KSvs1KNe_m01d26y2025_h18m18s41','KSvs5KNe_m01d26y2025_h18m18s21',
-                                 'KSvsRC8_m01d25y2025_h13m13s04'
-                                 ]
-        specks_TE5_run_list = [False,False,False,False,False,False,False]
+            'Mig14v4_m02d14y2025_h09m46s25',
+            'Mig26v4p001_m02d19y2025_h09m33s24',
+            'Mig27v4p001_m02d19y2025_h09m33s21',
+            'Mig28v4p001_m02d19y2025_h09m33s19',
+            'Mig29v4p001_m02d19y2025_h09m33s17']
+
+
+        specks_TE5_run_list = [False, False, False, False, False,False,False]
 
 
         #xmax_Ks = [0.01,0.05,0.05,0.1,0.5,1]
-        xmax_Ks = [0.1 for f in demographics_run_list]
-        bin_sizes_Ks = [xmax_KS_i/50 for xmax_KS_i in xmax_Ks]
+        xmax_Ks = [0.02 for f in demographics_run_list]
+        bin_sizes_Ks = [xmax_KS_i/25 for xmax_KS_i in xmax_Ks]
 
         #xmax_Tc = [5000,5000,5000,10000,50000,100000]
-        xmax_Tc = [100000 for f in demographics_run_list ]
-        bin_sizes_Tc = [xmax_Tc_i/50 for xmax_Tc_i in xmax_Tc]
+        xmax_Tc = [10000 for f in demographics_run_list ]
+        bin_sizes_Tc = [xmax_Tc_i/25 for xmax_Tc_i in xmax_Tc]
 
 
-        #ymax_KS = [False for f in demographics_run_list]
-        #ymax_Tc = [False for f in demographics_run_list]
-        ymax_KS = [250 for f in demographics_run_list]
-        ymax_Tc = [1000 for f in demographics_run_list]
 
-        run_list_name = "Ks_for_varying_varying_Na_Nb_constantRC"
-        # since mutation rate is 1.0e-5
-        # we multiply by 1/1.2 since thats syn / total mut rate
+        #ymax_KS = [1500 for f in demographics_run_list]
+        ymax_KS = [2000 for f in demographics_run_list]
+        ymax_Tc = [2400 for f in demographics_run_list]
 
         show_KS_predictions = [False, False, False]
-        suptitle = "SLiM and SpecKS Ks histograms\n"
+        suptitle = "Ks histograms\n"
         make_Tc_Ks_fig_with_subplots(bin_sizes_Ks, bin_sizes_Tc,
                                      demographiKS_out_path, demographics_run_list, run_list_name,
-                                     specks_TE5_run_list, specks_out_path,
+                                     specks_TE5_run_list, demographiKS_out_path,
                                      xmax_Ks, xmax_Tc, ymax_KS, ymax_Tc,
                                      suptitle, show_KS_predictions)
 
