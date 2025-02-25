@@ -14,6 +14,7 @@ class TestResampleTc(unittest.TestCase):
 
         output_folder = "/home/tamsen/Data/DemographiKS_output_from_mesx/trees_file_testing"
         trees_file="allotetraploid_bottleneck_trees_at_div_32.txt"
+        png_number="32"
         input_xml_file="Inb32v1.used.xml"
         full_path_to_trees=os.path.join(output_folder,trees_file)
         full_path_to_config=os.path.join(output_folder,input_xml_file)
@@ -22,8 +23,8 @@ class TestResampleTc(unittest.TestCase):
         gene_length = 3 * config_used.num_codons_in_a_gene
         num_genes = int(genome_length / gene_length)
 
-        xmax=15000
-        bin_size = xmax/100
+        xmax=10000
+        bin_size = xmax/50
         bins = np.arange(0, xmax, bin_size)
 
         pairs=[[1,2],[1,5],[1,100],[1,500]]
@@ -44,12 +45,13 @@ class TestResampleTc(unittest.TestCase):
                     mrcas_by_gene.append(mrca.time)
 
             label_for_pair = str(pair[0]) + "_" + str(pair[1])
-            png_out = os.path.join(output_folder, label_for_pair + "_mrca_hist_42.png")
+            png_out = os.path.join(output_folder, label_for_pair + "_" + str(png_number) + ".png")
             dgx_hist_ys, bins_xs = plot_mrca(mrcas_by_gene, bins, png_out)
             data_list.append(dgx_hist_ys)
             data_labels.append(label_for_pair)
 
-        png_out = os.path.join(output_folder, label_for_pair + "_mrca_hist_overlay.png")
+        png_out = os.path.join(output_folder,"mrca_hist_overlay_"
+                               + str(png_number) + ".png")
         plot_composite_mrca(data_list, bins, data_labels, png_out)
         self.assertEqual(True, True)  # add assertion here
 
@@ -82,7 +84,7 @@ def plot_mrca(mrcas_by_gene, bins, png_out):
     # Co.T=(1/2N)*e^-((t-1)/2N))
     label = "Coalescent Times For Genes From Sampled Two Ancestral Genomes"
     num_genes=len(mrcas_by_gene)
-    dgx_hist_ys, bins, patches = plt.hist(mrcas_by_gene, bins=bins, facecolor='c', alpha=0.25,
+    dgx_hist_ys, bins, patches = plt.hist(mrcas_by_gene, bins=bins, facecolor='c', alpha=0.5,
              label='Simulated Tcoal by gene (total: ' + str(num_genes) + ')',
              density=False)
 
