@@ -28,18 +28,20 @@ class TestModelEffectsOfCLT(unittest.TestCase):
             data=list(theoretical_coalescent(num_genes, N))
             list_of_expon_distributions.append(data)
         plot_mrca(list_of_expon_distributions[0], bins, png_out_0)
-
+        dist_subsampled=[]
         #build a new Tc drawing from two different distributions
-        for i in range(2,40):
+        for i in range(2,10):
 
             segment_size=int(num_genes/i)
             data_so_far=[]
+            subsampled = []
             for j in range(0,i):
                 data_chunk=list(list_of_expon_distributions[j][j*segment_size:(j+1)*segment_size])
                 data_so_far = data_so_far+data_chunk
-
+                subsampled.append(j)
             png_out_i = os.path.join(output_folder, "CLT_" + str(i) +"RC.png")
-
+            print(str(i) + ": subsampled " + str(subsampled))
+            dist_subsampled = dist_subsampled + subsampled
             plot_mrca(data_so_far,bins,png_out_i)
 
         self.assertEqual(True, True)  # add assertion here
