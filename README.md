@@ -1,3 +1,2 @@
-# DemographiKS_paper_scripts
-
-test, foo
+# DemographiKS
+population-level simulation to generate KS data
