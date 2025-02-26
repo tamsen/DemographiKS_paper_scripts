@@ -8,6 +8,8 @@ from matplotlib import pyplot as plt
 from mkl import second
 from scipy.stats import expon
 
+from figure_generation import curve_fitting
+
 
 class TestModelEffectsOfCLT(unittest.TestCase):
 
@@ -30,7 +32,7 @@ class TestModelEffectsOfCLT(unittest.TestCase):
         bins = np.arange(0, xmax, bin_size)
 
         list_of_expon_distributions=[]
-        for num_combined_distributions in range(0,50):
+        for num_combined_distributions in range(0,100):
             random.seed(num_combined_distributions*10+10)
             data=list(theoretical_coalescent(num_genes, N))
             list_of_expon_distributions.append(data)
@@ -39,8 +41,28 @@ class TestModelEffectsOfCLT(unittest.TestCase):
         #build a new Tc drawing from multiple different distributions
         resampled_distributions_ys=[]
         data_labels=[]
-        for num_combined_distributions in range(1,5):
-            num_RC_events=num_combined_distributions-1
+
+
+        two_Ne = 2.0 * N
+        print("Tc plot bin_size_in_time: " + str(bin_size))
+        kingman = [min(num_genes,
+                       (bin_size * num_genes / two_Ne) * math.e ** ((-1 * i) / two_Ne))
+                   for i in bins[0:-1]]
+        resampled_distributions_ys.append(kingman)
+        data_labels.append("Perfect Kingman distribution")
+        mu=1.0/two_Ne
+
+
+        bin_size = bins[1] - bins[0]
+        #wgd_normal(x, amp, mu, sig):
+        popt = [num_genes * bin_size, two_Ne- (bin_size/2),bin_size]
+        gaussian_ys=[curve_fitting.wgd_normal(x, *popt) for x in bins[0:-1]]
+        resampled_distributions_ys.append(gaussian_ys)
+        data_labels.append("Perfect Gaussian distribution")
+
+        num_nc_events=[0,1,2,5,10,20,50,80]
+        for num_RC_events in num_nc_events:
+            num_combined_distributions=num_RC_events+1
             new_data=[0 for k in range(0, num_genes)]
             for k in range(0, num_genes):
                 Tcs_for_Kth_genes=[list_of_expon_distributions[j][k]
@@ -53,13 +75,6 @@ class TestModelEffectsOfCLT(unittest.TestCase):
             resampled_distributions_ys.append(dgx_hist_ys)
             data_labels.append(str(num_RC_events) + " RC events simulated")
 
-        two_Ne = 2.0 * N
-        print("Tc plot bin_size_in_time: " + str(bin_size))
-        kingman = [min(num_genes,
-                       (bin_size * num_genes / two_Ne) * math.e ** ((-1 * i) / two_Ne))
-                   for i in bins[0:-1]]
-        resampled_distributions_ys.append(kingman)
-        data_labels.append("Perfect Kingman distribution")
 
         png_out = os.path.join(output_folder, "composite_CLT_" + str(num_RC_events) + "RC.png")
         plot_composite_tc(resampled_distributions_ys,bins,data_labels,png_out)
