@@ -1,3 +1,4 @@
+import math
 import os
 import unittest
 import random
@@ -10,42 +11,81 @@ from scipy.stats import expon
 
 class TestModelEffectsOfCLT(unittest.TestCase):
 
+# "A function that can be generalized to both a Gaussian (normal distribution) "
+# "and an exponential distribution is the ")generalized normal distribution"
+# (also known as the "exponential power distribution"); by adjusting a single parameter
+# within this function, you can smoothly transition between the characteristics
+# of a Gaussian and an exponential distribution depending on the parameter value"
+# https://en.wikipedia.org/wiki/Generalized_normal_distribution
+# https://en.wikipedia.org/wiki/Laplace_transform
     def test_effects_of_CLT(self):
 
         output_folder = "/home/tamsen/Data/DemographiKS_output_from_mesx/CLT_testing"
-        png_out_0=os.path.join(output_folder,"CLT_0RC.png")
 
         #make a bunch of exponential distributions
-        num_genes=1000
+        num_genes=50000
         N=1000
         xmax=10000
         bin_size = xmax/50
         bins = np.arange(0, xmax, bin_size)
 
         list_of_expon_distributions=[]
-        for i in range(0,50):
-            random.seed(i*10+10)
+        for num_combined_distributions in range(0,50):
+            random.seed(num_combined_distributions*10+10)
             data=list(theoretical_coalescent(num_genes, N))
             list_of_expon_distributions.append(data)
-        plot_mrca(list_of_expon_distributions[0], bins, png_out_0)
-        dist_subsampled=[]
-        #build a new Tc drawing from two different distributions
-        for i in range(2,10):
 
-            segment_size=int(num_genes/i)
-            data_so_far=[]
-            subsampled = []
-            for j in range(0,i):
-                data_chunk=list(list_of_expon_distributions[j][j*segment_size:(j+1)*segment_size])
-                data_so_far = data_so_far+data_chunk
-                subsampled.append(j)
-            png_out_i = os.path.join(output_folder, "CLT_" + str(i) +"RC.png")
-            print(str(i) + ": subsampled " + str(subsampled))
-            dist_subsampled = dist_subsampled + subsampled
-            plot_mrca(data_so_far,bins,png_out_i)
 
+        #build a new Tc drawing from multiple different distributions
+        resampled_distributions_ys=[]
+        data_labels=[]
+        for num_combined_distributions in range(1,5):
+            num_RC_events=num_combined_distributions-1
+            new_data=[0 for k in range(0, num_genes)]
+            for k in range(0, num_genes):
+                Tcs_for_Kth_genes=[list_of_expon_distributions[j][k]
+                                   for j in range(0, num_combined_distributions)]
+                avg_Tc_for_Kth_gene= sum(Tcs_for_Kth_genes)/num_combined_distributions
+                new_data[k]=avg_Tc_for_Kth_gene
+
+            png_out_i = os.path.join(output_folder, "CLT_" + str(num_RC_events) +"RC.png")
+            dgx_hist_ys, bins = plot_mrca(new_data,bins,png_out_i)
+            resampled_distributions_ys.append(dgx_hist_ys)
+            data_labels.append(str(num_RC_events) + " RC events simulated")
+
+        two_Ne = 2.0 * N
+        print("Tc plot bin_size_in_time: " + str(bin_size))
+        kingman = [min(num_genes,
+                       (bin_size * num_genes / two_Ne) * math.e ** ((-1 * i) / two_Ne))
+                   for i in bins[0:-1]]
+        resampled_distributions_ys.append(kingman)
+        data_labels.append("Perfect Kingman distribution")
+
+        png_out = os.path.join(output_folder, "composite_CLT_" + str(num_RC_events) + "RC.png")
+        plot_composite_tc(resampled_distributions_ys,bins,data_labels,png_out)
         self.assertEqual(True, True)  # add assertion here
 
+def plot_composite_tc(data_list, bins, data_labels, png_out):
+
+    fig = plt.figure(figsize=(10, 10), dpi=350)
+    # Co.T=(1/2N)*e^-((t-1)/2N))
+    label = "Coalescent Times For Genes From Sampled Two Ancestral Genomes"
+    num_genes=len(data_list[0])
+
+    for i in range(0,len(data_list)):
+        data=data_list[i]
+        plt.plot(bins[0:-1],data,alpha=0.95,label=data_labels[i])
+
+    #plt.xlim([0, max_mrca * (1.1)])
+    plt.title(label)
+    # plt.xlim([0, max_mrca])
+    # plt.ylim([0, 300])
+    plt.legend()
+    plt.xlabel("MRCA time")
+    plt.ylabel("# genes in bin")
+    plt.savefig(png_out)
+    plt.clf()
+    plt.close()
 
 def plot_mrca(theoretical_mrcas_by_gene, bins, png_out):
 
