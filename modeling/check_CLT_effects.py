@@ -152,7 +152,8 @@ class TestModelEffectsOfCLT(unittest.TestCase):
         #a = 1 + (sigma / mu) ** 2
         #s = np.sqrt(np.log(a))
         #scale = mu / np.sqrt(a)
-
+        # https://www.quora.com/Why-does-a-lognormal-distribution-approach-a-normal-distribution-with-a-small-coefficient-of-variation
+        # https://statproofbook.github.io/P/lognorm-pdf.html#:~:text=Proof:%20A%20log%2Dnormally%20distributed%20random%20variable%20is,function%20of%20a%20normal%20random%20variable:%20Y%E2%88%BCN(%CE%BC%2C%CF%832)%E2%87%92X=exp(Y)%E2%88%BClnN(%CE%BC%2C%CF%832).
         p2 = [amp,shape,loc,scale]
 
         png_out = os.path.join(output_folder, "fit_composite_CLT_RC.png")
