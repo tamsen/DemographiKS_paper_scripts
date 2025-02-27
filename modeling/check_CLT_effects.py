@@ -164,11 +164,20 @@ class TestModelEffectsOfCLT(unittest.TestCase):
 
         scale = 2 #going from scale 1 to 2 halves the height and makes it twice as wide
         scale = two_Ne
+        loc = 0 #predic loc=0 when the mean is over the scale value.
         popt2 = [shape,loc,scale]
         test_bins = np.arange(0,5, 0.1)
         #fit_curve_ys_ln = [curve_fitting.wgd_lognorm(x, *popt2) for x in test_bins]
         fit_curve_ys_ln = [0.5*num_genes*two_Ne*bin_size*lognorm.pdf(x, *popt2) for x in bins1]
-        plt.plot(bins1, fit_curve_ys_ln, color='c', alpha=0.95, label="fit log")
+        plt.plot(bins1, fit_curve_ys_ln, color='c', alpha=0.95, label="fit log_loc0")
+
+        amp=0.5*num_genes*two_Ne*bin_size
+        p2 = [amp,shape,loc,scale]
+        fit_curve_ys_ln2, xs_for_wgd, popt = \
+                curve_fitting.fit_curve_to_xs_and_ys(bins1,test_data, curve_fitting.wgd_lognorm2, p0=p2)
+        plot_label= 
+        plt.plot(xs_for_wgd, fit_curve_ys_ln2, color='g', alpha=0.95, label="ln2")
+
 
         print(str(popt))
 

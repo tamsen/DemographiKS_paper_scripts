@@ -12,6 +12,10 @@ def gaussian_modified_exponential(x, Amp, K, mu, sigma):
 def wgd_lognorm(x, amp, scale, x_shift,skew):
     return amp * lognorm.pdf(scale * x + x_shift, skew)
 
+ #p2 = [amp,shape,loc,scale]
+def wgd_lognorm2(x, amp, shape,loc,scale):
+    return amp * lognorm.pdf(x,shape,loc,scale)
+
 #https://en.wikipedia.org/wiki/Exponentially_modified_Gaussian_distribution
 def wgd_exp_mod_normal(x, amp, lam, mu, sig):
     lam_over_two=lam / 2.0
