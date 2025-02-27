@@ -54,7 +54,6 @@ class TestModelEffectsOfCLT(unittest.TestCase):
                    for i in bins[0:-1]]
         resampled_distributions_ys.append(kingman)
         data_labels.append("Perfect Kingman distribution")
-        mu=1.0/two_Ne
 
 
         bin_size = bins[1] - bins[0]
@@ -72,8 +71,8 @@ class TestModelEffectsOfCLT(unittest.TestCase):
 
         data_colors = ['darkblue','darkred', 'black']
 
-        list_of_fraction_RC_events_to_test = [0.05,0.1,0.2,0.5,0.75]
-        blue_lightening=[0.75,0.6,0.4,0.3]
+        list_of_fraction_RC_events_to_test = [0.05,0.1,0.2,0.3,0.5,0.75]
+        blue_lightening=[0.75,0.70,0.65,0.6,0.4,0.3]
         for fraction in list_of_fraction_RC_events_to_test:
 
             new_data = [d for d in list_of_expon_distributions[0]]
@@ -110,165 +109,21 @@ class TestModelEffectsOfCLT(unittest.TestCase):
         new_colors=[lighten_color('red', amount=a) for a in red_lightening]
         data_colors= data_colors+ new_colors
 
+
+        shape=1  #sigma
+        scale = two_Ne#going from scale 1 to 2 halves the height and makes it twice as wide
+        loc = 0 #predic loc=0 when the mean is over the scale value.
+        amp=0.5*num_genes*two_Ne*bin_size
+        p2 = [amp,shape,loc,scale]
         png_out = os.path.join(output_folder, "composite_CLT_RC.png")
-        plot_composite_tc(resampled_distributions_ys,
-                          bins,data_labels,data_colors,png_out)
+        csv_out = os.path.join(output_folder, "fits_CLT_RC.csv")
+        plot_composite_tc(resampled_distributions_ys,p2,
+                          bins,data_labels,data_colors,png_out, csv_out)
 
         csv_out = os.path.join(output_folder, "composite_CLT_RC.csv")
         write_distribution_tests(csv_out, data_labels,bins, resampled_distributions_ys)
 
         self.assertEqual(True, True)  # add assertion here
-
-
-    def test_fits_CLT(self):
-
-        output_folder = "/home/tamsen/Data/DemographiKS_output_from_mesx/CLT_testing"
-        csv_in = os.path.join(output_folder, "composite_CLT_RC.csv")
-        simulated_results, bins =read_distribution_tests(csv_in)
-        #fit_results = {}
-        bins1=bins[0:-1]
-
-
-
-        num_genes=50
-        bin_size = bins[1] - bins[0]
-        two_Ne= 2000
-        shape=1  #sigma
-        scale = two_Ne#going from scale 1 to 2 halves the height and makes it twice as wide
-        loc = 0 #predic loc=0 when the mean is over the scale value.
-        amp=0.5*num_genes*two_Ne*bin_size
-        #https://docs.scipy.org/doc/scipy/reference/generated/scipy.stats.lognorm.html
-        #https://en.wikipedia.org/wiki/Skewness
-        #https://en.wikipedia.org/wiki/Log-normal_distribution
-        #https://variation.com/wp-content/distribution_analyzer_help/hs128.htm#:~:text=As%20the%20skewness%20goes%20to,multiplied%20together%20as%20shown%20below.
-        #https://www.itl.nist.gov/div898/handbook/eda/section3/eda3669.htm
-        # mean - median / std dev (sigma)
-        # loc = expected value? s = skew? scale = std dev?
-        # https://stackoverflow.com/questions/8870982/how-do-i-get-a-lognormal-distribution-in-python-with-mu-and-sigma
-        
-        #https://stackoverflow.com/questions/8870982/how-do-i-get-a-lognormal-distribution-in-python-with-mu-and-sigma
-        # here is a solution for getting the scipy.stats.lognorm distribution if the mean mu and standard deviation
-        # sigma of the lognormal distribution are known
-        #a = 1 + (sigma / mu) ** 2
-        #s = np.sqrt(np.log(a))
-        #scale = mu / np.sqrt(a)
-        # https://www.quora.com/Why-does-a-lognormal-distribution-approach-a-normal-distribution-with-a-small-coefficient-of-variation
-        # https://statproofbook.github.io/P/lognorm-pdf.html#:~:text=Proof:%20A%20log%2Dnormally%20distributed%20random%20variable%20is,function%20of%20a%20normal%20random%20variable:%20Y%E2%88%BCN(%CE%BC%2C%CF%832)%E2%87%92X=exp(Y)%E2%88%BClnN(%CE%BC%2C%CF%832).
-        p2 = [amp,shape,loc,scale]
-
-        png_out = os.path.join(output_folder, "fit_composite_CLT_RC.png")
-        fig = plt.figure(figsize=(10, 10), dpi=350)
-        test_cases=list(simulated_results.keys())
-        #'Perfect Gaussian distribution' <- will not fit'0 RC events simulated',
-        #'Perfect Kingman distribution' <- will not fit
-        test_cases=[
-            '0.05 %RC events simulated',
-            '0.1 %RC events simulated', '0.5 %RC events simulated', '0.75 %RC events simulated',
-            '1 RC events simulated','2 RC events simulated', '5 RC events simulated',
-            '10 RC events simulated', '20 RC events simulated', '50 RC events simulated']
-        for test_case in test_cases:
-            test_data=simulated_results[test_case]
-            fit_curve_ys_ln2, xs_for_wgd, popt = \
-                curve_fitting.fit_curve_to_xs_and_ys(bins1,test_data, curve_fitting.wgd_lognorm2, p0=p2)
-
-            popt_in_sci_notation=["{:.2E}".format(p) for p in popt]
-            plot_label= test_case + ", fit ln2, popt:"  + ",".join(popt_in_sci_notation)
-            plt.plot(xs_for_wgd, fit_curve_ys_ln2, color='g', alpha=0.95, label=plot_label)
-            plt.plot(bins1,test_data, color='g', alpha=0.95, label="true data", linestyle=":")
-
-        plt.title('label')
-        plt.legend()
-        plt.xlabel("MRCA time")
-        plt.ylabel("# genes in bin")
-        plt.savefig(png_out)
-        plt.clf()
-        plt.close()
-
-        print(simulated_results.keys())
-
-
-    def test_read_in_of_CLT(self):
-
-        output_folder = "/home/tamsen/Data/DemographiKS_output_from_mesx/CLT_testing"
-        csv_in = os.path.join(output_folder, "composite_CLT_RC.csv")
-        png_out = os.path.join(output_folder, "fit_CLT_RC.png")
-        simulated_results, bins =read_distribution_tests(csv_in)
-        fit_results = {}
-        bins1=bins[0:-1]
-        fig = plt.figure(figsize=(10, 10), dpi=350)
-        label = "Coalescent Times For Genes From Sampled From Two Ancestral Genomes"
-
-        test_case_name='1 RC events simulated'
-        test_data=simulated_results[test_case_name]
-
-        num_genes=len(test_data)
-        bin_size = bins[1] - bins[0]
-        two_Ne= 2000
-        p = [num_genes * bin_size, two_Ne - (bin_size / 2), bin_size]
-        fit_curve_ys_norm, xs_for_wgd, popt = \
-                curve_fitting.fit_curve_to_xs_and_ys(bins1,test_data, curve_fitting.wgd_normal, p0=p)
-        plt.plot(xs_for_wgd, fit_curve_ys_norm, color='r', alpha=0.95, label="fit norm")
-
-
-
-        #popt2=[num_genes * bin_size,bin_size,two_Ne - (bin_size / 2),0.1]
-        popt2 = [num_genes * bin_size, bin_size,two_Ne, 1]
-        #amp, scale, x_shift, skew
-        #return amp * lognorm.pdf(scale * x + x_shift, skew)
-        #pdf(x, s, loc=0, scale=1)
-
-        #veery pointy
-        #shape=1
-        #loc=two_Ne
-        #scale=num_genes
-
-        #less pointy
-        shape=1
-        loc=0.5
-        scale=0.999 #halfve the h
-
-        scale = 2 #going from scale 1 to 2 halves the height and makes it twice as wide
-        scale = two_Ne
-        loc = 0 #predic loc=0 when the mean is over the scale value.
-        popt2 = [shape,loc,scale]
-        test_bins = np.arange(0,5, 0.1)
-        #fit_curve_ys_ln = [curve_fitting.wgd_lognorm(x, *popt2) for x in test_bins]
-        fit_curve_ys_ln = [0.5*num_genes*two_Ne*bin_size*lognorm.pdf(x, *popt2) for x in bins1]
-        plt.plot(bins1, fit_curve_ys_ln, color='c', alpha=0.95, label="fit log_loc0")
-
-        amp=0.5*num_genes*two_Ne*bin_size
-        p2 = [amp,shape,loc,scale]
-        fit_curve_ys_ln2, xs_for_wgd, popt = \
-                curve_fitting.fit_curve_to_xs_and_ys(bins1,test_data, curve_fitting.wgd_lognorm2, p0=p2)
-
-        popt_in_sci_notation=["{:.2E}".format(p) for p in popt]
-
-        plot_label= test_case_name + ", fit ln2, popt:"  + ",".join(popt_in_sci_notation)
-        fit_results[plot_label]=fit_curve_ys_ln2
-        plt.plot(xs_for_wgd, fit_curve_ys_ln2, color='g', alpha=0.95, label=plot_label)
-
-
-        print(str(popt))
-
-        plt.plot(bins1, test_data, color='k', alpha=0.95, label=label, linestyle=":")
-        #plt.plot( xs_for_wgd,fit_curve_ys, color='gray', alpha=0.95, label="fit")
-
-        plt.title(label)
-        # plt.xlim([0, max_mrca])
-        # plt.ylim([0, 300])
-        plt.legend()
-        plt.xlabel("MRCA time")
-        plt.ylabel("# genes in bin")
-        plt.title(label)
-        plt.savefig(png_out)
-        plt.clf()
-        plt.close()
-
-        png_out = os.path.join(output_folder, "fit_composite_CLT_RC.png")
-        plot_composite_fits(simulated_results, fit_results, bins,
-                            [], [], png_out)
-
-        print(simulated_results.keys())
 
 def write_distribution_tests(csv_out, data_labels, bins, resampled_distributions_ys):
     with open(csv_out, 'w') as f:
@@ -280,6 +135,53 @@ def write_distribution_tests(csv_out, data_labels, bins, resampled_distributions
         for i in range(0, len(resampled_distributions_ys)):
             data_as_str = [str(d) for d in resampled_distributions_ys[i]]
             f.write(data_labels[i] + "\t" + "\t".join(data_as_str) + "\n")
+
+def write_fit_parameters(csv_out, data_labels, bin_centers, fit_distributions_popts, fit_distributions_ys):
+
+    with open(csv_out, 'w') as f:
+        bins_str = [str(b) for b in bin_centers]
+        f.write("Bins\t"+ "\t".join(bins_str) +"\n")
+        num_xs=len(bin_centers)
+        fraction_num_xs= 1.0 /float(num_xs)
+        #popt_labels=["popt"+str(i) for i in range(0,len(fit_distributions_popts[0]))]
+        popt_labels=["amp", "shape", "loc", "scale",
+                     "cm_x", "peak_x",
+                     "cm_x_exp", "peak_x_exp"]
+        #add mean,mode,variance,skew
+        # predictions based on RC
+
+        expected_cm=2000 #2Ne
+
+        f.write("RC\t" + "\t".join(popt_labels)  + "\n")
+        for i in range(0, len(fit_distributions_ys)):
+
+            label=data_labels[i+3]
+            num_RC=float(label.split(" ")[0])
+            fit_distribution=fit_distributions_ys[i]
+            popt=fit_distributions_popts[i]
+            popt_as_str = [str(d) for d in popt]
+
+            sum_ys=sum(fit_distribution)
+            normalizer = 1.0 / sum_ys
+
+            #find cm
+            cm_terms= [fit_distribution[j]*bin_centers[j] for j in range(0,num_xs)]
+            cm_x = normalizer * sum(cm_terms)
+
+            #find peak
+            max_index = fit_distribution.index(max(fit_distribution))
+            max_x = bin_centers[max_index]
+
+            #expected_peak
+            max_x_exp= expected_cm * num_RC / (num_RC + 1)
+            #std dev
+            #sum (x-mu)(x-mu)+P(x)
+            #find skew
+
+            f.write(label + "\t" + "\t".join(popt_as_str) +
+                    "\t" + str(cm_x) + "\t" + str(max_x) +
+                    "\t" + str(expected_cm) + "\t" + str(max_x_exp) +
+                    "\n")
 
 def read_distribution_tests(csv_in):
     results={}
@@ -297,64 +199,38 @@ def read_distribution_tests(csv_in):
 
 
 
-def plot_composite_fits(simulated_results_dict, fit_results_dict, bins,
-                        data_labels, data_colors, png_out):
 
-    fig, ax = plt.subplots(1, 2, figsize=(40, 20))
-
-    label = "Coalescent Times For Genes From Sampled From Two Ancestral Genomes"
-
-    sim_keys=list(simulated_results_dict.keys())
-    for i in range(0, len(sim_keys)):
-        key=sim_keys[i]
-        ax[0].plot(bins[0:-1], simulated_results_dict[key],label=key)
-        #, color=data_colors[i], alpha=0.95, label=data_labels[i])
-
-    sim_keys=list(fit_results_dict.keys())
-    for i in range(0, len(sim_keys)):
-        key=sim_keys[i]
-        ax[1].plot(bins[0:-1], fit_results_dict[key],label=key)
-        #, color=data_colors[i], alpha=0.95, label=data_labels[i])
-
-
-    plt.title(label)
-
-    ax[0].legend()
-    ax[1].legend()
-    ax[0].set(xlabel="MRCA time")
-    ax[0].set(ylabel="# genes in bin")
-    ax[0].set(title=label)
-    plt.savefig(png_out)
-    plt.clf()
-    plt.close()
-
-def plot_composite_tc(data_list_A, bins, data_labels, data_colors, png_out):
+def plot_composite_tc(list_of_simulated_data, p0, bins,
+                      data_labels, data_colors, png_out, csv_out):
 
     fig = plt.figure(figsize=(10, 10), dpi=350)
-    #fig, ax = plt.subplots(1, 2, figsize=(40, 20))
-    #fig.suptitle(suptitle)
-    # Co.T=(1/2N)*e^-((t-1)/2N))
-    label = "Coalescent Times For Genes From Sampled From Two Ancestral Genomes"
-    num_genes=len(data_list_A[0])
+    label = "Coalescent Times For Genes From Sampled From Polyploid Ohnologs"
+    bins_centers = [ 0.5*(bins[i]+bins[i+1]) for i in range(0,len(bins)-1)]
+    fit_distributions_popts =[]
+    fit_distributions_ys =[]
 
-    for i in range(0, len(data_list_A)):
-        plt.plot(bins[0:-1], data_list_A[i], color=data_colors[i], alpha=0.95, label=data_labels[i])
+    for i in range(0, len(list_of_simulated_data)):
 
-    #for i in range(0,len(data_list_B)):
-    #    data=data_list_B[i]
-    #    if data:
-    #        ax[1].plot(bins[0:-1],data,color=data_colors[i], alpha=0.95,label=data_labels[i])
+        simulated_data= list_of_simulated_data[i]
+        color=data_colors[i]
+        plt.plot(bins_centers, simulated_data, color=color, alpha=0.95, label=data_labels[i])
 
-    #ax[1].plot([1,2,3],[4,5,6], color=data_colors[i], alpha=0.95, label=data_labels[i])
-    #plt.xlim([0, max_mrca * (1.1)])
+        if i>2: #skip fits for what we know already know is a perfect gaussian and exponential.
+            print("label:\t" + data_labels[i])
+            fit_curve_ys_ln2, xs_for_wgd, popt = \
+                curve_fitting.fit_curve_to_xs_and_ys(bins_centers,simulated_data, curve_fitting.wgd_lognorm2, p0=p0)
+
+            popt_in_sci_notation=["{:.2E}".format(p) for p in popt]
+            plot_label= "fit popt:"  + ",".join(popt_in_sci_notation)
+            plt.plot(xs_for_wgd, fit_curve_ys_ln2, color="k", alpha=0.95, label=plot_label,
+                     linestyle=":")
+            fit_distributions_popts.append(popt)
+            fit_distributions_ys.append(fit_curve_ys_ln2)
+
+    write_fit_parameters(csv_out, data_labels, bins_centers, fit_distributions_popts, fit_distributions_ys)
+
     plt.title(label)
-    # plt.xlim([0, max_mrca])
-    # plt.ylim([0, 300])
     plt.legend()
-    #ax[0].set(xlim=[0, xmax])
-    #ax[0].set(xlabel="MRCA time")
-    #ax[0].set(ylabel="# genes in bin")
-    #ax[0].set(title=label)
     plt.xlabel("MRCA time")
     plt.ylabel("# genes in bin")
     plt.title(label)
@@ -365,16 +241,13 @@ def plot_composite_tc(data_list_A, bins, data_labels, data_colors, png_out):
 def plot_mrca(theoretical_mrcas_by_gene, bins, png_out):
 
     fig = plt.figure(figsize=(10, 10), dpi=350)
-    label = "Coalescent Times For Genes From Sampled Two Ancestral Genomes"
+    label = "Coalescent Times For Genes From Sampled Ohnologs"
     num_genes=len(theoretical_mrcas_by_gene)
     dgx_hist_ys, bins, patches = plt.hist(theoretical_mrcas_by_gene, bins=bins, facecolor='c', alpha=0.25,
                  label='Theoretical Tcoal by gene (total: ' + str(num_genes) + ')',
                  density=False)
 
-    #plt.xlim([0, max_mrca * (1.1)])
     plt.title(label)
-    # plt.xlim([0, max_mrca])
-    # plt.ylim([0, 300])
     plt.legend()
     plt.xlabel("MRCA time")
     plt.ylabel("# genes in bin")
