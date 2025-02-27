@@ -1,6 +1,7 @@
 import math
 from scipy.optimize import curve_fit
-from scipy.stats import norm,exponnorm
+from scipy.stats import norm, exponnorm, lognorm
+
 
 #In the present parameterization this corresponds to having loc and scale equal to
 # mu and sigma, with K = 1/(sigma*lambda)
@@ -8,6 +9,8 @@ from scipy.stats import norm,exponnorm
 def gaussian_modified_exponential(x, Amp, K, mu, sigma):
     return Amp * exponnorm.pdf(x, K, mu, sigma)
 
+def wgd_lognorm(x, amp, scale, x_shift,skew):
+    return amp * lognorm.pdf(scale * x + x_shift, skew)
 
 #https://en.wikipedia.org/wiki/Exponentially_modified_Gaussian_distribution
 def wgd_exp_mod_normal(x, amp, lam, mu, sig):
