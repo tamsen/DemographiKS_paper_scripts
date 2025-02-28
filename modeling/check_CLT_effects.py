@@ -11,7 +11,7 @@ from scipy.stats import expon
 
 from figure_generation import curve_fitting
 from figure_generation.colors_for_figures import lighten_color
-from figure_generation.curve_fitting import fit_curve_to_xs_and_ys
+from figure_generation.curve_fitting import fit_curve_to_xs_and_ys, lognorm_by_sigma_mu
 
 
 class TestModelEffectsOfCLT(unittest.TestCase):
@@ -65,7 +65,7 @@ class TestModelEffectsOfCLT(unittest.TestCase):
 
         new_data = [d for d in list_of_expon_distributions[0]]
         png_out_i = os.path.join(output_folder, "CLT_0RC.png")
-        dgx_hist_ys, bins = plot_mrca(new_data, bins, png_out_i)
+        dgx_hist_ys, bins = plot_mrca_histogram(new_data, bins, png_out_i)
         resampled_distributions_ys.append(dgx_hist_ys)
         data_labels.append("0 RC events simulated")
 
@@ -82,7 +82,7 @@ class TestModelEffectsOfCLT(unittest.TestCase):
                 new_data[k] = 0.5 * (Tc1 + Tc2)
 
             png_out_i = os.path.join(output_folder, "CLT_" + str(fraction) + "%RC.png")
-            dgx_hist_ys, bins = plot_mrca(new_data, bins, png_out_i)
+            dgx_hist_ys, bins = plot_mrca_histogram(new_data, bins, png_out_i)
             resampled_distributions_ys.append(dgx_hist_ys)
             data_labels.append(str(fraction) + " %RC events simulated")
 
@@ -100,7 +100,7 @@ class TestModelEffectsOfCLT(unittest.TestCase):
                  avg_Tc_for_Kth_gene= sum(Tcs_for_Kth_genes)/num_combined_distributions
                  new_data[k]=avg_Tc_for_Kth_gene#
             png_out_i = os.path.join(output_folder, "CLT_" + str(num_RC_events) +"RC.png")
-            dgx_hist_ys, bins_xs = plot_mrca(new_data,bins,png_out_i)
+            dgx_hist_ys, bins_xs = plot_mrca_histogram(new_data, bins, png_out_i)
             resampled_distributions_ys.append(dgx_hist_ys)
 
             data_labels.append(str(num_RC_events) + " RC events simulated")
@@ -117,11 +117,14 @@ class TestModelEffectsOfCLT(unittest.TestCase):
         p2 = [amp,shape,loc,scale]
         png_out = os.path.join(output_folder, "composite_CLT_RC.png")
         csv_out = os.path.join(output_folder, "fits_CLT_RC.csv")
-        plot_composite_tc(resampled_distributions_ys,p2,
+        data_list = plot_composite_tc(resampled_distributions_ys,p2,
                           bins,data_labels,data_colors,png_out, csv_out)
 
         csv_out = os.path.join(output_folder, "composite_CLT_RC.csv")
         write_distribution_tests(csv_out, data_labels,bins, resampled_distributions_ys)
+        png_out = os.path.join(output_folder, "reformed_lognorms_RC.png")
+        plot_reformed_lognorms_tc(data_list,
+                          bins,data_labels,data_colors,png_out, csv_out)
 
         self.assertEqual(True, True)  # add assertion here
 
@@ -138,6 +141,7 @@ def write_distribution_tests(csv_out, data_labels, bins, resampled_distributions
 
 def write_fit_parameters(csv_out, data_labels, bin_centers, fit_distributions_popts, fit_distributions_ys):
 
+    data_list=[]
     with open(csv_out, 'w') as f:
         bins_str = [str(b) for b in bin_centers]
         f.write("Bins\t"+ "\t".join(bins_str) +"\n")
@@ -145,8 +149,9 @@ def write_fit_parameters(csv_out, data_labels, bin_centers, fit_distributions_po
         fraction_num_xs= 1.0 /float(num_xs)
         #popt_labels=["popt"+str(i) for i in range(0,len(fit_distributions_popts[0]))]
         popt_labels=["amp", "shape", "loc", "scale",
-                     "cm_x", "peak_x",
-                     "cm_x_exp", "peak_x_exp"]
+                     "cm_x", "peak_x", "std_dev",
+                     "cm_x_exp", "peak_x_exp", "std_dev_exp",
+                     "sigma_exp","mu_exp"]
         #add mean,mode,variance,skew
         # predictions based on RC
 
@@ -174,14 +179,37 @@ def write_fit_parameters(csv_out, data_labels, bin_centers, fit_distributions_po
 
             #expected_peak
             max_x_exp= expected_cm * num_RC / (num_RC + 1)
+
             #std dev
-            #sum (x-mu)(x-mu)+P(x)
-            #find skew
+            #sum (x-mu)(x-mu)*P(x)
+            terms=[ fit_distribution[i]*(bin_centers[i]-max_x)**2
+                    for i in range(0,len(bin_centers))]
+            #normalizer=1.0/(sum_ys*(num_xs-1))
+            sigma_squared=normalizer* sum(terms)
+            std_dev= math.sqrt(sigma_squared)
+
+            #expected std deviation
+            std_dev_exp = expected_cm / (num_RC+1)
+
+            #https://medium.com/towards-data-science/log-normal-distribution-a-simple-explanation-7605864fb67c#:~:text=Calculate%20median%2C%20mean%2C%20mode%20&%20variance&text=How%20do%20we%20arrive%20at,the%20mean%20(see%20here).
+            A = max_x_exp
+            B = expected_cm
+            lnA = math.log(A)
+            lnB = math.log(B)
+            sigma=math.sqrt(lnB-lnA)
+            mu = 2.0*lnB + lnA
+            data=[cm_x,max_x,std_dev,
+                  expected_cm,max_x_exp,std_dev_exp,
+                  sigma,mu]
 
             f.write(label + "\t" + "\t".join(popt_as_str) +
-                    "\t" + str(cm_x) + "\t" + str(max_x) +
-                    "\t" + str(expected_cm) + "\t" + str(max_x_exp) +
+                    "\t" + str(cm_x) + "\t" + str(max_x) +"\t" + str(std_dev) +
+                    "\t" + str(expected_cm) + "\t" + str(max_x_exp) + "\t" + str(std_dev_exp) +
+                    "\t" + str(sigma) + "\t" + str(mu) +
                     "\n")
+
+            data_list.append(data)
+    return data_list
 
 def read_distribution_tests(csv_in):
     results={}
@@ -227,7 +255,35 @@ def plot_composite_tc(list_of_simulated_data, p0, bins,
             fit_distributions_popts.append(popt)
             fit_distributions_ys.append(fit_curve_ys_ln2)
 
-    write_fit_parameters(csv_out, data_labels, bins_centers, fit_distributions_popts, fit_distributions_ys)
+    mus,sigmas = write_fit_parameters(csv_out, data_labels, bins_centers, fit_distributions_popts, fit_distributions_ys)
+
+    plt.title(label)
+    plt.legend()
+    plt.xlabel("MRCA time")
+    plt.ylabel("# genes in bin")
+    plt.title(label)
+    plt.savefig(png_out)
+    plt.clf()
+    plt.close()
+    return mus,sigmas
+
+def plot_reformed_lognorms_tc(data_list, bins,
+                      data_labels, data_colors, png_out, csv_out):
+    #data = [cm_x, max_x, std_dev,
+    # expected_cm, max_x_exp, std_dev_exp,
+    # sigma, mu]
+
+    fig = plt.figure(figsize=(10, 10), dpi=350)
+    label = "Predicted Lognorms"
+    bins_centers = [ 0.5*(bins[i]+bins[i+1]) for i in range(0,len(bins)-1)]
+
+    for i in range(0,len(data_list)):
+        data=data_list[i]
+        expected_cm=data[3]
+        max_x_exp=data[4]
+        lognorm_pdf = [lognorm_by_sigma_mu(xi,1,mus[i],sigmas[i])
+               for xi in bins_centers]
+        plt.plot(bins_centers, lognorm_pdf, color=data_colors[i+3], alpha=0.95, label=data_labels[i+3])
 
     plt.title(label)
     plt.legend()
@@ -238,7 +294,8 @@ def plot_composite_tc(list_of_simulated_data, p0, bins,
     plt.clf()
     plt.close()
 
-def plot_mrca(theoretical_mrcas_by_gene, bins, png_out):
+
+def plot_mrca_histogram(theoretical_mrcas_by_gene, bins, png_out):
 
     fig = plt.figure(figsize=(10, 10), dpi=350)
     label = "Coalescent Times For Genes From Sampled Ohnologs"

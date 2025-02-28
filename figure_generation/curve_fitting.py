@@ -16,6 +16,14 @@ def wgd_lognorm(x, amp, scale, x_shift,skew):
 def wgd_lognorm2(x, amp, shape,loc,scale):
     return amp * lognorm.pdf(x,shape,loc,scale)
 
+#https://towardsdatascience.com/log-normal-distribution-a-simple-explanation-7605864fb67c/
+def lognorm_by_sigma_mu(x, amp, sigma,mu):
+
+    denominator= x * sigma * math.sqrt( 2.0 * math.pi)
+    exponent = (( math.log(x) - mu ) / sigma )**2
+    scale = amp / denominator
+    return scale * math.exp(-0.5 * exponent)
+
 #https://en.wikipedia.org/wiki/Exponentially_modified_Gaussian_distribution
 def wgd_exp_mod_normal(x, amp, lam, mu, sig):
     lam_over_two=lam / 2.0
