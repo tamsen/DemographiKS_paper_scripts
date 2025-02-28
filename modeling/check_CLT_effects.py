@@ -11,7 +11,7 @@ from scipy.stats import expon
 
 from figure_generation import curve_fitting
 from figure_generation.colors_for_figures import lighten_color
-from figure_generation.curve_fitting import fit_curve_to_xs_and_ys, lognorm_by_sigma_mu
+from figure_generation.curve_fitting import fit_curve_to_xs_and_ys, lognorm_by_sigma_mu, wgd_lognorm2
 
 
 class TestModelEffectsOfCLT(unittest.TestCase):
@@ -117,6 +117,7 @@ class TestModelEffectsOfCLT(unittest.TestCase):
         p2 = [amp,shape,loc,scale]
         png_out = os.path.join(output_folder, "composite_CLT_RC.png")
         csv_out = os.path.join(output_folder, "fits_CLT_RC.csv")
+
         data_list = plot_composite_tc(resampled_distributions_ys,p2,
                           bins,data_labels,data_colors,png_out, csv_out)
 
@@ -151,7 +152,8 @@ def write_fit_parameters(csv_out, data_labels, bin_centers, fit_distributions_po
         popt_labels=["amp", "shape", "loc", "scale",
                      "cm_x", "peak_x", "std_dev",
                      "cm_x_exp", "peak_x_exp", "std_dev_exp",
-                     "sigma_exp","mu_exp"]
+                     "sigma_exp","mu_exp",
+                     "amp_exp","shape_exp","loc_exp","scale_exp"]
         #add mean,mode,variance,skew
         # predictions based on RC
 
@@ -198,14 +200,24 @@ def write_fit_parameters(csv_out, data_labels, bin_centers, fit_distributions_po
             lnB = math.log(B)
             sigma=math.sqrt(lnB-lnA)
             mu = 2.0*lnB + lnA
+
+            amp = 10000000.0
+            shape = -1.0*(max_x_exp - expected_cm) / (2.0* max_x_exp)
+            #shape = (expected_cm -max_x_exp) / expected_cm
+            #shape = (max_x_exp - expected_cm) / max_x_exp
+
+            loc = -1*max_x_exp / 2.0
+            loc= ((500)*(max_x_exp - expected_cm) / (expected_cm))-1000
+
+            scale = 1000.0 + max_x_exp
+
             data=[cm_x,max_x,std_dev,
                   expected_cm,max_x_exp,std_dev_exp,
-                  sigma,mu]
+                  sigma,mu,amp,shape,loc,scale]
+            data_as_str = [str(d) for d in data]
 
             f.write(label + "\t" + "\t".join(popt_as_str) +
-                    "\t" + str(cm_x) + "\t" + str(max_x) +"\t" + str(std_dev) +
-                    "\t" + str(expected_cm) + "\t" + str(max_x_exp) + "\t" + str(std_dev_exp) +
-                    "\t" + str(sigma) + "\t" + str(mu) +
+                    "\t" + "\t".join(data_as_str) +
                     "\n")
 
             data_list.append(data)
@@ -239,12 +251,20 @@ def plot_composite_tc(list_of_simulated_data, p0, bins,
 
     for i in range(0, len(list_of_simulated_data)):
 
+        data_label=data_labels[i]
         simulated_data= list_of_simulated_data[i]
         color=data_colors[i]
-        plt.plot(bins_centers, simulated_data, color=color, alpha=0.95, label=data_labels[i])
+        plt.plot(bins_centers, simulated_data, color=color, alpha=0.95, label=data_label)
 
-        if i>2: #skip fits for what we know already know is a perfect gaussian and exponential.
-            print("label:\t" + data_labels[i])
+        # expected_peak
+        if i > 3:
+            num_RC = float(data_label.split(" ")[0])
+            expected_cm=p0[-1]
+            max_x_exp = expected_cm * num_RC / (num_RC + 1)
+            plt.scatter(max_x_exp,0, color=color, alpha=0.95)
+
+        if i>3: #skip fits for what we know already know is a perfect gaussian and exponential.
+            print("label:\t" + data_label)
             fit_curve_ys_ln2, xs_for_wgd, popt = \
                 curve_fitting.fit_curve_to_xs_and_ys(bins_centers,simulated_data, curve_fitting.wgd_lognorm2, p0=p0)
 
@@ -255,7 +275,8 @@ def plot_composite_tc(list_of_simulated_data, p0, bins,
             fit_distributions_popts.append(popt)
             fit_distributions_ys.append(fit_curve_ys_ln2)
 
-    mus,sigmas = write_fit_parameters(csv_out, data_labels, bins_centers, fit_distributions_popts, fit_distributions_ys)
+    data_list = write_fit_parameters(csv_out, data_labels, bins_centers,
+                                     fit_distributions_popts, fit_distributions_ys)
 
     plt.title(label)
     plt.legend()
@@ -265,13 +286,13 @@ def plot_composite_tc(list_of_simulated_data, p0, bins,
     plt.savefig(png_out)
     plt.clf()
     plt.close()
-    return mus,sigmas
+    return data_list
 
 def plot_reformed_lognorms_tc(data_list, bins,
                       data_labels, data_colors, png_out, csv_out):
     #data = [cm_x, max_x, std_dev,
     # expected_cm, max_x_exp, std_dev_exp,
-    # sigma, mu]
+    # sigma, mu, amp, shape,loc,scale]
 
     fig = plt.figure(figsize=(10, 10), dpi=350)
     label = "Predicted Lognorms"
@@ -281,7 +302,11 @@ def plot_reformed_lognorms_tc(data_list, bins,
         data=data_list[i]
         expected_cm=data[3]
         max_x_exp=data[4]
-        lognorm_pdf = [lognorm_by_sigma_mu(xi,1,mus[i],sigmas[i])
+        amp=data[8]
+        shape= data[9]
+        loc =data[10]
+        scale = data[11]
+        lognorm_pdf = [wgd_lognorm2(xi, amp, shape,loc,scale)
                for xi in bins_centers]
         plt.plot(bins_centers, lognorm_pdf, color=data_colors[i+3], alpha=0.95, label=data_labels[i+3])
 
