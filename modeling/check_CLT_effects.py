@@ -2,6 +2,8 @@ import math
 import os
 import unittest
 import random
+
+from matplotlib.lines import lineStyles
 from scipy.optimize import curve_fit
 from scipy.stats import lognorm, norm, chisquare, pearsonr
 import numpy as np
@@ -31,9 +33,10 @@ class TestModelEffectsOfCLT(unittest.TestCase):
         num_genes=50000
         N=1000
         xmax=10000
-        bin_size = xmax/50
+        num_bins=200
+        bin_size = xmax/num_bins
         bins = np.arange(0, xmax, bin_size)
-
+        bins_centers = [0.5 * (bins[i] + bins[i + 1]) for i in range(0, len(bins) - 1)]
         list_of_expon_distributions=[]
         for num_combined_distributions in range(0,100):
             random.seed(num_combined_distributions*10+10)
@@ -58,8 +61,13 @@ class TestModelEffectsOfCLT(unittest.TestCase):
 
         bin_size = bins[1] - bins[0]
         #wgd_normal(x, amp, mu, sig):
-        popt = [num_genes * bin_size, two_Ne- (bin_size/2),bin_size]
-        gaussian_ys=[curve_fitting.wgd_normal(x, *popt) for x in bins[0:-1]]
+        #popt = [num_genes * bin_size, two_Ne- (bin_size/2),bin_size]
+        #by CTL, sample sigma = true sigma / sqrt(#samples)
+        #(picked "80" because thats the biggest #RC we tested)
+        sample_sigma = two_Ne / math.sqrt(80)
+        popt = [num_genes * bin_size, two_Ne, sample_sigma]
+        #gaussian_ys=[curve_fitting.wgd_normal(x, *popt) for x in bins[0:-1]]
+        gaussian_ys = [curve_fitting.wgd_normal(x, *popt) for x in bins_centers]
         resampled_distributions_ys.append(gaussian_ys)
         data_labels.append("Perfect Gaussian distribution")
 
@@ -115,17 +123,15 @@ class TestModelEffectsOfCLT(unittest.TestCase):
         loc = 0 #predic loc=0 when the mean is over the scale value.
         amp=0.5*num_genes*two_Ne*bin_size
         p2 = [amp,shape,loc,scale]
-        png_out = os.path.join(output_folder, "composite_CLT_RC.png")
+        png_out = os.path.join(output_folder, "composite_CLT_RC_2.png")
         csv_out = os.path.join(output_folder, "fits_CLT_RC.csv")
 
-        data_list = plot_composite_tc(resampled_distributions_ys,p2,
+        fit_distributions_ys = plot_composite_tc_2(resampled_distributions_ys,p2,
                           bins,data_labels,data_colors,png_out, csv_out)
 
         csv_out = os.path.join(output_folder, "composite_CLT_RC.csv")
         write_distribution_tests(csv_out, data_labels,bins, resampled_distributions_ys)
-        png_out = os.path.join(output_folder, "reformed_lognorms_RC.png")
-        plot_reformed_lognorms_tc(data_list,
-                          bins,data_labels,data_colors,png_out, csv_out)
+        write_distribution_tests(csv_out, data_labels, bins, fit_distributions_ys)
 
         self.assertEqual(True, True)  # add assertion here
 
@@ -237,13 +243,10 @@ def read_distribution_tests(csv_in):
             results[label]=data_as_float
     return results,bins_as_floats
 
-
-
-
-def plot_composite_tc(list_of_simulated_data, p0, bins,
+def plot_composite_tc_2(list_of_simulated_data, p0, bins,
                       data_labels, data_colors, png_out, csv_out):
 
-    fig = plt.figure(figsize=(10, 10), dpi=350)
+    fig, ax = plt.subplots(1, 2, figsize=(20, 10))
     label = "Coalescent Times For Genes From Sampled From Polyploid Ohnologs"
     bins_centers = [ 0.5*(bins[i]+bins[i+1]) for i in range(0,len(bins)-1)]
     fit_distributions_popts =[]
@@ -254,71 +257,56 @@ def plot_composite_tc(list_of_simulated_data, p0, bins,
         data_label=data_labels[i]
         simulated_data= list_of_simulated_data[i]
         color=data_colors[i]
-        plt.plot(bins_centers, simulated_data, color=color, alpha=0.95, label=data_label)
+        ax[0].plot(bins_centers, simulated_data, color=color, alpha=0.95, label=data_label)
 
         # expected_peak
         if i > 3:
             num_RC = float(data_label.split(" ")[0])
             expected_cm=p0[-1]
-            max_x_exp = expected_cm * num_RC / (num_RC + 1)
-            plt.scatter(max_x_exp,0, color=color, alpha=0.95)
 
-        if i>3: #skip fits for what we know already know is a perfect gaussian and exponential.
-            print("label:\t" + data_label)
             fit_curve_ys_ln2, xs_for_wgd, popt = \
                 curve_fitting.fit_curve_to_xs_and_ys(bins_centers,simulated_data, curve_fitting.wgd_lognorm2, p0=p0)
 
             popt_in_sci_notation=["{:.2E}".format(p) for p in popt]
             plot_label= "fit popt:"  + ",".join(popt_in_sci_notation)
-            plt.plot(xs_for_wgd, fit_curve_ys_ln2, color="k", alpha=0.95, label=plot_label,
+            ax[0].plot(xs_for_wgd, fit_curve_ys_ln2, color="k", alpha=0.95, label=plot_label,
                      linestyle=":")
             fit_distributions_popts.append(popt)
             fit_distributions_ys.append(fit_curve_ys_ln2)
 
-    data_list = write_fit_parameters(csv_out, data_labels, bins_centers,
-                                     fit_distributions_popts, fit_distributions_ys)
+            #expected vs true peak
+            #find peak
+            max_index = fit_curve_ys_ln2.index(max(fit_curve_ys_ln2))
+            max_x = bins_centers[max_index]
+
+            #note, random effects will be bigger closer to the origin
+            #I should set a random seed...
+            if "%" in data_label:
+                max_x_exp = expected_cm * num_RC / (num_RC + 1)
+                max_x_exp = max(bins_centers[0],max_x_exp)
+            else:
+                max_x_exp= expected_cm * num_RC / (num_RC + 1)
+            ax[1].scatter(max_x,max_x_exp, color=color, alpha=0.95)
+            ax[0].scatter(max_x_exp,0, color=color, alpha=0.95)
+
+    ax[1].plot([0,2000], [0,2000], color='gray', alpha=0.95, linestyle="-")
+    write_distribution_tests(csv_out, data_labels,bins, fit_distributions_ys)
+    #metrics_csv=csv_out.replace(".csv","_metrics.csv")
+    #data_list = write_fit_parameters(metrics_csv, data_labels, bins_centers,
+    #                                 fit_distributions_popts, fit_distributions_ys)
+
 
     plt.title(label)
-    plt.legend()
-    plt.xlabel("MRCA time")
-    plt.ylabel("# genes in bin")
-    plt.title(label)
+    ax[0].legend()
+    ax[0].set(xlabel="MRCA time")
+    ax[0].set(ylabel="# genes in bin")
+    ax[1].set(xlabel="true position of Ks max")
+    ax[1].set(ylabel="expected position of Ks max")
+    ax[0].set(title=label)
     plt.savefig(png_out)
     plt.clf()
     plt.close()
-    return data_list
-
-def plot_reformed_lognorms_tc(data_list, bins,
-                      data_labels, data_colors, png_out, csv_out):
-    #data = [cm_x, max_x, std_dev,
-    # expected_cm, max_x_exp, std_dev_exp,
-    # sigma, mu, amp, shape,loc,scale]
-
-    fig = plt.figure(figsize=(10, 10), dpi=350)
-    label = "Predicted Lognorms"
-    bins_centers = [ 0.5*(bins[i]+bins[i+1]) for i in range(0,len(bins)-1)]
-
-    for i in range(0,len(data_list)):
-        data=data_list[i]
-        expected_cm=data[3]
-        max_x_exp=data[4]
-        amp=data[8]
-        shape= data[9]
-        loc =data[10]
-        scale = data[11]
-        lognorm_pdf = [wgd_lognorm2(xi, amp, shape,loc,scale)
-               for xi in bins_centers]
-        plt.plot(bins_centers, lognorm_pdf, color=data_colors[i+3], alpha=0.95, label=data_labels[i+3])
-
-    plt.title(label)
-    plt.legend()
-    plt.xlabel("MRCA time")
-    plt.ylabel("# genes in bin")
-    plt.title(label)
-    plt.savefig(png_out)
-    plt.clf()
-    plt.close()
-
+    return fit_distributions_ys
 
 def plot_mrca_histogram(theoretical_mrcas_by_gene, bins, png_out):
 
