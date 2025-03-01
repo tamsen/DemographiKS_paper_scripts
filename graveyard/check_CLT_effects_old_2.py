@@ -137,6 +137,117 @@ class TestModelEffectsOfCLT(unittest.TestCase):
 
         self.assertEqual(True, True)  # add assertion here
 
+def write_histogram_distribution_data(csv_out, data_labels, bins, resampled_distributions_ys):
+    with open(csv_out, 'w') as f:
+
+        bins_str = [str(b) for b in bins]
+        f.write("Bins\t"+ "\t".join(bins_str) +"\n")
+
+        f.write("RC\tDistributionData\n")
+        for i in range(0, len(resampled_distributions_ys)):
+            data_as_str = [str(d) for d in resampled_distributions_ys[i]]
+            f.write(data_labels[i] + "\t" + "\t".join(data_as_str) + "\n")
+
+def write_fit_parameters(csv_out, data_labels, bin_centers, fit_distributions_popts, fit_distributions_ys):
+
+    data_list=[]
+    with open(csv_out, 'w') as f:
+        bins_str = [str(b) for b in bin_centers]
+        f.write("Bins\t"+ "\t".join(bins_str) +"\n")
+        num_xs=len(bin_centers)
+        fraction_num_xs= 1.0 /float(num_xs)
+        #popt_labels=["popt"+str(i) for i in range(0,len(fit_distributions_popts[0]))]
+        popt_labels=["amp", "shape", "loc", "scale",
+                     "cm_x", "peak_x", "std_dev",
+                     "cm_x_exp", "peak_x_exp", "std_dev_exp",
+                     "sigma_exp","mu_exp",
+                     "amp_exp","shape_exp","loc_exp","scale_exp"]
+        #add mean,mode,variance,skew
+        # predictions based on RC
+
+        expected_cm=2000 #2Ne
+
+        f.write("RC\t" + "\t".join(popt_labels)  + "\n")
+        for i in range(0, len(fit_distributions_ys)):
+
+            label=data_labels[i+3]
+            num_RC=float(label.split(" ")[0])
+            fit_distribution=fit_distributions_ys[i]
+            popt=fit_distributions_popts[i]
+            popt_as_str = [str(d) for d in popt]
+
+            sum_ys=sum(fit_distribution)
+            normalizer = 1.0 / sum_ys
+
+            #find cm
+            cm_terms= [fit_distribution[j]*bin_centers[j] for j in range(0,num_xs)]
+            cm_x = normalizer * sum(cm_terms)
+
+            #find peak
+            max_index = fit_distribution.index(max(fit_distribution))
+            max_x = bin_centers[max_index]
+
+            #expected_peak
+            #max_x_exp = expected_cm * num_RC / (num_RC + 1)
+            #max_x_exp = max(bins_centers[0], max_x_exp)
+
+            max_x_exp= expected_cm * num_RC / (num_RC + 1)
+
+            #std dev
+            #sum (x-mu)(x-mu)*P(x)
+            terms=[ fit_distribution[i]*(bin_centers[i]-max_x)**2
+                    for i in range(0,len(bin_centers))]
+            #normalizer=1.0/(sum_ys*(num_xs-1))
+            sigma_squared=normalizer* sum(terms)
+            std_dev= math.sqrt(sigma_squared)
+
+            #expected std deviation
+            std_dev_exp = expected_cm / (num_RC+1)
+
+            #https://medium.com/towards-data-science/log-normal-distribution-a-simple-explanation-7605864fb67c#:~:text=Calculate%20median%2C%20mean%2C%20mode%20&%20variance&text=How%20do%20we%20arrive%20at,the%20mean%20(see%20here).
+            A = max_x_exp
+            B = expected_cm
+            lnA = math.log(A)
+            lnB = math.log(B)
+            sigma=math.sqrt(lnB-lnA)
+            mu = 2.0*lnB + lnA
+
+            amp = 10000000.0
+            shape = -1.0*(max_x_exp - expected_cm) / (2.0* max_x_exp)
+            #shape = (expected_cm -max_x_exp) / expected_cm
+            #shape = (max_x_exp - expected_cm) / max_x_exp
+
+            loc = -1*max_x_exp / 2.0
+            loc= ((500)*(max_x_exp - expected_cm) / (expected_cm))-1000
+
+            scale = 1000.0 + max_x_exp
+
+            data=[cm_x,max_x,std_dev,
+                  expected_cm,max_x_exp,std_dev_exp,
+                  sigma,mu,amp,shape,loc,scale]
+            data_as_str = [str(d) for d in data]
+            print(str(num_RC) + " true_vs_exp:\t" + str(max_x) + "\t" + str(max_x_exp))
+            f.write(label + "\t" + "\t".join(popt_as_str) +
+                    "\t" + "\t".join(data_as_str) +
+                    "\n")
+
+            data_list.append(data)
+    return data_list
+
+def read_distribution_tests(csv_in):
+    results={}
+    with open(csv_in, 'r') as f:
+        lines=f.readlines()
+        bins_splat=lines[0].split('\t')
+        bins_as_floats = [float(b) for b in bins_splat[1:-1]]
+        for l in lines[2:-1]:
+            splat=l.split('\t')
+            label=splat[0]
+            data=splat[1:-1]
+            data_as_float=[float(d) for d in data]
+            results[label]=data_as_float
+    return results,bins_as_floats
+
 def plot_composite_tc_2(list_of_simulated_data, p0, bins,
                       data_labels, data_colors, png_out, csv_out):
 
@@ -145,7 +256,6 @@ def plot_composite_tc_2(list_of_simulated_data, p0, bins,
     bins_centers = [ 0.5*(bins[i]+bins[i+1]) for i in range(0,len(bins)-1)]
     fit_distributions_popts =[]
     fit_distributions_ys =[]
-    RCs=[]; true_max=[]; max_exp=[]
 
     for i in range(0, len(list_of_simulated_data)):
 
@@ -181,23 +291,21 @@ def plot_composite_tc_2(list_of_simulated_data, p0, bins,
             if "%" in data_label:
                 max_x_exp = expected_cm * num_RC / (num_RC + 1)
                 max_x_exp = max(bins_centers[0],max_x_exp)
-                diff_between_bin0_and_bin1=max_value-next_max_value
-                num_values_affected=num_RC*50000 #from num genes
-                if num_values_affected < diff_between_bin0_and_bin1:
-                    max_x_exp = bins_centers[0]
+                #max_x_exp = expected_cm * num_RC * ( num_RC / (1+num_RC))**(1/2)
+                #max_x_exp = expected_cm *   num_RC**2 / (num_RC**2 + 1)
+                #max_x_exp = expected_cm * num_RC / (num_RC + 1)
             else:
                 max_x_exp= expected_cm * num_RC / (num_RC + 1)
             print(str(num_RC) + " true_vs_exp:\t" + str(max_x) + "\t" + str(max_x_exp))
-            RCs.append(num_RC)
-            true_max.append(max_x)
-            max_exp .append(max_x_exp)
-
             ax[1].scatter(max_x,max_x_exp, color=color, alpha=0.95)
             ax[0].scatter(max_x_exp,0, color=color, alpha=0.95)
 
-    expt_csv = csv_out.replace(".csv", "_expectations.csv")
-    write_some_data(expt_csv, RCs, true_max, max_exp)
     ax[1].plot([0,2000], [0,2000], color='gray', alpha=0.95, linestyle="-")
+    #write_histogram_distribution_data(csv_out, data_labels, bins, fit_distributions_ys)
+    #metrics_csv=csv_out.replace(".csv","_metrics.csv")
+    #data_list = write_fit_parameters(metrics_csv, data_labels, bins_centers,
+    #                                 fit_distributions_popts, fit_distributions_ys)
+
 
     plt.title(label)
     ax[0].legend()
@@ -210,27 +318,6 @@ def plot_composite_tc_2(list_of_simulated_data, p0, bins,
     plt.clf()
     plt.close()
     return fit_distributions_ys
-
-
-def write_histogram_distribution_data(csv_out, data_labels, bins, resampled_distributions_ys):
-    with open(csv_out, 'w') as f:
-
-        bins_str = [str(b) for b in bins]
-        f.write("Bins\t"+ "\t".join(bins_str) +"\n")
-
-        f.write("RC\tDistributionData\n")
-        for i in range(0, len(resampled_distributions_ys)):
-            data_as_str = [str(d) for d in resampled_distributions_ys[i]]
-            f.write(data_labels[i] + "\t" + "\t".join(data_as_str) + "\n")
-
-def write_some_data(csv_out, RCs, true_max,max_exp):
-
-    with open(csv_out, 'w') as f:
-        f.write("RCs\ttrue_max\tmax_exp\n")
-        for i in range(0, len(RCs)):
-            data=[RCs[i], true_max[i],max_exp[i]]
-            data_as_str = [str(d) for d in data]
-            f.write("\t".join(data_as_str)+ "\n")
 
 def plot_mrca_histogram(theoretical_mrcas_by_gene, bins, png_out):
 
