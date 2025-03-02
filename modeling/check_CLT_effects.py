@@ -18,13 +18,84 @@ from figure_generation.curve_fitting import fit_curve_to_xs_and_ys, lognorm_by_s
 
 class TestModelEffectsOfCLT(unittest.TestCase):
 
-# "A function that can be generalized to both a Gaussian (normal distribution) "
-# "and an exponential distribution is the ")generalized normal distribution"
-# (also known as the "exponential power distribution"); by adjusting a single parameter
-# within this function, you can smoothly transition between the characteristics
-# of a Gaussian and an exponential distribution depending on the parameter value"
-# https://en.wikipedia.org/wiki/Generalized_normal_distribution
-# https://en.wikipedia.org/wiki/Laplace_transform
+
+    def test_fractional_RC(self):
+        output_folder = "/home/tamsen/Data/DemographiKS_output_from_mesx/CLT_testing"
+
+        # make a bunch of exponential distributions
+        num_genes = 50000
+        N = 1000
+        xmax = 10000
+        num_bins = 200
+        bin_size = xmax / num_bins
+        bins = np.arange(0, xmax, bin_size)
+        bins_centers = [0.5 * (bins[i] + bins[i + 1]) for i in range(0, len(bins) - 1)]
+        two_Ne = 2.0 * N
+        print("Tc plot bin_size_in_time: " + str(bin_size))
+        kingman = [min(num_genes,
+                       (bin_size * num_genes / two_Ne) * math.e ** ((-1 * i) / two_Ne))
+                   for i in bins_centers]
+
+        CM=2*N
+        histograms_from_resampled_distributions_ys = [kingman]
+        data_labels = ["kingman"]#, "some_RC_loss"]
+        bin_size=bins_centers[1]-bins_centers[0]
+        for percent_RC in [0.1]:
+
+            some_RC_loss = [kingman[b]*(1-percent_RC) for b in range(0,len(bins_centers))]
+            some_RC_gain = []
+            for b in range(0,len(bins_centers)):
+                x=bins_centers[b]
+                if x < N:
+                    some_RC_gain.append(0)
+                else:
+                    x0=2*x - CM
+                    p0= (bin_size * num_genes / two_Ne) * math.e ** ((-1 * x0) / two_Ne)
+                    some_RC_gain.append(percent_RC*p0)
+
+            #looks like exp
+            #gain2 = [bin_size*wgd_lognorm2(i,num_genes,1,-CM,CM*2)
+            #           for i in bins_centers]
+
+            #close but too far right
+            #wgd_lognorm2(x, amp, shape, loc, scale)
+            #gain2 = [bin_size*wgd_lognorm2(i,num_genes,1,CM/2,CM*2)
+            #           for i in bins_centers]
+
+            shape=1/4
+            loc=CM/2-2000-1500
+            gain2 = [bin_size*wgd_lognorm2(i,num_genes,shape,loc,CM*2)
+                       for i in bins_centers]
+
+            #new_dist=[some_RC_loss[b]+gain2[b]  for b in range(0,len(bins_centers))]
+            #max_value=max(new_dist)
+            #max_bin_index = new_dist.index(max_value)
+            #maxx = bins_centers[max_bin_index]
+
+            #data_labels = data_labels + ["gain_RC"+str(percent_RC),"new_dist, xmax at " + str(maxx)]
+            #histograms_from_resampled_distributions_ys = histograms_from_resampled_distributions_ys + \
+            #        [gain2, new_dist]
+
+            param_string = str(bin_size) + " " + str(num_genes) + " " + str(shape) + " " + str(loc) + " " + str(CM * 2)
+
+            data_labels = data_labels + ["gain_RC"+str(percent_RC) + "PARAMS: " + param_string
+                                         ]
+            histograms_from_resampled_distributions_ys = histograms_from_resampled_distributions_ys + \
+                    [gain2]
+
+        png_out_i = os.path.join(output_folder, "af_Kingman_CLT_0RC_" + param_string + ".jpg")
+        plot_mrca_x_y(histograms_from_resampled_distributions_ys,
+                      bins_centers, data_labels, png_out_i)
+        csv_out = os.path.join(output_folder, "af_hist_data.csv")
+        write_histogram_distribution_data(csv_out, data_labels, bins_centers, histograms_from_resampled_distributions_ys)
+
+    # "A function that can be generalized to both a Gaussian (normal distribution) "
+    # "and an exponential distribution is the ")generalized normal distribution"
+    # (also known as the "exponential power distribution"); by adjusting a single parameter
+    # within this function, you can smoothly transition between the characteristics
+    # of a Gaussian and an exponential distribution depending on the parameter value"
+    # https://en.wikipedia.org/wiki/Generalized_normal_distribution
+    # https://en.wikipedia.org/wiki/Laplace_transform
     def test_effects_of_CLT(self):
 
         output_folder = "/home/tamsen/Data/DemographiKS_output_from_mesx/CLT_testing"
@@ -79,8 +150,10 @@ class TestModelEffectsOfCLT(unittest.TestCase):
 
         data_colors = ['darkblue','darkred', 'black']
 
-        list_of_fraction_RC_events_to_test = [0.05,0.1,0.2,0.3,0.5,0.75]
-        blue_lightening=[0.75,0.70,0.65,0.6,0.4,0.3]
+        #list_of_fraction_RC_events_to_test = [0.05,0.1,0.2,0.3,0.5,0.75]
+        #blue_lightening=[0.75,0.70,0.65,0.6,0.4,0.3]
+        list_of_fraction_RC_events_to_test = []
+        blue_lightening=[]
         for fraction in list_of_fraction_RC_events_to_test:
 
             new_data = [d for d in list_of_expon_distributions[0]]
@@ -97,8 +170,10 @@ class TestModelEffectsOfCLT(unittest.TestCase):
         new_colors=[lighten_color('blue', amount=a) for a in blue_lightening]
         data_colors= data_colors+ new_colors
 
-        list_of_num_RC_events_to_test=[1,2,5,10,20,50,80]
-        red_lightening=[0.2,0.5,0.6,0.65,0.7,0.75]
+        #list_of_num_RC_events_to_test=[1,2,5,10,20,50,80]
+        #red_lightening=[0.2,0.5,0.6,0.65,0.7,0.75]
+        list_of_num_RC_events_to_test=[1]
+        red_lightening=[]
         for num_RC_events in list_of_num_RC_events_to_test:
             num_combined_distributions=num_RC_events+1
             new_data=[0 for k in range(0, num_genes)]
@@ -195,18 +270,40 @@ def plot_composite_tc_2(list_of_simulated_data, p0, bins,
             ax[1].scatter(max_x,max_x_exp, color=color, alpha=0.95)
             ax[0].scatter(max_x_exp,0, color=color, alpha=0.95)
 
+    bin_size=bins_centers[1]-bins_centers[0]
+    num_genes = 50000
+    N = 1000
+    CM=2*N
+
+
+    # basically perfect3 <great fit with nice numbers!!
+    shape = 0.5
+    loc = -1000 #should be -N
+    scale = 2500 #should be about 2Ne (from Kingman std dev) but booted over for lognorm
+    #scale from (1000*sqrt(2*pi)). see https://docs.scipy.org/doc/scipy/reference/generated/scipy.stats.lognorm.html
+
+    gain2 = [bin_size*wgd_lognorm2(i,num_genes,shape,loc,scale ) for i in bins_centers]
+
+    param_string = str(bin_size) + " " + str(num_genes) + " " + str(shape) + \
+                    " " + str(loc) + " " + str(scale)
+
+    ax[0].plot(bins_centers, gain2 , color="orange", alpha=0.95, label="RC0\n"+\
+         "PARAMS: " +param_string)
+      #  +str(bin_size) + " " + str(num_genes) + " " + str(1) + " " + str(0) + " " + str(CM * 2))
+
     expt_csv = csv_out.replace(".csv", "_expectations.csv")
     write_some_data(expt_csv, RCs, true_max, max_exp)
     ax[1].plot([0,2000], [0,2000], color='gray', alpha=0.95, linestyle="-")
 
     plt.title(label)
     ax[0].legend()
+    ax[0].set(ylim=[0,1400])
     ax[0].set(xlabel="MRCA time")
     ax[0].set(ylabel="# genes in bin")
     ax[1].set(xlabel="true position of Ks max")
     ax[1].set(ylabel="expected position of Ks max")
     ax[0].set(title=label)
-    plt.savefig(png_out)
+    plt.savefig(png_out.replace(".png",param_string + ".png"))
     plt.clf()
     plt.close()
     return fit_distributions_ys
@@ -249,6 +346,25 @@ def plot_mrca_histogram(theoretical_mrcas_by_gene, bins, png_out):
     plt.clf()
     plt.close()
     return dgx_hist_ys, bins
+
+def plot_mrca_x_y(data_y_list, bins_x, data_labels, png_out):
+
+    fig = plt.figure(figsize=(10, 10), dpi=350)
+    label = "Coalescent Times For Genes From Sampled Ohnologs"
+
+    #, color = 'c'
+    for i in range(0,len(data_y_list)):
+        plt.plot(bins_x, data_y_list[i], alpha=1,
+                 label= data_labels[i])
+
+    plt.title(label)
+    plt.legend()
+    plt.xlabel("MRCA time")
+    plt.ylabel("# genes in bin")
+    plt.savefig(png_out)
+    plt.clf()
+    plt.close()
+    return
 
 def theoretical_coalescent(num_genes,N):
     #Co.T=(1/2N)*e^-((t-1)/2N))
