@@ -1,8 +1,10 @@
 import glob
+import math
 import os
 import unittest
 from pathlib import Path
 import numpy as np
+from PyQt5.uic.Compiler.qtproxies import i18n_func
 from matplotlib import pyplot as plt
 import matplotlib.image as mpimg
 
@@ -10,6 +12,7 @@ import config
 from figure_generation import ks_modeling
 from figure_generation.coalescent_plot_aggregation import get_run_time_in_minutes, read_data_csv, plot_mrca, \
     add_mrca_annotations
+from figure_generation.curve_fitting import wgd_lognorm2
 from figure_generation.histogram_plotter import read_Ks_csv
 
 
@@ -308,6 +311,30 @@ def plot_ks(this_ax, config_used, slim_ks_by_gene, spx_ks_by_gene,
     this_ax.axvline(x=config_used.t_div_as_ks, color='b', linestyle='-.', label="input Tdiv as Ks")
     theoretical_ks_mean_now=config_used.mean_Ks_from_Tc+config_used.t_div_as_ks
     this_ax.axvline(x=theoretical_ks_mean_now, color='r', linestyle='--', label="Expected Ks mean")
+
+    RC_rate_per_base_per_year=config_used.recombination_rate
+    exp_num_RC_per_base_since_DIV=config_used.recombination_rate*config_used.DIV_time_Ge
+    #exp_num_RC_per_gene=int(exp_num_RC_per_base_since_DIV*config_used.gene_length_in_bases)
+    exp_num_RC_per_gene = exp_num_RC_per_base_since_DIV * config_used.gene_length_in_bases
+    max_x_exp_using_RC = (config_used.t_div_as_ks +
+                          config_used.mean_Ks_from_Tc * exp_num_RC_per_gene / (exp_num_RC_per_gene + 1))
+    this_ax.axvline(x=max_x_exp_using_RC, color='g', linestyle='-',
+                    label="Predicted Ks peak by gene-avg-RC=" + str(exp_num_RC_per_gene))
+
+    #todo - add a lognorm fit here
+
+    # a good start.. but still dont have the math sorted out..
+    #shape = 0.5
+    #num_genes= num_slim_genes
+    #loc = -1*config_used.ancestral_Ne*config_used.Ks_per_YR #-1000  # should be -N
+    #scale = config_used.ancestral_Ne * math.sqrt(2.0*math.pi)*config_used.Ks_per_YR
+    #bins_centers = [0.5*(bins[i]+bins[i+1])for i in range(0,len(bins)-1)]
+    #RC_once_on_centers = [0 for b in bins_centers if b <config_used.t_div_as_ks] \
+    #    +        [bin_size*wgd_lognorm2(b+config_used.t_div_as_ks, num_genes, shape, loc, scale)
+    #              for b in bins_centers
+    #              if b >= config_used.t_div_as_ks]
+    #this_ax.plot(bins_centers,RC_once_on_centers,color='g', label="Ks model")
+
     #mean_Ks_from_Nb_string=  "({:.2E})".format(config_used.mean_Ks_from_Nb)
     #this_ax.axvline(x=config_used.mean_Ks_from_Nb,
     #                color='g', linestyle='--', label="Tc due to Nb " + mean_Ks_from_Nb_string )

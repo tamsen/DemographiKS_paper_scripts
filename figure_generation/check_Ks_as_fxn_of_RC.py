@@ -50,13 +50,11 @@ class TestKsByNe(unittest.TestCase):
 
         #ks_hist_by_Ks_for_varying_varying_RC_test_Ne1000_long_burnin_save_for_paper.png
         demographics_run_list = [False, 'KSvsRC6_m01d21y2025_h20m06s34','KSvsRC7_m01d21y2025_h12m16s26',
-                                 'KSvsRC8_m01d23y2025_h10m39s34','KSvsRC9_m01d24y2025_h08m51s36',
-                                 'KSvsRC10_m01d24y2025_h09m16s53','KSvsRC11_m01d23y2025_h11m04s33']
+                                 'KSvsRC8_m01d23y2025_h10m39s34']
+        #these ones Tc sucks and need to be re-run with more burnin
+        #                         #,'KSvsRC9_m01d24y2025_h08m51s36',
+        #                         #'KSvsRC10_m01d24y2025_h09m16s53','KSvsRC11_m01d23y2025_h11m04s33']
 
-        #problems only
-        #demographics_run_list = [False,  'KSvsRC8_m01d23y2025_h10m39s34',
-        #                             'KSvsRC10_m01d24y2025_h10m40s24','KSvsRC11_m01d23y2025_h11m04s33']
-        #demographics_run_list_old= [False,  'KSvsRC8_m01d21y2025_h08m21s04','KSvsRC11_m01d22y2025_h11m14s42']
 
         specks_TE5_run_list = [False,False,False,False,False,False,False]
 
