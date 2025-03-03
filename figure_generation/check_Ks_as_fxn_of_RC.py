@@ -62,7 +62,7 @@ class TestKsByNe(unittest.TestCase):
         bin_sizes_Ks = [0.002, 0.002, 0.002,0.002, 0.002, 0.002, 0.002]
         xmax_Ks = [0.2 for f in demographics_run_list] #[0.025, 0.025, 0.025, 0.025, 0.025]  # 0.001  # max(demographiKS_ks_results)
         xmax_Tc = [15000 for f in demographics_run_list]
-        ymax_KS = [140 for f in demographics_run_list]
+        ymax_KS = [160 for f in demographics_run_list]
         ymax_Tc = [100 for f in demographics_run_list]
 
         run_list_name = "Ks_for_varying_varying_RC"
