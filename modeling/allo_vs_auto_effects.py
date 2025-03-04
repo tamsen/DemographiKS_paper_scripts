@@ -56,7 +56,7 @@ class MyTestCase(unittest.TestCase):
         real_full_path = os.path.join(ksrates_out_folder, ksrates_csv_file)
         real_ks_results = ks_parsers.parse_external_ksfile(real_full_path)
 
-        bin_size = 0.02
+        bin_size = 0.002
         max_Ks = 0.5
         color = 'blue'
         wgd_ks=0.21
@@ -82,7 +82,7 @@ class MyTestCase(unittest.TestCase):
         real_full_path=os.path.join(ksrates_out_folder,ksrates_csv_file)
         real_ks_results = ks_parsers.parse_external_ksfile(real_full_path)
 
-        bin_size=0.01
+        bin_size=0.002
         max_Ks=0.3
         color='blue'
         wgd_ks=0.13
