@@ -8,6 +8,9 @@ import config
 import ks_parsers
 from figure_generation import curve_fitting
 
+#actinidia.ks.tsv
+#triticum.ks.tsv
+#final_ks_values_TORX.fa
 
 class MyTestCase(unittest.TestCase):
 
@@ -56,7 +59,7 @@ class MyTestCase(unittest.TestCase):
         real_full_path = os.path.join(ksrates_out_folder, ksrates_csv_file)
         real_ks_results = ks_parsers.parse_external_ksfile(real_full_path)
 
-        bin_size = 0.002
+        bin_size = 0.005
         max_Ks = 0.5
         color = 'blue'
         wgd_ks=0.21
@@ -82,7 +85,7 @@ class MyTestCase(unittest.TestCase):
         real_full_path=os.path.join(ksrates_out_folder,ksrates_csv_file)
         real_ks_results = ks_parsers.parse_external_ksfile(real_full_path)
 
-        bin_size=0.002
+        bin_size=0.005
         max_Ks=0.3
         color='blue'
         wgd_ks=0.13
@@ -115,22 +118,60 @@ def make_simple_histogram(Ks_results, p0, lognorm_fit_range,
                                     label=label, density=density)
         plt.xlim([0, max_Ks * (1.1)])
 
+    #fit lognorm
     bins_centers = [0.5 * (bins[i] + bins[i + 1]) for i in range(0, len(bins) - 1)]
-    fit_xs=[]
-    fit_ys=[]
+    fit_wgd_xs=[]
+    fit_wgd_ys=[]
+    fit_exp_xs=[]
+    fit_exp_ys=[]
     for i in range(0,len(bins_centers)):
         x_value=bins_centers[i]
         if x_value >= lognorm_fit_range[0]:
             if x_value < lognorm_fit_range[1]:
-                fit_xs.append(x_value )
-                fit_ys.append(hist_ys[i])
-    fit_curve_ys_ln2, xs_for_wgd, popt = \
-        curve_fitting.fit_curve_to_xs_and_ys(fit_xs,fit_ys, curve_fitting.wgd_lognorm2, p0=p0)
+                fit_wgd_xs.append(x_value)
+                fit_wgd_ys.append(hist_ys[i])
+        else:
+            fit_exp_xs.append(x_value)
+            fit_exp_ys.append(hist_ys[i])
+
+    fit_curve_ys_ln2, xs_for_wgd, popt_wgd = \
+        curve_fitting.fit_curve_to_xs_and_ys(fit_wgd_xs,fit_wgd_ys, curve_fitting.wgd_lognorm2, p0=p0)
 
     if fit_curve_ys_ln2:
-        popt_in_sci_notation = ["{:.2E}".format(p) for p in popt]
+        popt_in_sci_notation = ["{:.2E}".format(p) for p in popt_wgd]
         plot_label = "fit popt:" + ",".join(popt_in_sci_notation)
         plt.plot(xs_for_wgd, fit_curve_ys_ln2, color='g', alpha=0.95, label=plot_label,linestyle=":")
+
+    #fit exp
+    #wgd_kingman(x, bin_size, num_genes, two_Ne)
+    p0=[bin_size,len(Ks_results),100]
+    fit_exp, xs_for_exp, popt_exp = \
+        curve_fitting.fit_curve_to_xs_and_ys(fit_exp_xs,fit_exp_ys,
+                                             curve_fitting.wgd_kingman, p0=p0)
+
+    if fit_exp:
+        popt_in_sci_notation = ["{:.2E}".format(p) for p in popt_exp]
+        plot_label = "fit popt:" + ",".join(popt_in_sci_notation)
+        plt.plot(fit_exp_xs, fit_exp, color='y', alpha=0.95, label=plot_label,linestyle=":")
+
+    #fit exp and wgd together:
+    fit_both=False
+    if fit_exp:
+        p2=[*popt_exp,*popt_wgd]
+        fit_both, xs_for_both, popt_both = \
+        curve_fitting.fit_curve_to_xs_and_ys(bins_centers,hist_ys,
+                                             curve_fitting.wgd_kingman_and_ln, p0=p2)
+
+        if fit_both:
+            popt_in_sci_notation = ["{:.2E}".format(p) for p in popt_both]
+            plot_label = "fit popt:" + ",".join(popt_in_sci_notation)
+            plt.plot(xs_for_both, fit_both, color='k', alpha=0.95, label=plot_label,linestyle="-")
+
+    if not fit_both:
+        popt_in_sci_notation = ["{:.2E}".format(p) for p in popt_wgd]
+        plot_label = "fit popt:" + ",".join(popt_in_sci_notation)
+        fit_curve_ys = [curve_fitting.wgd_lognorm2(x, *popt_wgd) for x in bins_centers]
+        plt.plot(bins_centers, fit_curve_ys, color='k', alpha=0.95, label=plot_label, linestyle="-")
 
     plt.axvline(x=WGD_ks, color='b', linestyle='-', label="WGD paralog start")
     num_pairs=sum(hist_ys)

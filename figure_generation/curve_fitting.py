@@ -38,6 +38,16 @@ def wgd_normal(x, amp, mu, sig):
     exponent=(x-mu)*(x-mu)/(2.0*sig*sig)
     return  amp * scale * math.e**(-1*exponent)
 
+def wgd_kingman_and_ln(x,
+                       bin_size, num_genes, two_Ne,
+                        amp, shape,loc,scale):
+
+        sum= wgd_kingman(x, bin_size,num_genes,two_Ne) +  wgd_lognorm2(x,amp, shape,loc,scale)
+        return sum
+
+def wgd_kingman(x, bin_size,num_genes,two_Ne):
+        return (bin_size * num_genes / two_Ne) * math.e ** ((-1 * x) / two_Ne)
+
 def wgd_travelling_exponential(x, amp, loc_of_maximum, ks_for_one_generation,K):
 
     #note, to be more like the Kingman, we could modify this to
