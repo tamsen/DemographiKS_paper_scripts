@@ -36,13 +36,15 @@ class MyTestCase(unittest.TestCase):
         loc = 0.01 #predic loc=0 when the mean is over the scale value.
         amp= 1.0  #0.5*num_genes*two_Ne*bin_size
         p0 = [amp,shape,loc,scale]
+        lognorm_fit_range=[0.001,0.2]
         real_ks_results = ks_parsers.parse_external_ksfile(real_full_path)
 
         if not os.path.exists(hist_comparison_out_folder):
             os.makedirs(hist_comparison_out_folder)
 
         out_png1 = os.path.join(hist_comparison_out_folder, "real_" + species_run_name + "_out.png")
-        make_simple_histogram(real_ks_results, p0,species_run_name, bin_size, color, wgd_ks,
+        make_simple_histogram(real_ks_results, p0,lognorm_fit_range,
+                              species_run_name, bin_size, color, wgd_ks,
                                            max_Ks, density, out_png1)
 
     def test_poplar_histogram(self):
@@ -65,9 +67,10 @@ class MyTestCase(unittest.TestCase):
         loc = 0.02 #predic loc=0 when the mean is over the scale value.
         amp= 200  #0.5*num_genes*two_Ne*bin_size
         p0 = [amp,shape,loc,scale]
-
+        lognorm_fit_range=[0.12,max_Ks]
         out_png1 = os.path.join(hist_comparison_out_folder, "real_" + species_run_name + "_out.png")
-        make_simple_histogram(real_ks_results, p0,species_run_name, bin_size, color, wgd_ks,
+        make_simple_histogram(real_ks_results, p0,lognorm_fit_range,
+                              species_run_name, bin_size, color, wgd_ks,
                                            max_Ks, density, out_png1)
 
     def test_maize_histogram(self):
@@ -85,17 +88,20 @@ class MyTestCase(unittest.TestCase):
         wgd_ks=0.13
         density = False
 
-        shape=0.5 #sigma
-        scale = 0.02#two_Ne#going from scale 1 to 2 halves the height and makes it twice as wide
-        loc = 0.15 #predic loc=0 when the mean is over the scale value.
-        amp= 20  #0.5*num_genes*two_Ne*bin_size
+        shape=1.8 #sigma
+        scale = 0.16#two_Ne#going from scale 1 to 2 halves the height and makes it twice as wide
+        loc = 0.05 #predic loc=0 when the mean is over the scale value.
+        amp= 300  #0.5*num_genes*two_Ne*bin_size
+        lognorm_fit_range=[0.10,max_Ks]
         p0 = [amp,shape,loc,scale]
 
         out_png1 = os.path.join(hist_comparison_out_folder, "real_" + species_run_name + "_out.png")
-        make_simple_histogram(real_ks_results, p0,species_run_name, bin_size, color, wgd_ks,
+        make_simple_histogram(real_ks_results, p0,lognorm_fit_range,
+                              species_run_name, bin_size, color, wgd_ks,
                                            max_Ks, density, out_png1)
 
-def make_simple_histogram(Ks_results, p0, species_name, bin_size, color,WGD_ks, max_Ks, density, out_png):
+def make_simple_histogram(Ks_results, p0, lognorm_fit_range,
+                          species_name, bin_size, color,WGD_ks, max_Ks, density, out_png):
 
     # MBE says: 600 - 1200 dpi for line drawings
     # and 350 dpi for color and half-tone artwork)
@@ -110,8 +116,16 @@ def make_simple_histogram(Ks_results, p0, species_name, bin_size, color,WGD_ks, 
         plt.xlim([0, max_Ks * (1.1)])
 
     bins_centers = [0.5 * (bins[i] + bins[i + 1]) for i in range(0, len(bins) - 1)]
+    fit_xs=[]
+    fit_ys=[]
+    for i in range(0,len(bins_centers)):
+        x_value=bins_centers[i]
+        if x_value >= lognorm_fit_range[0]:
+            if x_value < lognorm_fit_range[1]:
+                fit_xs.append(x_value )
+                fit_ys.append(hist_ys[i])
     fit_curve_ys_ln2, xs_for_wgd, popt = \
-        curve_fitting.fit_curve_to_xs_and_ys(bins_centers, hist_ys, curve_fitting.wgd_lognorm2, p0=p0)
+        curve_fitting.fit_curve_to_xs_and_ys(fit_xs,fit_ys, curve_fitting.wgd_lognorm2, p0=p0)
 
     if fit_curve_ys_ln2:
         popt_in_sci_notation = ["{:.2E}".format(p) for p in popt]
