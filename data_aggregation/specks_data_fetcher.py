@@ -20,7 +20,7 @@ class MySPXDataFetcher(unittest.TestCase):
         #TE5_run_list = ['specks_TE1000_m01d13y2025_h13m17s53',
         #                'specks_TE100_m01d13y2025_h13m17s56','specks_TE10_m01d13y2025_h13m18s28',
         #                'specks_TE5000_m01d13y2025_h13m18s40']
-        TE5_run_list = ["specks_TE08_m01d14y2025_h09m50s16"]
+        TE5_run_list = ["SpecKS_KSvsRC0_m03d04y2025_h10m31s51"]
             #"specks_TE05_m01d14y2025_h09m50s16" ,
         #"specks_TE07_m01d14y2025_h09m50s16",
         #"specks_TE08_m01d14y2025_h09m50s16" ,
@@ -42,7 +42,7 @@ class MySPXDataFetcher(unittest.TestCase):
 
     def pull_down_run_data(self, local_output_folder, me_at_remote_URL, output_root_folder, run_name):
 
-        demographics_folder=run_name + "/*TE*"
+        demographics_folder=run_name# + "/*TE*"
 
         if not os.path.exists(local_output_folder):
             os.makedirs(local_output_folder)

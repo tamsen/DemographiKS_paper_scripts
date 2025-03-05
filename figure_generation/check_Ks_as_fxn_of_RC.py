@@ -13,7 +13,7 @@ class TestKsByNe(unittest.TestCase):
         demographics_run_list = [False, 'KSvsRC6_m01d25y2025_h13m19s03',
                                  'KSvsRC7_m01d25y2025_h13m14s32', 'KSvsRC8_m01d25y2025_h13m13s04',
          'KSvsRC9_m01d25y2025_h13m09s54','KSvsRC10_m01d24y2025_h10m40s24_Ne_10_000']
-        specks_TE5_run_list = [False,False,False,False,False,False,False]
+        specks_TE5_run_list = [False,False,False,False,False, False]
 
         bin_sizes_Tc = [2000 for f in demographics_run_list]
         bin_sizes_Ks = [0.01 for f in demographics_run_list]
@@ -38,7 +38,7 @@ class TestKsByNe(unittest.TestCase):
 
     def test_Ks_for_varying_RC_1KNe(self):
         demographiKS_out_path = '/home/tamsen/Data/DemographiKS_output_from_mesx/KS_vs_RC/save_Ne_1K'
-        specks_out_path = '/home/tamsen/Data/Specks_output_from_mesx'
+        specks_out_path = '/home/tamsen/Data/DemographiKS_output_from_mesx/KS_vs_RC/save_Ne_1K'
 
 
         #full, w/Ne1000
@@ -50,13 +50,14 @@ class TestKsByNe(unittest.TestCase):
 
         #ks_hist_by_Ks_for_varying_varying_RC_test_Ne1000_long_burnin_save_for_paper.png
         demographics_run_list = [False, 'KSvsRC6_m01d21y2025_h20m06s34','KSvsRC7_m01d21y2025_h12m16s26',
-                                 'KSvsRC8_m01d23y2025_h10m39s34']
+                                 'KSvsRC8_m01d23y2025_h10m39s34','KSvsRC9moreBI_m03d03y2025_h14m27s22',
+                                 'KSvsRC10_m01d24y2025_h10m40s24']
         #these ones Tc sucks and need to be re-run with more burnin
         #                         #,'KSvsRC9_m01d24y2025_h08m51s36',
         #                         #'KSvsRC10_m01d24y2025_h09m16s53','KSvsRC11_m01d23y2025_h11m04s33']
 
 
-        specks_TE5_run_list = [False,False,False,False,False,False,False]
+        specks_TE5_run_list = [False,False,False,False,False,'SpecKS_KSvsRC0',False]
 
         bin_sizes_Tc = [200, 200, 200, 200, 200, 200, 200]
         bin_sizes_Ks = [0.002, 0.002, 0.002,0.002, 0.002, 0.002, 0.002]
