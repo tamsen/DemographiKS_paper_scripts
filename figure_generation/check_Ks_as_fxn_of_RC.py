@@ -55,18 +55,25 @@ class TestKsByNe(unittest.TestCase):
         #these ones Tc sucks and need to be re-run with more burnin
         #                         #,'KSvsRC9_m01d24y2025_h08m51s36',
         #                         #'KSvsRC10_m01d24y2025_h09m16s53','KSvsRC11_m01d23y2025_h11m04s33']
+        specks_TE5_run_list = [False, False, False, False, False, 'SpecKS_KSvsRC0', False]
 
+        run_list_name = "Ks_for_varying_varying_RC_At_like"
+        demographics_run_list = [False,
+                                 'KSvsRC7_At1_m03d04y2025_h13m14s10',
+                                    'KSvsRC8_At1_m03d04y2025_h13m14s13',
+                                     'KSvsRC9_At1_m03d04y2025_h13m14s16']
+        specks_TE5_run_list = [False, False, False, False, False]
 
-        specks_TE5_run_list = [False,False,False,False,False,'SpecKS_KSvsRC0',False]
-
-        bin_sizes_Tc = [200, 200, 200, 200, 200, 200, 200]
-        bin_sizes_Ks = [0.002, 0.002, 0.002,0.002, 0.002, 0.002, 0.002]
-        xmax_Ks = [0.2 for f in demographics_run_list] #[0.025, 0.025, 0.025, 0.025, 0.025]  # 0.001  # max(demographiKS_ks_results)
-        xmax_Tc = [15000 for f in demographics_run_list]
-        ymax_KS = [160 for f in demographics_run_list]
-        ymax_Tc = [100 for f in demographics_run_list]
-
-        run_list_name = "Ks_for_varying_varying_RC"
+        #bin_sizes_Tc = [200, 200, 200, 200, 200, 200, 200]
+        #bin_sizes_Ks = [0.002, 0.002, 0.002,0.002, 0.002, 0.002, 0.002]
+        xmax_Ks = [0.1 for f in demographics_run_list] #[0.025, 0.025, 0.025, 0.025, 0.025]  # 0.001  # max(demographiKS_ks_results)
+        bin_sizes_Ks = [xmax_Ks_i / 100.0 for xmax_Ks_i in xmax_Ks]
+        xmax_Tc = [50000 for f in demographics_run_list]
+        #ymax_KS = [160 for f in demographics_run_list]
+        ymax_KS = [100 for f in demographics_run_list]
+        #ymax_Tc = [100 for f in demographics_run_list]
+        ymax_Tc = [60 for f in demographics_run_list]
+        bin_sizes_Tc = [xmax_Tc_i / 100.0 for xmax_Tc_i in xmax_Tc]
         # since mutation rate is 1.0e-5
         # we multiply by 1/1.2 since thats syn / total mut rate
 

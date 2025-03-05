@@ -345,8 +345,8 @@ def plot_ks(this_ax, config_used, slim_ks_by_gene, spx_ks_by_gene,
     #              for b in bins_centers
     #              if b >= config_used.t_div_as_ks]
 
-
-    this_ax.plot(xs_for_wgd,fit_curve_ys_ln2,color='g', label="Ks logfit")
+    if fit_curve_ys_ln2:
+        this_ax.plot(xs_for_wgd,fit_curve_ys_ln2,color='g', label="Ks logfit")
 
     #mean_Ks_from_Nb_string=  "({:.2E})".format(config_used.mean_Ks_from_Nb)
     #this_ax.axvline(x=config_used.mean_Ks_from_Nb,
