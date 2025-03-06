@@ -183,10 +183,10 @@ def make_Tc_Ks_Allo_vs_Auto_fig_with_subplots(bin_sizes_Ks, bin_sizes_Tc,
                              auto_config_used, auto_ks_results,
                 plot_title, bin_sizes_Ks[1][i], xmax_Ks[1][i], ymax_Ks[1][i], show_KS_predictions)
 
-        allo_Tc_csv_file = os.path.join(allo_run_path, "simulated_ancestral_gene_mrcas.csv")
+        allo_Tc_csv_file = os.path.join(allo_run_path, "1_10_simulated_ancestral_gene_mrcas.csv")
         loci, allo_mrcas_by_gene = read_data_csv(allo_Tc_csv_file)
 
-        auto_Tc_csv_file = os.path.join(auto_run_path, "simulated_ancestral_gene_mrcas.csv")
+        auto_Tc_csv_file = os.path.join(auto_run_path, "1_10_simulated_ancestral_gene_mrcas.csv")
         loci, auto_mrcas_by_gene = read_data_csv(auto_Tc_csv_file)
 
         plot_title = "Tcoal at Tdiv\nburnin time=" + str(allo_config_used.burnin_time) + " gen, " \

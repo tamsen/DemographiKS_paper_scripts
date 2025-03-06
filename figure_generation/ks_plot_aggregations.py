@@ -229,11 +229,15 @@ def make_Tc_Ks_fig_with_subplots(bin_sizes_Ks, bin_sizes_Tc,
         plot_ks(ax[0, i], config_used, demographiKS_ks_results, spx_ks_results,
                 plot_title, bin_sizes_Ks[i], xmax_Ks[i], ymax_Ks[i], show_KS_predictions)
 
-        slim_csv_file = os.path.join(dgx_run_path, "simulated_ancestral_gene_mrcas.csv")
-        loci, slim_mrcas_by_gene = read_data_csv(slim_csv_file)
+        slim_csv_file_0 = os.path.join(dgx_run_path, "simulated_ancestral_gene_mrcas.csv")
+        if os.path.exists(slim_csv_file_0):
+            loci, slim_mrcas_by_gene = read_data_csv(slim_csv_file_0)
+        else:
+            slim_csv_file_1 = os.path.join(dgx_run_path, "1_10_simulated_ancestral_gene_mrcas.csv")
+            loci, slim_mrcas_by_gene = read_data_csv(slim_csv_file_1)
 
-        theory_output_file = os.path.join(dgx_run_path, "theoretical_ancestral_gene_mrcas.csv")
-        loci, theory_mrcas_by_gene = read_data_csv(theory_output_file)
+        #theory_output_file = os.path.join(dgx_run_path, "theoretical_ancestral_gene_mrcas.csv")
+        #loci, theory_mrcas_by_gene = read_data_csv(theory_output_file)
         plot_title = "Tcoal at Tdiv\nburnin time=" + str(config_used.burnin_time) + " gen, " \
                      + "Na=" + str(config_used.ancestral_Ne)
 

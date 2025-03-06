@@ -5,6 +5,44 @@ from figure_generation.ks_plot_aggregations import make_Tc_Ks_fig_with_subplots
 
 class TestKsByNe(unittest.TestCase):
 
+    def test_Ks_for_varying_RC_1KNe_At_like(self):
+        demographiKS_out_path = '/home/tamsen/Data/DemographiKS_output_from_mesx/KS_vs_RC/save_Ne_1K'
+        specks_out_path = '/home/tamsen/Data/DemographiKS_output_from_mesx/KS_vs_RC/save_Ne_1K'
+
+        run_list_name = "Ks_for_varying_varying_RC_At_like"
+        demographics_run_list = [False,
+                                 'KSvsRC7_At2_m03d05y2025_h12m12s14',
+                                  'KSvsRC8_At2_m03d05y2025_h10m52s14',
+                                 'KSvsRC9_At2_m03d05y2025_h14m03s28',
+                                 'KSvsRC10_At2_m03d05y2025_h13m48s18'
+                                 ]
+
+        specks_TE5_run_list = [False, False, False, False, False]
+
+        #bin_sizes_Tc = [200, 200, 200, 200, 200, 200, 200]
+        #bin_sizes_Ks = [0.002, 0.002, 0.002,0.002, 0.002, 0.002, 0.002]
+        xmax_Ks = [0.02 for f in demographics_run_list] #[0.025, 0.025, 0.025, 0.025, 0.025]  # 0.001  # max(demographiKS_ks_results)
+        bin_sizes_Ks = [xmax_Ks_i / 40.0 for xmax_Ks_i in xmax_Ks]
+        xmax_Tc = [10000 for f in demographics_run_list]
+        #ymax_KS = [160 for f in demographics_run_list]
+        ymax_KS = [150 for f in demographics_run_list]
+        #ymax_Tc = [100 for f in demographics_run_list]
+        ymax_Tc = [150 for f in demographics_run_list]
+        bin_sizes_Tc = [xmax_Tc_i / 40.0 for xmax_Tc_i in xmax_Tc]
+        # since mutation rate is 1.0e-5
+        # we multiply by 1/1.2 since thats syn / total mut rate
+
+        show_KS_predictions = [False, False, False]
+        suptitle = "SLiM and SpecKS Ks histograms\n"
+        make_Tc_Ks_fig_with_subplots(bin_sizes_Ks, bin_sizes_Tc,
+                                     demographiKS_out_path, demographics_run_list, run_list_name,
+                                     specks_TE5_run_list, specks_out_path,
+                                     xmax_Ks, xmax_Tc, ymax_KS, ymax_Tc,
+                                     suptitle, show_KS_predictions)
+
+        self.assertEqual(True, True)  # add assertion here
+
+
     def test_Ks_for_varying_RC_10K_Ne(self):
         demographiKS_out_path = '/home/tamsen/Data/DemographiKS_output_from_mesx/KS_vs_RC/save_Ne_10K'
         specks_out_path = '/home/tamsen/Data/Specks_output_from_mesx'
@@ -59,21 +97,24 @@ class TestKsByNe(unittest.TestCase):
 
         run_list_name = "Ks_for_varying_varying_RC_At_like"
         demographics_run_list = [False,
-                                 'KSvsRC7_At1_m03d04y2025_h13m14s10',
-                                    'KSvsRC8_At1_m03d04y2025_h13m14s13',
-                                     'KSvsRC9_At1_m03d04y2025_h13m14s16']
+                                 'KSvsRC7_At2_m03d05y2025_h10m52s10',
+                                  'KSvsRC8_At2_m03d05y2025_h10m52s14',
+                                  'KSvsRC9_At2_m03d05y2025_h10m52s17',
+                                  'KSvsRC10_At2_m03d05y2025_h10m52s20'
+                                 ]
+
         specks_TE5_run_list = [False, False, False, False, False]
 
         #bin_sizes_Tc = [200, 200, 200, 200, 200, 200, 200]
         #bin_sizes_Ks = [0.002, 0.002, 0.002,0.002, 0.002, 0.002, 0.002]
-        xmax_Ks = [0.1 for f in demographics_run_list] #[0.025, 0.025, 0.025, 0.025, 0.025]  # 0.001  # max(demographiKS_ks_results)
-        bin_sizes_Ks = [xmax_Ks_i / 100.0 for xmax_Ks_i in xmax_Ks]
+        xmax_Ks = [0.02 for f in demographics_run_list] #[0.025, 0.025, 0.025, 0.025, 0.025]  # 0.001  # max(demographiKS_ks_results)
+        bin_sizes_Ks = [xmax_Ks_i / 50.0 for xmax_Ks_i in xmax_Ks]
         xmax_Tc = [50000 for f in demographics_run_list]
         #ymax_KS = [160 for f in demographics_run_list]
-        ymax_KS = [100 for f in demographics_run_list]
+        ymax_KS = [200 for f in demographics_run_list]
         #ymax_Tc = [100 for f in demographics_run_list]
-        ymax_Tc = [60 for f in demographics_run_list]
-        bin_sizes_Tc = [xmax_Tc_i / 100.0 for xmax_Tc_i in xmax_Tc]
+        ymax_Tc = [200 for f in demographics_run_list]
+        bin_sizes_Tc = [xmax_Tc_i / 50.0 for xmax_Tc_i in xmax_Tc]
         # since mutation rate is 1.0e-5
         # we multiply by 1/1.2 since thats syn / total mut rate
 
