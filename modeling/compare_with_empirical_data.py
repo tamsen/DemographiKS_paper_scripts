@@ -32,7 +32,7 @@ class MyTestCase(unittest.TestCase):
         max_Ks=0.2
         color='blue'
         wgd_ks=0.015
-        density = False
+        density = True
 
         shape=0.5 #sigma
         scale = 0.02#two_Ne#going from scale 1 to 2 halves the height and makes it twice as wide
@@ -62,11 +62,11 @@ class MyTestCase(unittest.TestCase):
         real_full_path = os.path.join(ksrates_out_folder, ksrates_csv_file)
         real_ks_results = ks_parsers.parse_external_ksfile(real_full_path)
 
-        bin_size = 0.005
+        bin_size = 0.002
         max_Ks = 0.5
         color = 'blue'
         wgd_ks=0.21
-        density = False
+        density  = True
 
         shape=0.5 #sigma
         scale = 0.5#two_Ne#going from scale 1 to 2 halves the height and makes it twice as wide
@@ -75,9 +75,12 @@ class MyTestCase(unittest.TestCase):
         p0 = [amp,shape,loc,scale]
         lognorm_fit_range=[0.12,max_Ks]
         out_png1 = os.path.join(hist_comparison_out_folder, "real_" + species_run_name + "_out.png")
-        make_simple_histogram(real_ks_results, p0,lognorm_fit_range,
+        list_of_hist_data= make_simple_histogram(real_ks_results, p0,lognorm_fit_range,
                               species_run_name, bin_size, color, wgd_ks,
                                            max_Ks, density, out_png1)
+
+        out_png2 = os.path.join(hist_comparison_out_folder, "real_" + species_run_name + "_overlay.png")
+        overlay_differences_in_curves(species_run_name, list_of_hist_data, wgd_ks, out_png2)
 
     def test_maize_histogram(self):
 
@@ -88,11 +91,11 @@ class MyTestCase(unittest.TestCase):
         real_full_path=os.path.join(ksrates_out_folder,ksrates_csv_file)
         real_ks_results = ks_parsers.parse_external_ksfile(real_full_path)
 
-        bin_size=0.005
+        bin_size=0.002
         max_Ks=0.3
         color='blue'
         wgd_ks=0.13
-        density = False
+        density = True
 
         shape=1.8 #sigma
         scale = 0.16#two_Ne#going from scale 1 to 2 halves the height and makes it twice as wide
@@ -102,9 +105,13 @@ class MyTestCase(unittest.TestCase):
         p0 = [amp,shape,loc,scale]
 
         out_png1 = os.path.join(hist_comparison_out_folder, "real_" + species_run_name + "_out.png")
-        make_simple_histogram(real_ks_results, p0,lognorm_fit_range,
+        list_of_hist_data= make_simple_histogram(real_ks_results, p0,lognorm_fit_range,
                               species_run_name, bin_size, color, wgd_ks,
                                            max_Ks, density, out_png1)
+
+        out_png2 = os.path.join(hist_comparison_out_folder, "real_" + species_run_name + "_overlay.png")
+        overlay_differences_in_curves(species_run_name, list_of_hist_data, wgd_ks, out_png2)
+
 
 def make_simple_histogram(Ks_results, p0, lognorm_fit_range,
                           species_name, bin_size, color,WGD_ks, max_Ks, density, out_png):
@@ -148,6 +155,11 @@ def make_simple_histogram(Ks_results, p0, lognorm_fit_range,
         plot_label = "fit popt:" + ",".join(popt_in_sci_notation)
         plt.plot(xs_for_wgd, fit_curve_ys_ln2, color='g', alpha=0.95, label=plot_label,linestyle=":")
 
+        full_exp_ys = [curve_fitting.wgd_lognorm2(x, *popt_wgd) for x in bins]
+        portion_wgd_genes = bin_size * sum(full_exp_ys)
+        plot_label_3 = "wgd genes: " + "{:.2E}".format(portion_wgd_genes)
+        plt.plot(bins, full_exp_ys, color='g', alpha=0.95, label=plot_label_3, linestyle="-")
+
     #fit exp
     #wgd_kingman(x, bin_size, num_genes, two_Ne)
     p0=[bin_size,len(Ks_results),100]
@@ -158,7 +170,11 @@ def make_simple_histogram(Ks_results, p0, lognorm_fit_range,
     if fit_exp:
         popt_in_sci_notation = ["{:.2E}".format(p) for p in popt_exp]
         plot_label = "fit popt:" + ",".join(popt_in_sci_notation)
-        plt.plot(fit_exp_xs, fit_exp, color='y', alpha=0.95, label=plot_label,linestyle=":")
+        full_exp_ys = [curve_fitting.wgd_kingman(x, *popt_exp) for x in bins]
+        #plt.plot(fit_exp_xs, fit_exp, color='y', alpha=0.95, label=plot_label,linestyle=":")
+        portion_exp_genes=bin_size*sum(full_exp_ys)
+        plot_label_2 = "exp genes: " + "{:.2E}".format(portion_exp_genes)
+        plt.plot(bins, full_exp_ys, color='r', alpha=0.95, label=plot_label_2,linestyle="-")
 
     #fit exp and wgd together:
     fit_both=False
@@ -181,69 +197,32 @@ def make_simple_histogram(Ks_results, p0, lognorm_fit_range,
         plt.plot(bins_centers, fit_curve_ys, color='k', alpha=0.95, label=plot_label, linestyle="-")
         hist_data2 = [fit_curve_ys, bins]
 
-    plt.axvline(x=WGD_ks, color='b', linestyle='-', label="WGD paralog start")
+
+    if not fit_both:
+        percent_homeologous_exchange = 100*(1 -portion_wgd_genes )
+    else:
+        percent_homeologous_exchange=portion_exp_genes*100
+
+    phex_str =  round(percent_homeologous_exchange,2)
+
+    #plt.axvline(x=WGD_ks, color='b', linestyle='-', label="WGD paralog start")
     num_pairs=sum(hist_ys)
     num_after_wgd=sum([hist_ys[i] for i in range(0,len(hist_ys)) if bins[i] > WGD_ks])
     plt.legend()
     plt.xlabel("Ks")
     plt.ylabel("Count in Bin")
-    plt.title("Ks histogram for {0}.\n{1} pairs of genes. ~{2} retained from WGD.".format(
-        species_name,num_pairs,num_after_wgd))
+    plt.title("Ks histogram for {0}.\n{1}% estimated homeologous exchange.".format(
+        species_name,phex_str))
     plt.savefig(out_png)
     plt.clf()
     plt.close()
 
     return [hist_ys_1,hist_data2]
 
-def overlay_histogram(species_for_plot_title, list_of_hist_data, WGD_ks,out_png):
-
-    colors = ['blue','green']
-    labels = ['SpecKS','truth']
-
-    fig = plt.figure(dpi=MyTestCase.MBE_dpi)
-    ax1 = plt.subplot2grid((4, 1), (0, 0), rowspan=3)
-    ax2 = plt.subplot2grid((4, 1), (3, 0), rowspan=1)
-
-    for i in range(0,len(list_of_hist_data)):
-        hist_data =list_of_hist_data[i]
-        [n, bins]=hist_data
-        width=(bins[2]-bins[1])/2
-        xs=[b + i*width for b in bins[0:len(bins)-1]]
-        ax1.bar(xs,n,width=width,
-                color=colors[i], alpha=1, label=labels[i])
-    #ax[0].axvline(x=WGD_ks, color='b', linestyle='-', label="WGD paralog start")
-    diffs = [(list_of_hist_data[0][0][j]-list_of_hist_data[1][0][j]) for j in range(0,len(list_of_hist_data[1][0]))]
-    rmse=math.sqrt(sum([d*d for d in diffs])/len(diffs))
-    ax2.bar(xs, diffs , width=width,
-            color='orange', alpha=1, label="error\nrmse={0}".format(round(rmse,3)))
-
-
-    print(species_for_plot_title)
-    num_pairs = sum(n)
-    num_after_wgd = sum([n[i] for i in range(0, len(n)) if bins[i] > WGD_ks])
-    ax1.legend()
-    ax2.legend()
-    plt.xlabel("Ks")
-    ax2.set(ylabel="Error")
-    ax1.set(ylabel="Density")
-    ax1.set(xlim=[0,0.1])
-    ax2.set(xlim=[0,0.1])
-    #ax1.set(title ='Ks histogram for ' +  species_for_plot_title)
-    #ax1.set(title ='$\Gamma + \mathit{\Gamma}$')
-    #\n{1} pairs of genes. ~{2} retained from WGD.".format(
-    #    species_name, num_pairs, num_after_wgd))
-    fig.suptitle(species_for_plot_title, style='italic')
-    plt.tight_layout()
-    plt.savefig(out_png)
-    plt.clf()
-    plt.close()
-
-    return n, bins
-
 def overlay_differences_in_curves(species_for_plot_title, list_of_hist_data, WGD_ks,out_png):
 
-    colors = ['blue','green','brown']
-    labels = ['SpecKS','truth']
+    colors = ['green','blue','brown']
+    labels = ['truth','model fit']
 
 
     fig, ax = plt.subplots(1, 1, figsize=(5, 5))
