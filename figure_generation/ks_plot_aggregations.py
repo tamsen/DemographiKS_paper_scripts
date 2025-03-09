@@ -313,7 +313,9 @@ def plot_ks(this_ax, config_used, slim_ks_by_gene, spx_ks_by_gene,
                      density=False)
 
     half_bin_size=0.5*bin_size
-    this_ax.axvline(x=half_bin_size+config_used.t_div_as_ks, color='b', linestyle='-.', label="input Tdiv as Ks")
+    if config_used.t_div_as_ks:
+        this_ax.axvline(x=half_bin_size+config_used.t_div_as_ks, color='b', linestyle='-.', label="input Tdiv as Ks")
+
     theoretical_ks_mean_now=config_used.mean_Ks_from_Tc+config_used.t_div_as_ks
     this_ax.axvline(x=half_bin_size+theoretical_ks_mean_now, color='r', linestyle='--', label="Expected Ks mean")
 

@@ -49,11 +49,14 @@ class TestKsByNe(unittest.TestCase):
 
         run_list_name = "Ks_for_varying_varying_RC_At_like"
         demographics_run_list = [False,
+                                 'KSvsRC10_At10K_m03d07y2025_h15m56s54',
                                  'KSvsRC8_At10K_m03d07y2025_h14m10s14',
-                                 'KSvsRC10_At10K_m03d07y2025_h14m10s11',
+                                 'KSvsRC7_At10K_m03d08y2025_h08m32s59',
+                                 'KSvsRC6_At10K_m03d07y2025_h15m56s07',
                                  ]
 
-        specks_TE5_run_list = [False, False, False, False, False]
+        specks_TE5_run_list = [False, 'SpecKS_KSvsRC0_at_m03d08y2025_h15m59s40',
+                               False, False, False]
 
         #bin_sizes_Tc = [200, 200, 200, 200, 200, 200, 200]
         #bin_sizes_Ks = [0.002, 0.002, 0.002,0.002, 0.002, 0.002, 0.002]
@@ -61,7 +64,7 @@ class TestKsByNe(unittest.TestCase):
         bin_sizes_Ks = [xmax_Ks_i / 40.0 for xmax_Ks_i in xmax_Ks]
         xmax_Tc = [80000 for f in demographics_run_list]
         #ymax_KS = [160 for f in demographics_run_list]
-        ymax_KS = [150 for f in demographics_run_list]
+        ymax_KS = [250 for f in demographics_run_list]
         #ymax_Tc = [100 for f in demographics_run_list]
         ymax_Tc = [100 for f in demographics_run_list]
         bin_sizes_Tc = [xmax_Tc_i / 40.0 for xmax_Tc_i in xmax_Tc]
