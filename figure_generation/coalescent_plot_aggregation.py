@@ -82,7 +82,7 @@ def read_data_csv(csv_file):
 
 
 def plot_mrca(this_ax, slim_mrcas_by_gene, specks_mrcas_by_gene, theoretical_mrcas_by_gene,
-              title, Ne, bin_size, xmax, ymax, total_num_genes):
+              title, Ne, bin_size, xmax, ymax, total_num_genes, include_annotations):
 
     #fig = plt.figure(figsize=(10, 10), dpi=350
     #Co.T=(1/2N)*e^-((t-1)/2N))
@@ -113,24 +113,33 @@ def plot_mrca(this_ax, slim_mrcas_by_gene, specks_mrcas_by_gene, theoretical_mrc
 
 
     if slim_mrcas_by_gene:
+
+        if include_annotations:
+            my_label = 'DemographiKS Tcoal by gene\n'\
+                                + "(" +str(num_slim_genes) + " genes in genome,\n"\
+                                 +"avg Tc " +str(int(avg_simulated_slim_Tc)) + " generations)"
+        else:
+            my_label = 'DemographiKS Tcoal by gene'
+
         this_ax.hist(slim_mrcas_by_gene, bins=bins, facecolor='b', alpha=0.25,
-                                label='DemographiKS Tcoal by gene\n'
-                                + "(" +str(num_slim_genes) + " genes in genome,\n"
-                                 +"avg Tc " +str(int(avg_simulated_slim_Tc)) + " generations)",
+                                label=my_label,
                                 density=False)
-    #label = 'SLiM Tcoal by gene (total: ' + str(num_genes) + ')',
 
     if specks_mrcas_by_gene:
         num_specks_genes = len(specks_mrcas_by_gene)
         #note specks results are in millions of years,
         # so we have to convert millions of years to just years.
         million_years_to_years=10**6
+        if include_annotations:
+            my_label='SpecKS Tcoal by gene\n' \
+                                + "(" +str(num_specks_genes) + " genes in genome),\n"\
+                                +"avg Tc " +str(int(avg_simulated_specKS_Tc_in_years)) + " generations)"
+        else:
+            my_label = 'SpecKS Tcoal by gene'
         specks_mrcas_by_gene_in_YRs = [m * million_years_to_years for m in specks_mrcas_by_gene]
+
         this_ax.hist(specks_mrcas_by_gene_in_YRs, bins=bins, facecolor='c', alpha=0.25,
-                                label='SpecKS Tcoal by gene\n'
-                                + "(" +str(num_specks_genes) + " genes in genome),\n"
-                                +"avg Tc " +str(int(avg_simulated_specKS_Tc_in_years)) + " generations)",
-                 density=False)
+                                label=my_label,density=False)
     
     if theoretical_mrcas_by_gene:
         num_theory_genes = len(theoretical_mrcas_by_gene)
@@ -141,8 +150,9 @@ def plot_mrca(this_ax, slim_mrcas_by_gene, specks_mrcas_by_gene, theoretical_mrc
                                  +"avg Tc " +str(int(avg_theory_Tc)) + " generations)",
                  density=False)
 
+
     this_ax.plot(bins,kingman,c='red', label='Expectations under Kingman,\n'
-                                +"avg Tc " +str(int(two_Ne)) + " generations)")
+                                +"exp. avg Tc " +str(int(two_Ne)) + " generations)")
 
     if ymax:
         this_ax.set(ylim=[0, ymax])

@@ -163,9 +163,9 @@ def make_Tc_Ks_fig_with_subplots(bin_sizes_Ks, bin_sizes_Tc,
                                  demographiKS_out_path, demographics_TE9_run_list, run_list_name,
                                  specks_TE9_run_list, specks_out_path,
                                  xmax_Ks, xmax_Tc, ymax_Ks, ymax_Tc,
-                                 suptitle, show_KS_predictions):
+                                 suptitle, show_KS_predictions,include_annotation):
 
-    include_annotation=False
+    dpi_req=100 #keep it small for now
 
     num_runs = len(demographics_TE9_run_list)
     png_out = os.path.join(demographiKS_out_path, run_list_name)
@@ -176,7 +176,8 @@ def make_Tc_Ks_fig_with_subplots(bin_sizes_Ks, bin_sizes_Tc,
     png_with_migration_Tnow = os.path.join(image_folder, 'Migration_now.png')
     png_with_migration_Tdiv = os.path.join(image_folder, 'Migration_Tc.png')
 
-    fig, ax = plt.subplots(2, num_runs, figsize=(40, 20))
+    #fig, ax = plt.subplots(2, num_runs, figsize=(40, 20))
+    fig, ax = plt.subplots(2, num_runs, figsize=(20, 10))
     fig.suptitle(suptitle)
 
     for i in range(1, num_runs):
@@ -213,6 +214,7 @@ def make_Tc_Ks_fig_with_subplots(bin_sizes_Ks, bin_sizes_Tc,
             demographiKS_ks_results = []
             dgx_run_duration_in_m = 0
             plot_title = "Ks at Tnow"
+            dgx_version = "NA"
 
         spx_run_name = specks_TE9_run_list[i]
         if spx_run_name:
@@ -236,7 +238,9 @@ def make_Tc_Ks_fig_with_subplots(bin_sizes_Ks, bin_sizes_Tc,
 
 
         plot_ks(ax[0, i], config_used, demographiKS_ks_results, spx_ks_results,
-                plot_title, bin_sizes_Ks[i], xmax_Ks[i], ymax_Ks[i], show_KS_predictions)
+                plot_title, bin_sizes_Ks[i], xmax_Ks[i], ymax_Ks[i],
+                show_KS_predictions, include_annotation)
+
 
         if dgx_run_name:
             slim_csv_file_0 = os.path.join(dgx_run_path, "simulated_ancestral_gene_mrcas.csv")
@@ -259,10 +263,10 @@ def make_Tc_Ks_fig_with_subplots(bin_sizes_Ks, bin_sizes_Tc,
         theory_mrcas_by_gene=False
         avg_slim_Tc = plot_mrca(ax[1, i], slim_mrcas_by_gene, specks_mrcas_by_gene, theory_mrcas_by_gene,
                   plot_title, config_used.ancestral_Ne,
-                  bin_sizes_Tc[i], xmax_Tc[i], ymax_Tc[i], config_used.num_genes)
+                  bin_sizes_Tc[i], xmax_Tc[i], ymax_Tc[i], config_used.num_genes, include_annotation)
 
-    if include_annotation:
-        add_mrca_annotations(ax[1, i], config_used, avg_slim_Tc,
+        if include_annotation:
+            add_mrca_annotations(ax[1, i], config_used, avg_slim_Tc,
                              dgx_run_duration_in_m, spx_run_duration_in_m,
                              dgx_version,spx_version)
 
@@ -274,7 +278,7 @@ def make_Tc_Ks_fig_with_subplots(bin_sizes_Ks, bin_sizes_Tc,
     ax[0, 1].set(ylabel="# paralog pairs in bin")
     ax[1, 1].set(ylabel="# genes in bin")
     plt.tight_layout()
-    plt.savefig(png_out, dpi=550)
+    plt.savefig(png_out, dpi=dpi_req)
     plt.clf()
     plt.close()
 
@@ -307,7 +311,7 @@ def plot_expository_images(ax, png_Tdiv, png_Tnow):
 
 
 def plot_ks(this_ax, config_used, slim_ks_by_gene, spx_ks_by_gene,
-            title, bin_size, xmax, ymax, show_predictions):
+            title, bin_size, xmax, ymax, show_predictions, include_annotations):
 
     num_slim_genes = len(slim_ks_by_gene)
     num_specks_genes = len(spx_ks_by_gene)
@@ -317,15 +321,24 @@ def plot_ks(this_ax, config_used, slim_ks_by_gene, spx_ks_by_gene,
     bins = np.arange(0, xmax, bin_size)
 
     if len(slim_ks_by_gene) > 0:
+        if include_annotations:
+            my_label='SLiM Ks by gene'
+        else:
+            my_label='SLiM Ks by gene\n'\
+                           + "(" + str(num_slim_genes) + " paralogs in genome)"
         dgx_hist_ys, bins, patches = this_ax.hist(slim_ks_by_gene, bins=bins, facecolor='b', alpha=0.25,
-                     label='SLiM Ks by gene\n'
-                           + "(" + str(num_slim_genes) + " paralogs in genome)",
+                     label=my_label,
                      density=False)
 
     if len(spx_ks_by_gene) > 0:
+
+        if include_annotations:
+            my_label='SpecKS Ks by gene'
+        else:
+            my_label='SpecKS Ks by gene\n'\
+                           + "(" + str(num_specks_genes) + " paralogs in genome)"
         this_ax.hist(spx_ks_by_gene, bins=bins, facecolor='c', alpha=0.25,
-                     label='SpecKS Ks by gene\n'
-                           + "(" + str(num_specks_genes) + " paralogs in genome)",
+                     label=my_label,
                      density=False)
 
     half_bin_size=0.5*bin_size
@@ -336,13 +349,22 @@ def plot_ks(this_ax, config_used, slim_ks_by_gene, spx_ks_by_gene,
     this_ax.axvline(x=half_bin_size+theoretical_ks_mean_now, color='r', linestyle='--', label="Expected Ks mean")
 
     RC_rate_per_base_per_year=config_used.recombination_rate
-    exp_num_RC_per_base_since_DIV=RC_rate_per_base_per_year*config_used.DIV_time_Ge
+    exp_num_RC_per_base_since_DIV=RC_rate_per_base_per_year*theoretical_ks_mean_now/config_used.Ks_per_YR
     exp_num_RC_per_gene = exp_num_RC_per_base_since_DIV * config_used.gene_length_in_bases
-
+    exp_num_RC_per_gene_as_int = round(exp_num_RC_per_gene,4)
     max_x_exp_using_RC = config_used.t_div_as_ks + (config_used.mean_Ks_from_Tc * exp_num_RC_per_gene / (exp_num_RC_per_gene + 1))
-    this_ax.axvline(x=half_bin_size+max_x_exp_using_RC, color='g', linestyle='-',
-                    label="Predicted Ks peak by gene-avg-RC=" + str(exp_num_RC_per_gene))
 
+    this_ax.axvline(x=half_bin_size+max_x_exp_using_RC, color='g', linestyle=':',
+                    label="Predicted Ks peak for\nRC=" + str(exp_num_RC_per_gene_as_int))
+    print("predicted KS peak:\t" + str(half_bin_size+max_x_exp_using_RC))
+
+    if len(slim_ks_by_gene) > 0:
+        dgx_hist_ys_list=list(dgx_hist_ys)
+        max_value = max(dgx_hist_ys_list)
+        max_index = dgx_hist_ys_list.index(max_value)
+        max_x = bins[max_index]
+        print("true KS peak:\t" + str(max_x))
+        print("half_bin_size:\t" + str(half_bin_size))
 
     # a good start..
     if len(slim_ks_by_gene) > 0:
@@ -358,19 +380,6 @@ def plot_ks(this_ax, config_used, slim_ks_by_gene, spx_ks_by_gene,
         fit_curve_ys_ln2 = False
         dgx_hist_ys = False
 
-    #popt_in_sci_notation = ["{:.2E}".format(p) for p in popt]
-    #plot_label = "fit popt:" + ",".join(popt_in_sci_notation)
-    #ax[0].plot(xs_for_wgd, fit_curve_ys_ln2, color=color, alpha=0.95, label=
-    #str(num_RC) + "_" + plot_label,
-    #           linestyle=":")
-
-
-
-    #RC_once_on_centers = [0 for b in bins_centers if b <config_used.t_div_as_ks] \
-    #    +        [bin_size*wgd_lognorm2(b+config_used.t_div_as_ks, num_genes, shape, loc, scale)
-    #              for b in bins_centers
-    #              if b >= config_used.t_div_as_ks]
-
     if fit_curve_ys_ln2:
         this_ax.plot(xs_for_wgd,fit_curve_ys_ln2,color='g', label="Ks logfit")
 
@@ -385,7 +394,8 @@ def plot_ks(this_ax, config_used, slim_ks_by_gene, spx_ks_by_gene,
         this_ax.axvspan(mig_stop_as_Ks, mig_start_as_Ks, alpha=0.25, color='g')
 
     if len(slim_ks_by_gene) > 0:
-        add_Ks_annotations(this_ax, config_used, slim_ks_by_gene,dgx_hist_ys, bins, show_predictions)
+        if include_annotations:
+            add_Ks_annotations(this_ax, config_used, slim_ks_by_gene,dgx_hist_ys, bins, show_predictions)
 
     if ymax:
         this_ax.set(ylim=[0, ymax])

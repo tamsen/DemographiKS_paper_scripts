@@ -43,7 +43,7 @@ class TestKsByInb(unittest.TestCase):
                                      demographiKS_out_path, demographics_run_list, run_list_name,
                                      specks_TE5_run_list, demographiKS_out_path,
                                      xmax_Ks, xmax_Tc, ymax_KS, ymax_Tc,
-                                     suptitle, show_KS_predictions)
+                                     suptitle, show_KS_predictions, True)
 
         self.assertEqual(True, True)  # add assertion here
 

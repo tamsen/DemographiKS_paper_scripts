@@ -205,6 +205,35 @@ class TestModelEffectsOfCLT(unittest.TestCase):
 
         self.assertEqual(True, True)  # add assertion here
 
+
+    def test_plot_predicitons_vs_expectations(self):
+        output_folder = "/home/tamsen/Data/DemographiKS_output_from_mesx/KS_vs_RC"
+        png_out = os.path.join(output_folder, "Theoretical Ks Peak vs Simulated Ks Peak by RC.png")
+        fig = plt.figure(figsize=(4, 4), dpi=100)
+        label = "Theoretical Ks Peak vs Simulated Ks Peak by RC"
+        theory=[0,0.0050,0.0109,0.0127,0.0129]
+        simulation=[0,0,0.01,0.01,0.0125]
+        #, color = 'c'
+        bin_size=0.0025
+        for i in range(0,len(theory)):
+            print(simulation[i])
+            print(str(simulation[i]-theory[i]))
+            plt.scatter(simulation[i], theory[i], c='k')
+
+        plt.plot([0,0.013], [0,0.013], alpha=1,color='b')
+        plt.plot([0, 0.013], [0.0025,0.013+ 0.0025], alpha=1, color='gray')
+        plt.plot([0, 0.013], [-0.0025,0.013- 0.0025], alpha=1, color='gray')
+
+        plt.title(label)
+        #plt.legend()
+        #plt.ylim([0,1200])
+        plt.xlabel("DemographiKS Ks peak")
+        plt.ylabel("Modeled Ks peak")
+        plt.savefig(png_out)
+        plt.clf()
+        plt.close()
+        return
+
 def plot_composite_tc_2(list_of_simulated_data, p0, two_Ne, num_genes,bins,
                       data_labels, data_colors, png_out, csv_out):
 
@@ -360,6 +389,7 @@ def theoretical_coalescent(num_genes,N):
     xscale=2.0*N
     random_draws_from_distribution = expon.rvs(loc=loc, size=num_genes, scale=xscale)
     return random_draws_from_distribution
+
 
 if __name__ == '__main__':
     unittest.main()

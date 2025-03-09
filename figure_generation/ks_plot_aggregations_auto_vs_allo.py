@@ -137,6 +137,7 @@ def make_Tc_Ks_Allo_vs_Auto_fig_with_subplots(bin_sizes_Ks, bin_sizes_Tc,
             allo_run_path = os.path.join(allo_out_path, allo_run_name)
             print("dgx_run_path: " +allo_run_path )
             glob_results=glob.glob(allo_run_path + '/*.used.xml')
+            print(glob_results)
             allo_input_xml_file = glob_results[0]
             allo_config_used = config.DemographiKS_config(allo_input_xml_file)
             csv_file_name = allo_config_used.sim_name + '.csv'
@@ -193,11 +194,11 @@ def make_Tc_Ks_Allo_vs_Auto_fig_with_subplots(bin_sizes_Ks, bin_sizes_Tc,
                      + "Na=" + str(allo_config_used.ancestral_Ne)
 
         theory_mrcas_by_gene=False
-        avg_slim_Tc = plot_mrca_for_Autos_and_Allos(ax[2, i], allo_mrcas_by_gene, auto_mrcas_by_gene, theory_mrcas_by_gene,
+        avg_simulated_allo_Tc = plot_mrca_for_Autos_and_Allos(ax[2, i], allo_mrcas_by_gene, auto_mrcas_by_gene, theory_mrcas_by_gene,
                   plot_title, allo_config_used.ancestral_Ne,
                   bin_sizes_Tc[i], xmax_Tc[i], ymax_Tc[i], allo_config_used.num_genes)
 
-        add_mrca_annotations(ax[2, i], allo_config_used, avg_slim_Tc,
+        add_mrca_annotations_for_autos_and_allos(ax[2, i], allo_config_used, avg_simulated_allo_Tc,
                              allo_run_duration_in_m,
                              auto_run_duration_in_m,
                              allo_version, auto_version)
@@ -287,6 +288,32 @@ def plot_expository_allo_auto_images(ax, png_Tc, png_Tnow):
         ax[1, 0].set(title="ancestral Tc at T_div for allo and T_wgd for auto")
         for pos in ['right', 'top', 'bottom', 'left']:
             ax[1, 0].spines[pos].set_visible(False)
+
+
+def add_mrca_annotations_for_autos_and_allos(this_ax, allo_config_used,
+                                             avg_simulated_allo_Tc,
+                                             allo_run_duration_in_m, auto_run_duration_in_m,
+                                             allo_version, auto_version):
+    simulated_mean_Ks_from_Tc = avg_simulated_allo_Tc * allo_config_used.Ks_per_YR
+    Tc_info = 'mean Tc by Kingman = ' + \
+              str(2.0 * allo_config_used.ancestral_Ne)
+    ks_info = 'simulated mean Ks at Tdiv = ' + \
+              "{:.2E}".format(simulated_mean_Ks_from_Tc)
+    theoretical_mean_Ks_from_Tc = '2*Ne*Ks_per_YR = ' + str(allo_config_used.mean_Ks_from_Tc)
+    # "{:.2E}".format(2.0 * Ne * Ks_per_YR)self.mean_Ks_from_Tc
+    mut_info = 'simulated num mutations per gene = ' + \
+               "{:.2E}".format(simulated_mean_Ks_from_Tc * allo_config_used.gene_length_in_bases)
+
+    SLiM_run_time_info = ("allo run time: " + str(round(allo_run_duration_in_m, 2)) +
+                          " min, version " + allo_version)
+
+    SpecKS_run_time_info = ("auto run time: " + str(round(auto_run_duration_in_m, 2)) +
+                            " min, version " + auto_version)
+
+    annotation_txt = "\n".join([Tc_info, ks_info,
+                                theoretical_mean_Ks_from_Tc, mut_info, "\n",
+                                SLiM_run_time_info, SpecKS_run_time_info]) + "\n"
+    this_ax.annotate(annotation_txt, (0, 0), (0, -60), xycoords='axes fraction', textcoords='offset points', va='top')
 
 
 if __name__ == '__main__':

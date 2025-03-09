@@ -74,12 +74,13 @@ class TestKsByNe(unittest.TestCase):
         # we multiply by 1/1.2 since thats syn / total mut rate
 
         show_KS_predictions = [False, False, False]
+        show_Annotations = True
         suptitle = "DemographiKS and SpecKS Ks histograms\n"
         make_Tc_Ks_fig_with_subplots(bin_sizes_Ks, bin_sizes_Tc,
                                      demographiKS_out_path, demographics_run_list, run_list_name,
                                      specks_TE5_run_list, specks_out_path,
                                      xmax_Ks, xmax_Tc, ymax_KS, ymax_Tc,
-                                     suptitle, show_KS_predictions)
+                                     suptitle, show_KS_predictions,show_Annotations  )
 
         self.assertEqual(True, True)  # add assertion here
 

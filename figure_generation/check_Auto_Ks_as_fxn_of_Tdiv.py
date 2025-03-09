@@ -16,8 +16,8 @@ class TestAlloVsAuto_Tdiv(unittest.TestCase):
         #specks_out_path = '/home/tamsen/Data/DemographiKS_output_from_mesx/SPKS_vs_DGKS_Tdiv'
         demographics_allo_run_list=[False,'Allo_Twgd100v3_m03d05y2025_h13m17s02',
                     'Allo_Twgd1000v4_m03d07y2025_h08m05s29',
-                    'Allo_Twgd5000v3_m03d05y2025_h13m17s08']
-
+                    'Allo_Twgd5000v4_m03d09y2025_h13m42s12']
+        #'Allo_Twgd5000v4_m03d09y2025_h13m42s12'
         demographics_auto_run_list=[False,
                                     'Auto_Twgd100v2_m03d04y2025_h17m47s07',
                                     'Auto_Twgd1000v2_m03d05y2025_h10m18s18',
