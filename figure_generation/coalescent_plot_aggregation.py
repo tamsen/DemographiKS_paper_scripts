@@ -114,7 +114,7 @@ def plot_mrca(this_ax, slim_mrcas_by_gene, specks_mrcas_by_gene, theoretical_mrc
 
     if slim_mrcas_by_gene:
         this_ax.hist(slim_mrcas_by_gene, bins=bins, facecolor='b', alpha=0.25,
-                                label='SLiM Tcoal by gene\n'
+                                label='DemographiKS Tcoal by gene\n'
                                 + "(" +str(num_slim_genes) + " genes in genome,\n"
                                  +"avg Tc " +str(int(avg_simulated_slim_Tc)) + " generations)",
                                 density=False)

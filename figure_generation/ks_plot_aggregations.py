@@ -165,6 +165,8 @@ def make_Tc_Ks_fig_with_subplots(bin_sizes_Ks, bin_sizes_Tc,
                                  xmax_Ks, xmax_Tc, ymax_Ks, ymax_Tc,
                                  suptitle, show_KS_predictions):
 
+    include_annotation=False
+
     num_runs = len(demographics_TE9_run_list)
     png_out = os.path.join(demographiKS_out_path, run_list_name)
     par_dir = Path(__file__).parent.parent
@@ -192,22 +194,25 @@ def make_Tc_Ks_fig_with_subplots(bin_sizes_Ks, bin_sizes_Tc,
             print("reading " + ks_file)
             demographiKS_ks_results = read_Ks_csv(ks_file, False)
             dgx_run_duration_in_m, dgx_version = get_run_time_in_minutes(dgx_run_path)
-            plot_title = "Ks at Tnow\n" + \
+
+            if include_annotation:
+                plot_title = "Ks at Tnow\n" + \
                          "burnin time=" + str(config_used.burnin_time) + " gen, " \
                      + "Na=" + str(config_used.ancestral_Ne)  + ", Nb=" + str(config_used.bottleneck_Ne) +\
                          ",\nTdiv=" + str(config_used.DIV_time_Ge) + ", RC=" + str(config_used.recombination_rate)
-            if config_used.mig_rate:
-                plot_title = plot_title + ", MigStart=" + str(config_used.mig_start) + \
+                if config_used.mig_rate:
+                    plot_title = plot_title + ", MigStart=" + str(config_used.mig_start) + \
                               ", MigEnd=" + str(config_used.mig_stop) +  ", MigRate=" + str(config_used.mig_rate)
+                else:
+                    plot_title = plot_title + ", MigRate=0"
             else:
-                plot_title = plot_title + ", MigRate=0"
+                plot_title = "Ks at Tnow"
 
         else:
             config_used = False
             demographiKS_ks_results = []
             dgx_run_duration_in_m = 0
-            plot_title = "foo - didnt load a config"
-
+            plot_title = "Ks at Tnow"
 
         spx_run_name = specks_TE9_run_list[i]
         if spx_run_name:
@@ -219,6 +224,10 @@ def make_Tc_Ks_fig_with_subplots(bin_sizes_Ks, bin_sizes_Tc,
             specks_csv_file = os.path.join(spx_run_path, "variations_in_div_time.txt")
             loci, specks_mrcas_by_gene = read_data_csv(specks_csv_file)
 
+            glob_results=glob.glob(spx_run_path + '/*.used.xml')
+            input_xml_file = glob_results[0]
+            config_used = config.DemographiKS_config(input_xml_file)
+
         else:
             spx_ks_results = []
             spx_run_duration_in_m = 0
@@ -229,23 +238,30 @@ def make_Tc_Ks_fig_with_subplots(bin_sizes_Ks, bin_sizes_Tc,
         plot_ks(ax[0, i], config_used, demographiKS_ks_results, spx_ks_results,
                 plot_title, bin_sizes_Ks[i], xmax_Ks[i], ymax_Ks[i], show_KS_predictions)
 
-        slim_csv_file_0 = os.path.join(dgx_run_path, "simulated_ancestral_gene_mrcas.csv")
-        if os.path.exists(slim_csv_file_0):
-            loci, slim_mrcas_by_gene = read_data_csv(slim_csv_file_0)
+        if dgx_run_name:
+            slim_csv_file_0 = os.path.join(dgx_run_path, "simulated_ancestral_gene_mrcas.csv")
+            if os.path.exists(slim_csv_file_0):
+                loci, slim_mrcas_by_gene = read_data_csv(slim_csv_file_0)
+            else:
+                slim_csv_file_1 = os.path.join(dgx_run_path, "1_10_simulated_ancestral_gene_mrcas.csv")
+                loci, slim_mrcas_by_gene = read_data_csv(slim_csv_file_1)
         else:
-            slim_csv_file_1 = os.path.join(dgx_run_path, "1_10_simulated_ancestral_gene_mrcas.csv")
-            loci, slim_mrcas_by_gene = read_data_csv(slim_csv_file_1)
+            slim_mrcas_by_gene=[]
 
         #theory_output_file = os.path.join(dgx_run_path, "theoretical_ancestral_gene_mrcas.csv")
         #loci, theory_mrcas_by_gene = read_data_csv(theory_output_file)
-        plot_title = "Tcoal at Tdiv\nburnin time=" + str(config_used.burnin_time) + " gen, " \
+        if include_annotation:
+            plot_title = "Tcoal at Tdiv\nburnin time=" + str(config_used.burnin_time) + " gen, " \
                      + "Na=" + str(config_used.ancestral_Ne)
+        else:
+            plot_title = "Tcoal at Tdiv"
 
         theory_mrcas_by_gene=False
         avg_slim_Tc = plot_mrca(ax[1, i], slim_mrcas_by_gene, specks_mrcas_by_gene, theory_mrcas_by_gene,
                   plot_title, config_used.ancestral_Ne,
                   bin_sizes_Tc[i], xmax_Tc[i], ymax_Tc[i], config_used.num_genes)
 
+    if include_annotation:
         add_mrca_annotations(ax[1, i], config_used, avg_slim_Tc,
                              dgx_run_duration_in_m, spx_run_duration_in_m,
                              dgx_version,spx_version)
@@ -329,14 +345,18 @@ def plot_ks(this_ax, config_used, slim_ks_by_gene, spx_ks_by_gene,
 
 
     # a good start..
-    shape = 0.5
-    num_genes= num_slim_genes
-    loc = -1*config_used.ancestral_Ne*config_used.Ks_per_YR #-1000  # should be -N
-    scale = config_used.ancestral_Ne * math.sqrt(2.0*math.pi)*config_used.Ks_per_YR
-    p0=[bin_size*num_genes,shape,loc,scale]
-    fit_curve_ys_ln2, xs_for_wgd, popt = \
-        curve_fitting.fit_curve_to_xs_and_ys(bins[0:-1],
+    if len(slim_ks_by_gene) > 0:
+        shape = 0.5
+        num_genes= num_slim_genes
+        loc = -1*config_used.ancestral_Ne*config_used.Ks_per_YR #-1000  # should be -N
+        scale = config_used.ancestral_Ne * math.sqrt(2.0*math.pi)*config_used.Ks_per_YR
+        p0=[bin_size*num_genes,shape,loc,scale]
+        fit_curve_ys_ln2, xs_for_wgd, popt = \
+            curve_fitting.fit_curve_to_xs_and_ys(bins[0:-1],
                                              dgx_hist_ys, curve_fitting.wgd_lognorm2, p0=p0)
+    else:
+        fit_curve_ys_ln2 = False
+        dgx_hist_ys = False
 
     #popt_in_sci_notation = ["{:.2E}".format(p) for p in popt]
     #plot_label = "fit popt:" + ",".join(popt_in_sci_notation)
@@ -363,7 +383,9 @@ def plot_ks(this_ax, config_used, slim_ks_by_gene, spx_ks_by_gene,
         this_ax.axvline(x=mig_start_as_Ks, color='g', linestyle=':', label="Mig start")
         this_ax.axvline(x=mig_stop_as_Ks, color='g', linestyle='--', label="Mig stop")
         this_ax.axvspan(mig_stop_as_Ks, mig_start_as_Ks, alpha=0.25, color='g')
-    add_Ks_annotations(this_ax, config_used, slim_ks_by_gene,dgx_hist_ys, bins, show_predictions)
+
+    if len(slim_ks_by_gene) > 0:
+        add_Ks_annotations(this_ax, config_used, slim_ks_by_gene,dgx_hist_ys, bins, show_predictions)
 
     if ymax:
         this_ax.set(ylim=[0, ymax])
