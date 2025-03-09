@@ -46,9 +46,12 @@ class MyTestCase(unittest.TestCase):
             os.makedirs(hist_comparison_out_folder)
 
         out_png1 = os.path.join(hist_comparison_out_folder, "real_" + species_run_name + "_out.png")
-        make_simple_histogram(real_ks_results, p0,lognorm_fit_range,
+        list_of_hist_data= make_simple_histogram(real_ks_results, p0,lognorm_fit_range,
                               species_run_name, bin_size, color, wgd_ks,
                                            max_Ks, density, out_png1)
+
+        out_png2 = os.path.join(hist_comparison_out_folder, "real_" + species_run_name + "_overlay.png")
+        overlay_differences_in_curves(species_run_name, list_of_hist_data, wgd_ks, out_png2)
 
     def test_poplar_histogram(self):
 
@@ -111,14 +114,17 @@ def make_simple_histogram(Ks_results, p0, lognorm_fit_range,
     fig = plt.figure(figsize=(10, 10), dpi=MyTestCase.MBE_dpi)
     x = Ks_results
     # print(PAML_hist_out_file)
+    #[n, bins] = hist_data
     label="hist for " + os.path.basename(out_png).replace("_out.png","")
     if max_Ks:
         bins = np.arange(bin_size, max_Ks + 0.1, bin_size)
         hist_ys, bins, patches = plt.hist(x, bins=bins, facecolor=color, alpha=0.25,
                                     label=label, density=density)
         plt.xlim([0, max_Ks * (1.1)])
+        hist_ys_1=[hist_ys, bins]
 
     #fit lognorm
+    #bins_centers = [0.5 * (bins_1[i] + bins_1[i + 1]) for i in range(0, len(bins_1) - 1)]
     bins_centers = [0.5 * (bins[i] + bins[i + 1]) for i in range(0, len(bins) - 1)]
     fit_wgd_xs=[]
     fit_wgd_ys=[]
@@ -166,12 +172,14 @@ def make_simple_histogram(Ks_results, p0, lognorm_fit_range,
             popt_in_sci_notation = ["{:.2E}".format(p) for p in popt_both]
             plot_label = "fit popt:" + ",".join(popt_in_sci_notation)
             plt.plot(xs_for_both, fit_both, color='k', alpha=0.95, label=plot_label,linestyle="-")
+            hist_data2=[fit_both, bins]
 
     if not fit_both:
         popt_in_sci_notation = ["{:.2E}".format(p) for p in popt_wgd]
         plot_label = "fit popt:" + ",".join(popt_in_sci_notation)
         fit_curve_ys = [curve_fitting.wgd_lognorm2(x, *popt_wgd) for x in bins_centers]
         plt.plot(bins_centers, fit_curve_ys, color='k', alpha=0.95, label=plot_label, linestyle="-")
+        hist_data2 = [fit_curve_ys, bins]
 
     plt.axvline(x=WGD_ks, color='b', linestyle='-', label="WGD paralog start")
     num_pairs=sum(hist_ys)
@@ -185,7 +193,101 @@ def make_simple_histogram(Ks_results, p0, lognorm_fit_range,
     plt.clf()
     plt.close()
 
-    return [hist_ys,bins]
+    return [hist_ys_1,hist_data2]
+
+def overlay_histogram(species_for_plot_title, list_of_hist_data, WGD_ks,out_png):
+
+    colors = ['blue','green']
+    labels = ['SpecKS','truth']
+
+    fig = plt.figure(dpi=MyTestCase.MBE_dpi)
+    ax1 = plt.subplot2grid((4, 1), (0, 0), rowspan=3)
+    ax2 = plt.subplot2grid((4, 1), (3, 0), rowspan=1)
+
+    for i in range(0,len(list_of_hist_data)):
+        hist_data =list_of_hist_data[i]
+        [n, bins]=hist_data
+        width=(bins[2]-bins[1])/2
+        xs=[b + i*width for b in bins[0:len(bins)-1]]
+        ax1.bar(xs,n,width=width,
+                color=colors[i], alpha=1, label=labels[i])
+    #ax[0].axvline(x=WGD_ks, color='b', linestyle='-', label="WGD paralog start")
+    diffs = [(list_of_hist_data[0][0][j]-list_of_hist_data[1][0][j]) for j in range(0,len(list_of_hist_data[1][0]))]
+    rmse=math.sqrt(sum([d*d for d in diffs])/len(diffs))
+    ax2.bar(xs, diffs , width=width,
+            color='orange', alpha=1, label="error\nrmse={0}".format(round(rmse,3)))
+
+
+    print(species_for_plot_title)
+    num_pairs = sum(n)
+    num_after_wgd = sum([n[i] for i in range(0, len(n)) if bins[i] > WGD_ks])
+    ax1.legend()
+    ax2.legend()
+    plt.xlabel("Ks")
+    ax2.set(ylabel="Error")
+    ax1.set(ylabel="Density")
+    ax1.set(xlim=[0,0.1])
+    ax2.set(xlim=[0,0.1])
+    #ax1.set(title ='Ks histogram for ' +  species_for_plot_title)
+    #ax1.set(title ='$\Gamma + \mathit{\Gamma}$')
+    #\n{1} pairs of genes. ~{2} retained from WGD.".format(
+    #    species_name, num_pairs, num_after_wgd))
+    fig.suptitle(species_for_plot_title, style='italic')
+    plt.tight_layout()
+    plt.savefig(out_png)
+    plt.clf()
+    plt.close()
+
+    return n, bins
+
+def overlay_differences_in_curves(species_for_plot_title, list_of_hist_data, WGD_ks,out_png):
+
+    colors = ['blue','green','brown']
+    labels = ['SpecKS','truth']
+
+
+    fig, ax = plt.subplots(1, 1, figsize=(5, 5))
+
+    for i in range(0,len(list_of_hist_data)):
+        hist_data =list_of_hist_data[i]
+        [n, bins]=hist_data
+        width=(bins[2]-bins[1])
+        bar_plot_xs=[b + i*width for b in bins[0:len(bins)-1]] #to match bar-plot axes
+        sub_bins=bins[0:len(bins) - 1]
+        label=labels[i]
+        #if label=='truth':
+
+            #x_value_of_ymax = get_Ks_at_max(WGD_ks, bar_plot_xs, n, sub_bins)
+            #label = label +" (peak at Ks=" +str(WGD_ks) + ")"
+            #plt.axvline(WGD_ks, color=config.color_blind_friendly_color_cycle_analogs['green'],
+            #            linestyle=':')
+        plt.plot(bar_plot_xs,n,c=colors[i], alpha=1, label=label)
+        #plt.plot(sub_bins, n, c=colors[i], alpha=1, label=label)
+
+    diffs = [(list_of_hist_data[0][0][j]-list_of_hist_data[1][0][j]) for j in range(0,len(list_of_hist_data[1][0]))]
+    rmse=math.sqrt(sum([d*d for d in diffs])/len(diffs))
+    hist_data0 = list_of_hist_data[1]
+    ys0=hist_data0[0]
+    xs0=hist_data0[1]
+
+    for i in range(0,len(ys0)):
+        if i==0:
+            ax.add_patch(Rectangle((xs0[i], ys0[i]), width, diffs[i], color=colors[2],
+                                alpha=0.15, label="rmse: "+ str(round(rmse,4))))
+        else:
+            ax.add_patch(Rectangle((xs0[i], ys0[i]), width, diffs[i], color=colors[2],
+                                alpha=0.15))
+
+    plt.legend()
+    plt.xlabel("Ks")
+    ax.set(ylabel="Density")
+    plt.title(species_for_plot_title, style='italic')
+    plt.tight_layout()
+    plt.savefig(out_png)
+    plt.clf()
+    plt.close()
+
+    return n, bins
 
 if __name__ == '__main__':
     unittest.main()
