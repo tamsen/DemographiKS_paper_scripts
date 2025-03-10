@@ -73,33 +73,39 @@ class TestAlloVsAuto_Tdiv(unittest.TestCase):
                                     'Auto_Twgd500000_m01d29y2025_h17m22s23',
                                     'Auto_Twgd100000_m01d29y2025_h17m25s36']
 
-        bin_sizes_Tc = [200,200, 200, 200,200]
 
-        xmax_Ks_allo = [0.025,0.025,0.025,0.025,0.025] #0.001  # max(demographiKS_ks_results)
-        xmax_Ks_auto = [0.01,0.01,0.01,0.01,0.01] #0.001  # max(demographiKS_ks_results)
-        xmax_Tc = [False,False,False,False,False]
-        #xmax_Ks = [0.0005 for f in demographics_allo_run_list]
-        bin_sizes_Ks_allo = [xmax_Ks_i/100.0 for xmax_Ks_i in xmax_Ks_allo]
-        bin_sizes_Ks_auto = [xmax_Ks_i / 100.0 for xmax_Ks_i in xmax_Ks_auto]
+
+        #xmax_Ks_allo = [0.05,0.025,0.025,0.025,0.025] #0.001  # max(demographiKS_ks_results)
+        xmax_Ks_allo = [0.05, 0.05, 0.05, 0.05, 0.05]  # 0.001  # max(demographiKS_ks_results)
+        xmax_Ks_auto = [0.02,0.02,0.02,0.02,0.02] #0.001  # max(demographiKS_ks_results)
+        xmax_Tc = [12000 for f in demographics_allo_run_list]
+        bin_sizes_Ks_allo = [xmax_Ks_i/25.0 for xmax_Ks_i in xmax_Ks_allo]
+        bin_sizes_Ks_auto = [xmax_Ks_i /25.0 for xmax_Ks_i in xmax_Ks_auto]
+        bin_sizes_Tc =  [xmax_Tc_i /25.0 for xmax_Tc_i in xmax_Tc]
 
         run_list_name="Ks_for_Allo_and_Auto_varying_varying_Tdiv"
         ymax_KS = [800,800,800,800,800]
-        ymax_Tc = [False for f in demographics_allo_run_list]
+        ymax_Tc = [400 for f in demographics_allo_run_list]
         #show_KS_predictions=[True,True,True]
         show_KS_predictions = [False, False, False]
-        suptitle = "Allo and Auto Ks histograms\n" + \
-                                  "Recombination rate = 8e-9, Ne and BI constant"
+        suptitle = "Allo and Auto Ks histograms\n"
+        #                          "Recombination rate = 8e-9, Ne and BI constant"
 
 
         bin_sizes_Ks_array=[bin_sizes_Ks_auto,bin_sizes_Ks_allo]
         xmax_Ks_array=[xmax_Ks_auto,xmax_Ks_allo]
         ymax_Ks_array=[ymax_KS,ymax_KS]
 
-        make_Tc_Ks_Allo_vs_Auto_fig_with_subplots(bin_sizes_Ks_array, bin_sizes_Tc,
-                                          demographiKS_allo_out_path, demographics_allo_run_list, run_list_name,
+        num_plot_rows =2
+        include_annotation = False
+        plot_title_lamda = lambda config: "Twgd&Tdiv:" + str(config.WGD_time_Ge) +" gen"
+        make_Tc_Ks_Allo_vs_Auto_fig_with_subplots(num_plot_rows,bin_sizes_Ks_array, bin_sizes_Tc,
+                                          demographiKS_allo_out_path,
+                                                  demographics_allo_run_list, run_list_name,
                                           demographics_auto_run_list, demographiKS_auto_out_path,
                                      xmax_Ks_array, xmax_Tc, ymax_Ks_array,  ymax_Tc,suptitle,
-                                     show_KS_predictions)
+                                     show_KS_predictions,include_annotation,
+                                                  plot_title_lamda             )
 
         self.assertEqual(True, True)  # add assertion here
 

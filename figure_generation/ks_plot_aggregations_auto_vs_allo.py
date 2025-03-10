@@ -15,7 +15,7 @@ from figure_generation.histogram_plotter import read_Ks_csv
 
 def plot_mrca_for_Autos_and_Allos(this_ax, allo_mrcas_by_gene, auto_mrcas_by_gene,
                                   theoretical_mrcas_by_gene,
-                                  title, Ne, bin_size, xmax, ymax, total_num_genes):
+                                  title, Ne, bin_size, xmax, ymax, total_num_genes,include_annotatons):
 
     num_allo_genes = len(allo_mrcas_by_gene)
     if num_allo_genes == 0:
@@ -40,18 +40,28 @@ def plot_mrca_for_Autos_and_Allos(this_ax, allo_mrcas_by_gene, auto_mrcas_by_gen
                for i in bins]
 
     if allo_mrcas_by_gene:
+
+        my_label ='Allo Tcoal by gene'
+        if include_annotatons:
+            my_label ='Allo Tcoal by gene\n' \
+                           + "(" + str(num_allo_genes) + " genes in genome,\n" \
+                           + "avg Tc " + str(int(avg_simulated_allo_Tc)) + " generations)"
         this_ax.hist(allo_mrcas_by_gene, bins=bins, facecolor='b', alpha=0.25,
-                     label='Allo Tcoal by gene\n'
-                           + "(" + str(num_allo_genes) + " genes in genome,\n"
-                           + "avg Tc " + str(int(avg_simulated_allo_Tc)) + " generations)",
+                     label=my_label,
                      density=False)
 
     if auto_mrcas_by_gene:
+
+
+
         auto_mrcas_genes = len(auto_mrcas_by_gene)
-        this_ax.hist(auto_mrcas_by_gene, bins=bins, facecolor='c', alpha=0.5,
-                     label='Auto Tcoal by gene\n'
-                           + "(" + str(auto_mrcas_genes) + " genes in genome),\n"
-                           + "avg Tc " + str(int(avg_simulated_auto_Tc)) + " generations)",
+        my_label ='Auto Tcoal by gene'
+        if include_annotatons:
+            my_label ='Auto Tcoal by gene\n' \
+                           + "(" + str(auto_mrcas_genes) + " genes in genome),\n"\
+                           + "avg Tc " + str(int(avg_simulated_auto_Tc)) + " generations)"
+        this_ax.hist(auto_mrcas_by_gene, bins=bins, facecolor='g', alpha=0.5,
+                     label=my_label ,
                      density=False)
 
     this_ax.plot(bins, kingman, c='red', label='Expectations under Kingman,\n'
@@ -69,7 +79,7 @@ def plot_mrca_for_Autos_and_Allos(this_ax, allo_mrcas_by_gene, auto_mrcas_by_gen
 
 def plot_allo_vs_auto_ks(this_ax, allo_config_used, allo_ks_by_gene,
                          auto_config_used, auto_ks_by_gene,
-                         title, bin_size, xmax, ymax, show_predictions):
+                         title, bin_size, xmax, ymax, show_predictions,include_annotation):
 
     num_allo_genes = len(allo_ks_by_gene)
     num_auto_genes = len(auto_ks_by_gene)
@@ -80,25 +90,35 @@ def plot_allo_vs_auto_ks(this_ax, allo_config_used, allo_ks_by_gene,
     dgx_hist_ys=[]
 
     if len(allo_ks_by_gene) > 0:
+
+        my_label = 'Allo Ks by gene'
+        if include_annotation:
+            my_label = 'Allo Ks by gene\n'\
+                           + "(" + str(num_allo_genes) + " paralogs in genome)"
         dgx_hist_ys, bins, patches = this_ax.hist(allo_ks_by_gene, bins=bins, facecolor='b', alpha=0.25,
-                                                  label='Allo Ks by gene\n'
-                           + "(" + str(num_allo_genes) + " paralogs in genome)",
+                                                  label=my_label,
                                                   density=False)
 
     if len(auto_ks_by_gene) > 0:
-        this_ax.hist(auto_ks_by_gene, bins=bins, facecolor='c', alpha=0.50,
-                     label='Auto Ks by gene\n'
-                           + "(" + str(num_auto_genes) + " paralogs in genome)",
+
+        my_label = 'Auto Ks by gene'
+        if include_annotation:
+            my_label = 'Auto Ks by gene\n'\
+                           + "(" + str(num_auto_genes) + " paralogs in genome)"
+        this_ax.hist(auto_ks_by_gene, bins=bins, facecolor='g', alpha=0.50,
+                     label=my_label,
                      density=False)
 
     this_ax.axvline(x=allo_config_used.t_div_as_ks, color='b', linestyle='--', label="input Tdiv as Ks")
     theoretical_ks_mean_now= allo_config_used.mean_Ks_from_Tc + allo_config_used.t_div_as_ks
-    this_ax.axvline(x=theoretical_ks_mean_now, color='r', linestyle='--', label="Expected Ks mean")
+    this_ax.axvline(x=theoretical_ks_mean_now, color='r', linestyle='--',
+                    label="Expected Ks mean (allo)")
     #mean_Ks_from_Nb_string=  "({:.2E})".format(config_used.mean_Ks_from_Nb)
     #this_ax.axvline(x=config_used.mean_Ks_from_Nb,
     #                color='g', linestyle='--', label="Tc due to Nb " + mean_Ks_from_Nb_string )
 
-    add_Ks_annotations(this_ax, allo_config_used, allo_ks_by_gene, dgx_hist_ys, bins, show_predictions)
+    if include_annotation:
+        add_Ks_annotations(this_ax, allo_config_used, allo_ks_by_gene, dgx_hist_ys, bins, show_predictions)
 
     if ymax:
         this_ax.set(ylim=[0, ymax])
@@ -108,11 +128,12 @@ def plot_allo_vs_auto_ks(this_ax, allo_config_used, allo_ks_by_gene,
     this_ax.legend()
 
 
-def make_Tc_Ks_Allo_vs_Auto_fig_with_subplots(bin_sizes_Ks, bin_sizes_Tc,
+def make_Tc_Ks_Allo_vs_Auto_fig_with_subplots(num_plot_rows, bin_sizes_Ks, bin_sizes_Tc,
                                               allo_out_path, allo_run_list, run_list_name,
                                               auto_run_list, auto_out_path,
                                               xmax_Ks, xmax_Tc, ymax_Ks, ymax_Tc,
-                                              suptitle, show_KS_predictions):
+                                              suptitle, show_KS_predictions, include_annotation,
+                                              plot_title_lamda):
 
     num_runs = len(allo_run_list)
     png_out = os.path.join(auto_out_path, run_list_name)
@@ -122,13 +143,28 @@ def make_Tc_Ks_Allo_vs_Auto_fig_with_subplots(bin_sizes_Ks, bin_sizes_Tc,
     png_Auto= os.path.join(image_folder, 'Auto_now_crop.png')
     png_Tnow = os.path.join(image_folder, 'Auto_vs_Allo_now_crop.png')
     png_Tc = os.path.join(image_folder, 'Auto_vs_Allo_Tc_crop.png')
-    fig, ax = plt.subplots(3, num_runs, figsize=(40, 20))
+
+    if include_annotation:
+        fig, ax = plt.subplots(num_plot_rows, num_runs, figsize=(40, 20))
+        dpi_needed = 350
+    else:
+        fig, ax = plt.subplots(num_plot_rows, num_runs, figsize=(20,8))
+        dpi_needed = 100
+
     fig.suptitle(suptitle)
     captions=[
         "polyploid Ks at T_now for autopolyploid\n\n\n",
         "polyploid Ks at T_now for allo and autopolyploid\n\n\n",
         "ancestral Tc at T_div for allo and T_wgd for auto"]
-    plot_expository_allo_auto_image_list(ax, [png_Auto,png_Tnow,png_Tc], captions)
+    plot_expository_allo_auto_image_list(ax, [png_Tnow,png_Tc], captions[1:3])
+
+    joint_allo_auto_plot_index = 0
+    Tc_plot_index = 1
+    if num_plot_rows == 3:
+        joint_allo_auto_plot_index = 1
+        Tc_plot_index = 2
+        plot_expository_allo_auto_image_list(ax, [png_Auto, png_Tnow, png_Tc], captions)
+
     for i in range(1, num_runs):
         allo_run_name = allo_run_list[i]
 
@@ -145,9 +181,14 @@ def make_Tc_Ks_Allo_vs_Auto_fig_with_subplots(bin_sizes_Ks, bin_sizes_Tc,
             print("reading " + ks_file)
             allo_ks_results = read_Ks_csv(ks_file, False)
             allo_run_duration_in_m, allo_version = get_run_time_in_minutes(allo_run_path)
-            plot_title = "Ks at Tnow\n" + "burnin time=" + str(allo_config_used.burnin_time) + " gen,\n" \
+
+            plot_title = str(plot_title_lamda(allo_config_used))
+            if include_annotation:
+                plot_title = "Ks at Tnow\n" + "burnin time=" + str(allo_config_used.burnin_time) + " gen,\n" \
                      + "Na=" + str(allo_config_used.ancestral_Ne)  + ", Nb=" + str(allo_config_used.bottleneck_Ne) +\
                          ", Tdiv=" + str(allo_config_used.DIV_time_Ge) + ", RC=" + str(allo_config_used.recombination_rate)
+
+
         else:
             allo_config_used = False
             allo_ks_results = []
@@ -173,32 +214,46 @@ def make_Tc_Ks_Allo_vs_Auto_fig_with_subplots(bin_sizes_Ks, bin_sizes_Tc,
             spx_run_duration_in_m = 0
             specks_mrcas_by_gene = False
 
-        plot_allo_vs_auto_ks(ax[0, i], allo_config_used, [],
+        if num_plot_rows == 3:
+            plot_allo_vs_auto_ks(ax[0, i], allo_config_used, [],
                              auto_config_used,auto_ks_results,
                              plot_title,
                              bin_sizes_Ks[0][i], xmax_Ks[0][i],
                              ymax_Ks[0][i], show_KS_predictions)
 
-
-        plot_allo_vs_auto_ks(ax[1, i], allo_config_used, allo_ks_results,
+        plot_allo_vs_auto_ks(ax[joint_allo_auto_plot_index, i], allo_config_used, allo_ks_results,
                              auto_config_used, auto_ks_results,
-                plot_title, bin_sizes_Ks[1][i], xmax_Ks[1][i], ymax_Ks[1][i], show_KS_predictions)
+                plot_title, bin_sizes_Ks[joint_allo_auto_plot_index][i],
+                             xmax_Ks[joint_allo_auto_plot_index][i],
+                             ymax_Ks[joint_allo_auto_plot_index][i], show_KS_predictions,
+                             include_annotation)
+
 
         allo_Tc_csv_file = os.path.join(allo_run_path, "1_10_simulated_ancestral_gene_mrcas.csv")
+        if not os.path.exists(allo_Tc_csv_file):
+            allo_Tc_csv_file = os.path.join(allo_run_path, "simulated_ancestral_gene_mrcas.csv")
+
         loci, allo_mrcas_by_gene = read_data_csv(allo_Tc_csv_file)
 
         auto_Tc_csv_file = os.path.join(auto_run_path, "1_10_simulated_ancestral_gene_mrcas.csv")
+        if not os.path.exists(auto_Tc_csv_file):
+            auto_Tc_csv_file = os.path.join(auto_run_path, "simulated_ancestral_gene_mrcas.csv")
+
         loci, auto_mrcas_by_gene = read_data_csv(auto_Tc_csv_file)
 
         plot_title = "Tcoal at Tdiv\nburnin time=" + str(allo_config_used.burnin_time) + " gen, " \
                      + "Na=" + str(allo_config_used.ancestral_Ne)
 
         theory_mrcas_by_gene=False
-        avg_simulated_allo_Tc = plot_mrca_for_Autos_and_Allos(ax[2, i], allo_mrcas_by_gene, auto_mrcas_by_gene, theory_mrcas_by_gene,
+        avg_simulated_allo_Tc = plot_mrca_for_Autos_and_Allos(ax[Tc_plot_index, i],
+                allo_mrcas_by_gene, auto_mrcas_by_gene, theory_mrcas_by_gene,
                   plot_title, allo_config_used.ancestral_Ne,
-                  bin_sizes_Tc[i], xmax_Tc[i], ymax_Tc[i], allo_config_used.num_genes)
+                  bin_sizes_Tc[i], xmax_Tc[i], ymax_Tc[i], allo_config_used.num_genes,
+                                                              include_annotation)
 
-        add_mrca_annotations_for_autos_and_allos(ax[2, i], allo_config_used, avg_simulated_allo_Tc,
+        if include_annotation:
+            add_mrca_annotations_for_autos_and_allos(ax[Tc_plot_index, i],
+                allo_config_used, avg_simulated_allo_Tc,
                              allo_run_duration_in_m,
                              auto_run_duration_in_m,
                              allo_version, auto_version)
@@ -206,7 +261,7 @@ def make_Tc_Ks_Allo_vs_Auto_fig_with_subplots(bin_sizes_Ks, bin_sizes_Tc,
     ax[0, 1].set(ylabel="# paralog pairs in bin")
     ax[1, 1].set(ylabel="# genes in bin")
     plt.tight_layout()
-    plt.savefig(png_out, dpi=550)
+    plt.savefig(png_out, dpi=dpi_needed)
     plt.clf()
     plt.close()
 
