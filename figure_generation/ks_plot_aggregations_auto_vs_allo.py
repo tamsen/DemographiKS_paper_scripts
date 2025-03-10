@@ -109,10 +109,14 @@ def plot_allo_vs_auto_ks(this_ax, allo_config_used, allo_ks_by_gene,
                      label=my_label,
                      density=False)
 
-    this_ax.axvline(x=allo_config_used.t_div_as_ks, color='b', linestyle='--', label="input Tdiv as Ks")
+    #this_ax.axvline(x=allo_config_used.t_div_as_ks, color='b', linestyle='--', label="input Tdiv as Ks")
     theoretical_ks_mean_now= allo_config_used.mean_Ks_from_Tc + allo_config_used.t_div_as_ks
-    this_ax.axvline(x=theoretical_ks_mean_now, color='r', linestyle='--',
-                    label="Expected Ks mean (allo)")
+    this_ax.axvline(x=theoretical_ks_mean_now, color='purple', linestyle='--',
+                    label="Expected Ks mean (Allo)",lw=3)
+
+    this_ax.axvline(x=auto_config_used.mean_Ks_from_Nb, color='k', linestyle='--',
+                    label="Expected Ks mean (Auto)",lw=3)
+
     #mean_Ks_from_Nb_string=  "({:.2E})".format(config_used.mean_Ks_from_Nb)
     #this_ax.axvline(x=config_used.mean_Ks_from_Nb,
     #                color='g', linestyle='--', label="Tc due to Nb " + mean_Ks_from_Nb_string )
@@ -140,9 +144,9 @@ def make_Tc_Ks_Allo_vs_Auto_fig_with_subplots(num_plot_rows, bin_sizes_Ks, bin_s
     #png_out = os.path.join(demographiKS_out_path, "ks_hist_by_{0}_test.jpg".format(run_list_name))
     par_dir = Path(__file__).parent.parent
     image_folder = os.path.join(par_dir, "images")
-    png_Auto= os.path.join(image_folder, 'Auto_now_crop.png')
-    png_Tnow = os.path.join(image_folder, 'Auto_vs_Allo_now_crop.png')
-    png_Tc = os.path.join(image_folder, 'Auto_vs_Allo_Tc_crop.png')
+    png_Auto= os.path.join(image_folder, 'JustAutoNow.png')
+    png_Tnow = os.path.join(image_folder, 'Auto_vs_Allo_now_crop_2.png')
+    png_Tc = os.path.join(image_folder, 'Auto_vs_Allo_Tc_crop_2.png')
 
     if include_annotation:
         fig, ax = plt.subplots(num_plot_rows, num_runs, figsize=(40, 20))
@@ -152,10 +156,14 @@ def make_Tc_Ks_Allo_vs_Auto_fig_with_subplots(num_plot_rows, bin_sizes_Ks, bin_s
         dpi_needed = 100
 
     fig.suptitle(suptitle)
+    #captions=[
+    #    "polyploid Ks at T_now for autopolyploid\n\n\n",
+    #    "polyploid Ks at T_now for allo and autopolyploid\n\n\n",
+    #    "ancestral Tc at T_div for allo and T_wgd for auto"]
     captions=[
-        "polyploid Ks at T_now for autopolyploid\n\n\n",
-        "polyploid Ks at T_now for allo and autopolyploid\n\n\n",
-        "ancestral Tc at T_div for allo and T_wgd for auto"]
+        "polyploid Ks at T_now\nfor Autopolyploid",
+        "polyploid Ks at T_now\nfor Allo and Autopolyploid",
+        "ancestral Tc at T_div\nfor Allo and T_wgd for Auto"]
     plot_expository_allo_auto_image_list(ax, [png_Tnow,png_Tc], captions[1:3])
 
     joint_allo_auto_plot_index = 0
@@ -201,6 +209,7 @@ def make_Tc_Ks_Allo_vs_Auto_fig_with_subplots(num_plot_rows, bin_sizes_Ks, bin_s
 
             auto_run_path = os.path.join(auto_out_path,auto_run_name)
             print("auto_run_path: " +auto_run_path )
+            print(auto_run_path)
             glob_results=glob.glob(auto_run_path + '/*.used.xml')
             auto_input_xml_file = glob_results[0]
             auto_config_used = config.DemographiKS_config(auto_input_xml_file)
@@ -219,7 +228,8 @@ def make_Tc_Ks_Allo_vs_Auto_fig_with_subplots(num_plot_rows, bin_sizes_Ks, bin_s
                              auto_config_used,auto_ks_results,
                              plot_title,
                              bin_sizes_Ks[0][i], xmax_Ks[0][i],
-                             ymax_Ks[0][i], show_KS_predictions)
+                             ymax_Ks[0][i], show_KS_predictions,
+                             include_annotation)
 
         plot_allo_vs_auto_ks(ax[joint_allo_auto_plot_index, i], allo_config_used, allo_ks_results,
                              auto_config_used, auto_ks_results,
