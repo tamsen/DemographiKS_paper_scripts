@@ -15,159 +15,13 @@ from figure_generation.coalescent_plot_aggregation import get_run_time_in_minute
 from figure_generation.curve_fitting import wgd_lognorm2
 from figure_generation.histogram_plotter import read_Ks_csv
 
-
-class TestKsPlotAgg(unittest.TestCase):
-
-    def test_Ks_for_varying_Ne_early_runs(self):
-
-        print('foo')
-
-        demographiKS_out_path = '/home/tamsen/Data/DemographiKS_output_from_mesx'
-        specks_out_path = '/home/tamsen/Data/Specks_output_from_mesx'
-
-        #<mutation_rate>1.2e-8</mutation_rate>,<WGD_time_Ge>1000</WGD_time_Ge>
-        demographics_TE_run_list=[False, "DGKS_10_10_v2_m01d06y2025_h15m35s38",
-                        "DGKS_100_100_v2_m01d06y2025_h15m35s43",
-                            "DGKS_1000_1000_v2_m01d06y2025_h15m35s46"]
-
-
-        #<mutation_rate>1.0e-5</mutation_rate>, <DIV_time_Ge>75</DIV_time_Ge>
-        demographics_TE_run_list=[False, "DGKS_10_10_v2_m01d06y2025_h13m09s31",
-                        "DGKS_100_100_v2_m01d06y2025_h13m09s35",
-                            "DGKS_1000_1000_v2_m01d06y2025_h13m05s18"]
-
-        specks_TE_run_list=[False,False,False,False]
-
-        #Ks_per_YR = 0.01 * 10**-6
-        Ks_per_YR = 10 ** -5
-        Ne = [10,10, 100, 1000]
-        #Ne=[500, 500, 1000]
-        burnin_times_in_generations=[2e4,2e4, 2e4,2e4, 2e4]
-        #time_since_DIV=[1000,1000,1000,1000]
-        time_since_DIV = [75, 75, 75, 75]
-
-        bin_sizes_Tc = [80, 80, 80, 80, 80]#looks good
-
-        xmax_Ks = 0.05 #for mut rate e-5
-        bin_sizes_Ks = [0.001, 0.001,0.001, 0.001, 0.001]
-
-
-        #xmax_Ks = False # 0.00001  #for mut rate 1.2e-8
-        #bin_sizes_Ks = [0.000001, 0.000001, 0.000001, 0.000001, 0.000001]
-        xmax_Tc = 5000
-        run_list_num = "_early_DGKS_by_Ne"
-        ymax = False
-
-        suptitle = "SLiM Tcoal by gene in ancestral species at Tdiv\n" + \
-                                  "Recombination rate = 1.26e-6, Ne and BI constant"
-
-        make_Tc_Ks_fig_with_subplots(Ne, bin_sizes_Ks, bin_sizes_Tc, burnin_times_in_generations,
-                                          demographiKS_out_path, demographics_TE_run_list, run_list_num,
-                                          specks_TE_run_list, specks_out_path, time_since_DIV,Ks_per_YR,
-                                          xmax_Ks, xmax_Tc, ymax,suptitle)
-
-        self.assertEqual(True, True)  # add assertion here
-
-    def test_Ks_for_varying_Ne(self):
-
-        demographiKS_out_path = '/home/tamsen/Data/DemographiKS_output_from_mesx'
-        specks_out_path = '/home/tamsen/Data/Specks_output_from_mesx'
-
-
-        demographics_TE_run_list=['DGKS_10_10_v2_m01d06y2025_h13m09s31','DGKS_10_10_v2_m01d06y2025_h13m09s31',
-                                   'DGKS_100_100_v2_m01d06y2025_h13m09s35',
-                                  'DGKS_1000_1000_v2_m01d06y2025_h13m05s18']
-
-        specks_TE_run_list=['specks_TE07_m12d30y2024_h12m10s15','specks_TE07_m12d30y2024_h12m10s15',
-                             'specks_TE07_m12d30y2024_h12m10s15']
-
-
-        specks_TE_run_list=[False,False,False,False]
-
-
-        Ne = [10,10, 100, 1000]
-        #Ne=[500, 500, 1000]
-        burnin_times_in_generations=[5e7, 5e7, 5e7, 5e7, 5e7]
-        time_since_DIV=[25,100000, 100000,100000]
-
-        bin_sizes_Tc = [40, 40, 40, 40, 40]#looks good
-        bin_sizes_Ks = [0.005, 0.005,0.005, 0.005, 0.005]
-        xmax_Ks = 0.1#0.001  # max(demographiKS_ks_results)
-        xmax_Tc = 10000
-        run_list_num = "_9to11_by_Ne"
-        # end
-        ymax = False
-
-        make_Tc_Ks_fig_with_subplots(Ne, bin_sizes_Ks, bin_sizes_Tc, burnin_times_in_generations,
-                                          demographiKS_out_path, demographics_TE_run_list, run_list_num,
-                                          specks_TE_run_list, specks_out_path, time_since_DIV, xmax_Ks, xmax_Tc, ymax)
-
-        self.assertEqual(True, True)  # add assertion here
-
-
-    def test_show_Ks_for_varying_Tdiv_times(self):
-
-
-
-        demographiKS_out_path = '/home/tamsen/Data/DemographiKS_output_from_mesx'
-        specks_out_path = '/home/tamsen/Data/Specks_output_from_mesx'
-
-        #TE 5 to 9 parameters - varies across time since DIV
-        #start
-
-        demographics_TE5_run_list=['TE15_m01d03y2025_h10m23s32',
-                                   'TE15_m01d03y2025_h10m23s32','TE07_fix__m01d05y2025_h09m07s41']
-        demographics_TE5_run_list=['TE03_m12d20y2024_h14m26s56','TE05fix__m01d03y2025_h11m36s57','TE07_fix__m01d05y2025_h09m07s41',
-           'TE08_m12d24y2024_h09m31s26','TE09_m12d26y2024_h09m10s55']
-
-        #specks_TE5_run_list=['specks_TE07_m12d30y2024_h12m10s15','specks_TE07_m12d30y2024_h12m10s15',
-        #                     'specks_TE07_m12d30y2024_h12m10s15']
-        specks_TE5_run_list=['specks_TE05_m12d30y2024_h11m50s03','specks_TE05_m12d30y2024_h11m50s03',
-                             'specks_TE07_m12d30y2024_h12m10s15',
-                             'specks_TE08_m12d30y2024_h12m10s13','specks_TE09_m12d30y2024_h12m10s11']
-
-
-        #specks_TE5_run_list=['specks_TE05_m12d31y2024_h09m10s39','specks_TE05_m12d31y2024_h09m10s39',
-        #                     'specks_TE07_m12d31y2024_h09m10s28',
-        #                    'specks_TE08_m12d31y2024_h09m10s32',
-        #                    'specks_TE09_m12d31y2024_h09m10s34']
-
-        Ne = [1000, 1000, 1000, 1000, 1000]
-        burnin_times_in_generations = [5e7, 5e7, 5e7, 5e7, 5e7]
-        time_since_DIV = [1000, 10000, 100000, 500000, 1000000]
-
-        bin_sizes_Tc = [200,200, 200, 200,200]
-        bin_sizes_Ks = [0.0002, 0.0002, 0.0002, 0.0002, 0.0002]
-        xmax_Ks = 0.025#0.001  # max(demographiKS_ks_results)
-        xmax_Tc = False
-        run_list_num="_5to9_vary_Tdiv_fix2"
-        Ks_per_YR = 0.01 * 10**-6
-        #end
-
-
-        ymax = False
-
-        suptitle = "SLiM Tcoal and Ks\n" + \
-                                  "Recombination rate = 1.26e-6, Ne and BI constant"
-        make_Tc_Ks_fig_with_subplots(Ne, bin_sizes_Ks, bin_sizes_Tc, burnin_times_in_generations,
-                                          demographiKS_out_path, demographics_TE5_run_list, run_list_num,
-                                          specks_TE5_run_list, specks_out_path, time_since_DIV,
-                                            Ks_per_YR, xmax_Ks, xmax_Tc, ymax, suptitle)
-
-
-
-        self.assertEqual(True, True)  # add assertion here
-
-
 def make_Tc_Ks_fig_with_subplots(bin_sizes_Ks, bin_sizes_Tc,
-                                 demographiKS_out_path, demographics_TE9_run_list, run_list_name,
-                                 specks_TE9_run_list, specks_out_path,
+                                 demographiKS_out_path, demographics_run_list, run_list_name,
+                                 specks_run_list, specks_out_path,
                                  xmax_Ks, xmax_Tc, ymax_Ks, ymax_Tc,
-                                 suptitle, show_KS_predictions,include_annotation):
+                                 suptitle, show_KS_predictions, include_annotation, plot_title_lamda):
 
-    dpi_req=100 #keep it small for now
-
-    num_runs = len(demographics_TE9_run_list)
+    num_runs = len(demographics_run_list)
     png_out = os.path.join(demographiKS_out_path, run_list_name)
     par_dir = Path(__file__).parent.parent
     image_folder = os.path.join(par_dir, "images")
@@ -177,11 +31,18 @@ def make_Tc_Ks_fig_with_subplots(bin_sizes_Ks, bin_sizes_Tc,
     png_with_migration_Tdiv = os.path.join(image_folder, 'Migration_Tc.png')
 
     #fig, ax = plt.subplots(2, num_runs, figsize=(40, 20))
-    fig, ax = plt.subplots(2, num_runs, figsize=(20, 10))
+    num_plot_rows= 2
+    if include_annotation:
+        fig, ax = plt.subplots(num_plot_rows, num_runs, figsize=(40, 20))
+        dpi_req = 350
+    else:
+        fig, ax = plt.subplots(num_plot_rows, num_runs, figsize=(20, 8))
+        dpi_req = 100
+
     fig.suptitle(suptitle)
 
     for i in range(1, num_runs):
-        dgx_run_name = demographics_TE9_run_list[i]
+        dgx_run_name = demographics_run_list[i]
 
         if dgx_run_name:
 
@@ -207,7 +68,7 @@ def make_Tc_Ks_fig_with_subplots(bin_sizes_Ks, bin_sizes_Tc,
                 else:
                     plot_title = plot_title + ", MigRate=0"
             else:
-                plot_title = "Ks at Tnow"
+                plot_title = str(plot_title_lamda(config_used))
 
         else:
             config_used = False
@@ -216,7 +77,7 @@ def make_Tc_Ks_fig_with_subplots(bin_sizes_Ks, bin_sizes_Tc,
             plot_title = "Ks at Tnow"
             dgx_version = "NA"
 
-        spx_run_name = specks_TE9_run_list[i]
+        spx_run_name = specks_run_list[i]
         if spx_run_name:
             spx_run_nickname = spx_run_name.split('_')[1]
             spx_run_path = os.path.join(specks_out_path, spx_run_name)
@@ -315,6 +176,8 @@ def plot_ks(this_ax, config_used, slim_ks_by_gene, spx_ks_by_gene,
 
     num_slim_genes = len(slim_ks_by_gene)
     num_specks_genes = len(spx_ks_by_gene)
+    include_logfit=False
+    include_RC_model=False
 
     if not xmax:
         xmax = max(slim_ks_by_gene)
@@ -354,9 +217,10 @@ def plot_ks(this_ax, config_used, slim_ks_by_gene, spx_ks_by_gene,
     exp_num_RC_per_gene_as_int = round(exp_num_RC_per_gene,4)
     max_x_exp_using_RC = config_used.t_div_as_ks + (config_used.mean_Ks_from_Tc * exp_num_RC_per_gene / (exp_num_RC_per_gene + 1))
 
-    this_ax.axvline(x=half_bin_size+max_x_exp_using_RC, color='g', linestyle=':',
+    if include_RC_model:
+        this_ax.axvline(x=half_bin_size+max_x_exp_using_RC, color='g', linestyle=':',
                     label="Predicted Ks peak for\nRC=" + str(exp_num_RC_per_gene_as_int))
-    print("predicted KS peak:\t" + str(half_bin_size+max_x_exp_using_RC))
+        print("predicted KS peak:\t" + str(half_bin_size+max_x_exp_using_RC))
 
     if len(slim_ks_by_gene) > 0:
         dgx_hist_ys_list=list(dgx_hist_ys)
@@ -376,12 +240,15 @@ def plot_ks(this_ax, config_used, slim_ks_by_gene, spx_ks_by_gene,
         fit_curve_ys_ln2, xs_for_wgd, popt = \
             curve_fitting.fit_curve_to_xs_and_ys(bins[0:-1],
                                              dgx_hist_ys, curve_fitting.wgd_lognorm2, p0=p0)
+        if include_logfit:
+            if fit_curve_ys_ln2:
+                this_ax.plot(xs_for_wgd,fit_curve_ys_ln2,color='g', label="Ks logfit")
+
     else:
         fit_curve_ys_ln2 = False
         dgx_hist_ys = False
 
-    if fit_curve_ys_ln2:
-        this_ax.plot(xs_for_wgd,fit_curve_ys_ln2,color='g', label="Ks logfit")
+
 
     #mean_Ks_from_Nb_string=  "({:.2E})".format(config_used.mean_Ks_from_Nb)
     #this_ax.axvline(x=config_used.mean_Ks_from_Nb,

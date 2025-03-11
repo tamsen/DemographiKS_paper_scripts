@@ -23,20 +23,26 @@ class TestKsByNe(unittest.TestCase):
         # since mutation rate is 1.0e-5
         # we multiply by 1/1.2 since thats syn / total mut rate
         Ks_per_YR = 0.833*10**-5
-        bin_sizes_Tc = [80, 80, 80, 400, 800]  # looks good
+        #bin_sizes_Tc = [80, 80, 80, 400, 800]  # looks good
         xmax_Ks = [0.4,0.4,0.4,0.4,0.4] #[0.01,0.01,0.01,0.1,0.2]#False#0.08  # for mut rate e-5
-        bin_sizes_Ks = [0.001, 0.001, 0.001, 0.004, 0.008]
+        #bin_sizes_Ks = [0.001, 0.001, 0.001, 0.004, 0.008]
+        bin_sizes_Ks = [xmax_Ks_i / 50 for xmax_Ks_i in xmax_Ks]
         xmax_Tc = [2000,2000,2000,20000,40000]
+        bin_sizes_Tc =[xmax_Tc_i / 50 for xmax_Tc_i in xmax_Tc]
+        ymax_Tc = [False for f in demographics_TE_run_list]
         run_list_num = "_early_DGKS_1000_gen_by_Ne_fast_mut_rate"
         ymax_Ks = [50 for f in demographics_TE_run_list ]
 
-        suptitle = "SLiM vs SpecKS, Tcoal and Ks\n" + \
-                   "Recombination rate = 1.26e-7, mut rate 1.0e-5"
+        suptitle = "SLiM vs SpecKS, Tcoal and Ks"
         show_KS_predictions=[False,False,False]
+        include_annotation=False
+        plot_title_lamda = lambda config: "Ks at Tnow\n"+ "Ne:" + str(config.ancestral_Ne)
         make_Tc_Ks_fig_with_subplots(bin_sizes_Ks, bin_sizes_Tc,
                                      demographiKS_out_path, demographics_TE_run_list, run_list_num,
                                      specks_TE_run_list, specks_out_path,
-                                     xmax_Ks, xmax_Tc, ymax_Ks, suptitle, show_KS_predictions)
+                                     xmax_Ks, xmax_Tc, ymax_Ks, ymax_Tc,
+                                      suptitle, show_KS_predictions,
+                                     include_annotation,plot_title_lamda)
 
         self.assertEqual(True, True)  # add assertion here
 

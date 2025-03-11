@@ -160,10 +160,6 @@ def make_Tc_Ks_Allo_vs_Auto_fig_with_subplots(num_plot_rows, bin_sizes_Ks, bin_s
         dpi_needed = 100
 
     fig.suptitle(suptitle)
-    #captions=[
-    #    "polyploid Ks at T_now for autopolyploid\n\n\n",
-    #    "polyploid Ks at T_now for allo and autopolyploid\n\n\n",
-    #    "ancestral Tc at T_div for allo and T_wgd for auto"]
     captions=[
         "polyploid Ks at T_now\nfor Autopolyploid",
         "polyploid Ks at T_now\nfor Allo and Autopolyploid",

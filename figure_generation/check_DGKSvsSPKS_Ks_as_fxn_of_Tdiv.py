@@ -29,14 +29,14 @@ class TestGeneLossRates(unittest.TestCase):
         ymax_KS = [800,800,800,800,800]
         ymax_Tc = [False for f in demographics_TE5_run_list]
         show_KS_predictions=[False,False,False]
-        suptitle = "SLiM and SpecKS Ks histograms\n" + \
-                                  "Recombination rate = 8e-9, Ne and BI constant"
+        suptitle = "SLiM and SpecKS Ks histograms"
         include_annotation=False
+        plot_title_lamda = lambda config: "Ks at Tnow\n"+ "Tdiv:" + str(config.DIV_time_Ge)
         make_Tc_Ks_fig_with_subplots(bin_sizes_Ks, bin_sizes_Tc,
                                           demographiKS_out_path, demographics_TE5_run_list, run_list_name,
                                           specks_TE5_run_list, specks_out_path,
                                      xmax_Ks, xmax_Tc, ymax_KS, ymax_Tc,suptitle,
-                                     show_KS_predictions,include_annotation)
+                                     show_KS_predictions,include_annotation,plot_title_lamda)
 
         self.assertEqual(True, True)  # add assertion here
 
