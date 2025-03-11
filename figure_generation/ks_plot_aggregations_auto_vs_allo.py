@@ -110,20 +110,24 @@ def plot_allo_vs_auto_ks(this_ax, allo_config_used, allo_ks_by_gene,
                      density=False)
 
     #this_ax.axvline(x=allo_config_used.t_div_as_ks, color='b', linestyle='--', label="input Tdiv as Ks")
-    theoretical_ks_mean_now= allo_config_used.mean_Ks_from_Tc + allo_config_used.t_div_as_ks
-    this_ax.axvline(x=theoretical_ks_mean_now, color='purple', linestyle='--',
+    if allo_config_used:
+        theoretical_ks_mean_now= allo_config_used.mean_Ks_from_Tc + allo_config_used.t_div_as_ks
+        this_ax.axvline(x=theoretical_ks_mean_now, color='purple', linestyle='--',
                     label="Expected Ks mean (Allo)",lw=3)
-
-    this_ax.axvline(x=auto_config_used.mean_Ks_from_Nb, color='k', linestyle='--',
+    if auto_config_used:
+        this_ax.axvline(x=auto_config_used.mean_Ks_from_Nb, color='k', linestyle='--',
                     label="Expected Ks mean (Auto)",lw=3)
 
     #mean_Ks_from_Nb_string=  "({:.2E})".format(config_used.mean_Ks_from_Nb)
     #this_ax.axvline(x=config_used.mean_Ks_from_Nb,
     #                color='g', linestyle='--', label="Tc due to Nb " + mean_Ks_from_Nb_string )
 
-    if include_annotation:
-        add_Ks_annotations(this_ax, allo_config_used, allo_ks_by_gene, dgx_hist_ys, bins, show_predictions)
-
+    if allo_config_used:
+        add_allo_auto_Ks_annotations(this_ax, allo_config_used, allo_ks_by_gene, dgx_hist_ys, bins,
+                                 include_annotation, show_predictions)
+    else:
+        add_allo_auto_Ks_annotations(this_ax, auto_config_used, auto_ks_by_gene, dgx_hist_ys, bins,
+                                 include_annotation, show_predictions)
     if ymax:
         this_ax.set(ylim=[0, ymax])
     this_ax.set(xlim=[0, xmax])
@@ -201,7 +205,7 @@ def make_Tc_Ks_Allo_vs_Auto_fig_with_subplots(num_plot_rows, bin_sizes_Ks, bin_s
             allo_config_used = False
             allo_ks_results = []
             allo_run_duration_in_m = 0
-            plot_title = "foo - didnt load a config"
+            plot_title = "Ks at Tnow"
 
 
         auto_run_name = auto_run_list[i]
@@ -238,27 +242,40 @@ def make_Tc_Ks_Allo_vs_Auto_fig_with_subplots(num_plot_rows, bin_sizes_Ks, bin_s
                              ymax_Ks[joint_allo_auto_plot_index][i], show_KS_predictions,
                              include_annotation)
 
+        allo_mrcas_by_gene=[]
+        if allo_run_name:
+            allo_Tc_csv_file = os.path.join(allo_run_path, "1_5_simulated_ancestral_gene_mrcas.csv")
+            if not os.path.exists(allo_Tc_csv_file):
+                allo_Tc_csv_file = os.path.join(allo_run_path, "simulated_ancestral_gene_mrcas.csv")
 
-        allo_Tc_csv_file = os.path.join(allo_run_path, "1_10_simulated_ancestral_gene_mrcas.csv")
-        if not os.path.exists(allo_Tc_csv_file):
-            allo_Tc_csv_file = os.path.join(allo_run_path, "simulated_ancestral_gene_mrcas.csv")
+            loci, allo_mrcas_by_gene = read_data_csv(allo_Tc_csv_file)
 
-        loci, allo_mrcas_by_gene = read_data_csv(allo_Tc_csv_file)
+            plot_title = "Tcoal at Tdiv\nburnin time=" + str(auto_config_used.burnin_time) + " gen, " \
+                     + "Na=" + str(auto_config_used.ancestral_Ne)
 
-        auto_Tc_csv_file = os.path.join(auto_run_path, "1_10_simulated_ancestral_gene_mrcas.csv")
-        if not os.path.exists(auto_Tc_csv_file):
-            auto_Tc_csv_file = os.path.join(auto_run_path, "simulated_ancestral_gene_mrcas.csv")
+        auto_mrcas_by_gene=[]
+        if auto_run_name:
+            auto_Tc_csv_file = os.path.join(auto_run_path, "1_5_simulated_ancestral_gene_mrcas.csv")
+            if not os.path.exists(auto_Tc_csv_file):
+                auto_Tc_csv_file = os.path.join(auto_run_path, "simulated_ancestral_gene_mrcas.csv")
 
-        loci, auto_mrcas_by_gene = read_data_csv(auto_Tc_csv_file)
+            loci, auto_mrcas_by_gene = read_data_csv(auto_Tc_csv_file)
 
-        plot_title = "Tcoal at Tdiv\nburnin time=" + str(allo_config_used.burnin_time) + " gen, " \
-                     + "Na=" + str(allo_config_used.ancestral_Ne)
+            plot_title = "Tcoal at Tdiv\nburnin time=" + str(auto_config_used.burnin_time) + " gen, " \
+                     + "Na=" + str(auto_config_used.ancestral_Ne)
 
         theory_mrcas_by_gene=False
+        if allo_config_used:
+            ancestral_Ne = allo_config_used.ancestral_Ne
+            num_genes =  allo_config_used.num_genes
+        else:
+            ancestral_Ne = auto_config_used.ancestral_Ne
+            num_genes =  auto_config_used.num_genes
+
         avg_simulated_allo_Tc = plot_mrca_for_Autos_and_Allos(ax[Tc_plot_index, i],
                 allo_mrcas_by_gene, auto_mrcas_by_gene, theory_mrcas_by_gene,
-                  plot_title, allo_config_used.ancestral_Ne,
-                  bin_sizes_Tc[i], xmax_Tc[i], ymax_Tc[i], allo_config_used.num_genes,
+                  plot_title, ancestral_Ne,
+                  bin_sizes_Tc[i], xmax_Tc[i], ymax_Tc[i], num_genes,
                                                               include_annotation)
 
         if include_annotation:
@@ -275,8 +292,8 @@ def make_Tc_Ks_Allo_vs_Auto_fig_with_subplots(num_plot_rows, bin_sizes_Ks, bin_s
     plt.clf()
     plt.close()
 
-def add_Ks_annotations(this_ax, config_used,dgks_Ks_results,dgks_hist_results,
-                       bins,show_predictions):
+def add_allo_auto_Ks_annotations(this_ax, config_used, dgks_Ks_results, dgks_hist_results,
+                                 bins, include_annotation, show_predictions):
 
     ks_predictions = ks_modeling.Ks_modeling_predictions(config_used, bins)
     if len(dgks_Ks_results) <= 0:
@@ -296,11 +313,22 @@ def add_Ks_annotations(this_ax, config_used,dgks_Ks_results,dgks_hist_results,
 
     #plot predictions
     if show_predictions[0]:
-        this_ax.plot(bins, ks_predictions.travelling_kingman_ys, label='expectation due to Kingman',
+
+        if config_used.DIV_time_Ge:#allopolyploid
+            this_ax.plot(bins, ks_predictions.travelling_kingman_ys,
+                         label='expectation due to Kingman\nfrom Na',
                  linestyle='solid', color='b', alpha=1)
+        else:
+            this_ax.plot(bins, ks_predictions.autopolyploid_ys,
+                         label='expectation due to Kingman\nfrom Nb',
+                 linestyle='solid', color='k',alpha=1)
+
     if show_predictions[1]:
         this_ax.plot(bins,ks_predictions.travelling_gaussian_ys,label='expectation due to CLT',
                  linestyle='solid', color='r',alpha=1)
+
+    if not include_annotation:
+        return
 
     #add annotations
     annotation_txt = "\n".join([theoretical_ks_mean_now_as_string,

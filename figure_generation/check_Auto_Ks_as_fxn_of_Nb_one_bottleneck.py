@@ -101,5 +101,51 @@ class TestKsForAuto(unittest.TestCase):
         self.assertEqual(True, True)  # add assertion here
 
 
+
+    def test_Ks_for_varying_Nb_one_bottleneck_Na_fixed_at_10K_after5000_years(self):
+
+        #full, w/Ne 10K
+        demographiKS_allo_out_path = '/home/tamsen/Data/DemographiKS_output_from_mesx/Auto/Auto_vs_Nb/Na10K'
+        demographics_auto_out_path = '/home/tamsen/Data/DemographiKS_output_from_mesx/Auto/Auto_vs_Nb/Na10K'
+
+        demographics_allo_run_list = [
+            False,False,False,False]
+
+        demographics_auto_run_list = [
+            False,
+            'Auto10KNa_50Nb_5kTdiv_m03d10y2025_h17m19s32',
+            'Auto10KNa_100Nb_5kTdiv_m03d10y2025_h17m15s10',
+            'Auto_10KNa_500Nb_5k_m03d10y2025_h17m17s14']
+
+        #xmax_Ks = [0.8  for f in demographics_auto_run_list ]
+        xmax_Ks_array = [[0.05, 0.05,0.05,0.05,0.05 ],[0.4, 0.4,0.5,0.6,0.8 ]]
+        bin_sizes_Ks_array  = [[xmax_KS_i/50 for xmax_KS_i in xmax_Ks_array[0]],
+                        [xmax_KS_i / 50 for xmax_KS_i in xmax_Ks_array[1]]]
+
+        xmax_Tc = [80000 for f in demographics_auto_run_list]
+        bin_sizes_Tc = [xmax_Tc_i / 50 for xmax_Tc_i in xmax_Tc]
+
+        ymax_Ks_array = [[200 for f in demographics_auto_run_list],
+                   [100 for f in demographics_auto_run_list]]
+
+        ymax_Tc = [False for f in demographics_auto_run_list]
+        run_list_name = "Ks_for_Allo_and_Auto_varying_varying_Nb_10K_Na"
+
+        show_KS_predictions = [True, False, False]
+        suptitle = "Auto and Allo Ks histograms\n"
+
+        plot_title_lamda = lambda config: "Polyploid pop size:" + str(config.bottleneck_Ne)
+        include_annotation = False
+        num_plot_rows = 2
+
+        make_Tc_Ks_Allo_vs_Auto_fig_with_subplots(num_plot_rows,bin_sizes_Ks_array, bin_sizes_Tc,
+        demographiKS_allo_out_path, demographics_allo_run_list, run_list_name,
+        demographics_auto_run_list, demographics_auto_out_path,
+        xmax_Ks_array, xmax_Tc, ymax_Ks_array, ymax_Tc,
+        suptitle, show_KS_predictions,include_annotation,plot_title_lamda)
+
+        self.assertEqual(True, True)  # add assertion here
+
+
 if __name__ == '__main__':
     unittest.main()

@@ -26,8 +26,14 @@ class Ks_modeling_predictions:
         popt=[config.num_genes*bin_size,config.theoretical_ks_mean_now,self.theoretical_Gaussian_sigma_now]
         self.travelling_gaussian_ys = [curve_fitting.wgd_normal(x, *popt) for x in bins]
 
-        #self.theoretical_sigma_from_subsampling_genes=(
-        #        self.theoretical_Kingman_sigma_now / math.sqrt(config.num_genes))
+        # theoretical autopolyploid prediction based on Nb
+        K = config.mean_Ks_from_Nb ** -1
+        bin_size = bins[1] - bins[0]
+        popt = [config.num_genes * bin_size, 0.0000001, config.Ks_per_YR, K]
+        self.autopolyploid_ys = [curve_fitting.wgd_travelling_exponential(x, *popt) for x in bins]
+
+        self.theoretical_sigma_from_subsampling_genes=(
+                self.theoretical_Kingman_sigma_now / math.sqrt(config.num_genes))
         self.theoretical_sigma_due_to_kingman_from_subsampling_genes=(
                 config.mean_Ks_from_Tc / math.sqrt(config.num_genes))
 
