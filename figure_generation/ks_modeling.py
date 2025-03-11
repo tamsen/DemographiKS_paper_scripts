@@ -26,25 +26,25 @@ class Ks_modeling_predictions:
         popt=[config.num_genes*bin_size,config.theoretical_ks_mean_now,self.theoretical_Gaussian_sigma_now]
         self.travelling_gaussian_ys = [curve_fitting.wgd_normal(x, *popt) for x in bins]
 
+        print("confing num genes:" + str(config.num_genes))
+        self.theoretical_sigma_from_subsampling_genes=(
+                self.theoretical_Kingman_sigma_now / math.sqrt(config.num_genes))
+        self.theoretical_sigma_due_to_kingman_from_subsampling_genes=(
+                config.mean_Ks_from_Tc / math.sqrt(config.num_genes))
+
         # theoretical autopolyploid prediction based on Nb
         K = config.mean_Ks_from_Nb ** -1
         bin_size = bins[1] - bins[0]
         popt = [config.num_genes * bin_size, 0.0000001, config.Ks_per_YR, K]
         self.autopolyploid_ys = [curve_fitting.wgd_travelling_exponential(x, *popt) for x in bins]
 
-        self.theoretical_sigma_from_subsampling_genes=(
-                self.theoretical_Kingman_sigma_now / math.sqrt(config.num_genes))
-        self.theoretical_sigma_due_to_kingman_from_subsampling_genes=(
-                config.mean_Ks_from_Tc / math.sqrt(config.num_genes))
-
 class Ks_modeling_fits:
 
     def __init__(self, slim_ks_by_gene, hist_Ns, bins):
-
         num_slim_genes = len(slim_ks_by_gene)
         self.mean_ks_now_from_slim = sum(slim_ks_by_gene) / num_slim_genes
-        self.variance_from_slim = (1.0 / float(num_slim_genes-1)) * \
-                             sum([(x - self.mean_ks_now_from_slim) ** 2 for x in slim_ks_by_gene])  # sigma_squared
+        self.variance_from_slim = (1.0 / float(num_slim_genes - 1)) * \
+                                  sum([(x - self.mean_ks_now_from_slim) ** 2 for x in slim_ks_by_gene])  # sigma_squared
 
         bin_midpoints = [0.5 * (bins[i] + bins[i + 1]) for i in range(0, len(bins) - 1)]
         self.gaussian_fit = curve_fitting.fit_curve_to_xs_and_ys(

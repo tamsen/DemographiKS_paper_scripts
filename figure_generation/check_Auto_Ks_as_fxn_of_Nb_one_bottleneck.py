@@ -109,14 +109,15 @@ class TestKsForAuto(unittest.TestCase):
         demographics_auto_out_path = '/home/tamsen/Data/DemographiKS_output_from_mesx/Auto/Auto_vs_Nb/Na10K'
 
         demographics_allo_run_list = [
-            False,False,False,False]
+            False,False,False,False,False]
 
         demographics_auto_run_list = [
             False,
             'Auto10KNa_50Nb_5kTdiv_m03d10y2025_h17m19s32',
             'Auto10KNa_100Nb_5kTdiv_m03d10y2025_h17m15s10',
-            'Auto_10KNa_500Nb_5k_m03d10y2025_h17m17s14']
-
+            'Auto_10KNa_500Nb_5k_m03d10y2025_h17m17s14',
+            'Auto_10KNa_1KNb_5k_m03d11y2025_h09m03s47']
+        #, 'Auto10KNa_50Nb_5kTdiv_m03d11y2025_h09m32s08'
         #xmax_Ks = [0.8  for f in demographics_auto_run_list ]
         xmax_Ks_array = [[0.05, 0.05,0.05,0.05,0.05 ],[0.4, 0.4,0.5,0.6,0.8 ]]
         bin_sizes_Ks_array  = [[xmax_KS_i/50 for xmax_KS_i in xmax_Ks_array[0]],

@@ -64,7 +64,7 @@ def plot_mrca_for_Autos_and_Allos(this_ax, allo_mrcas_by_gene, auto_mrcas_by_gen
                      label=my_label ,
                      density=False)
 
-    this_ax.plot(bins, kingman, c='red', label='Expectations under Kingman,\n'
+    this_ax.plot(bins, kingman, c='red', label='Expectations under Kingman (Na),\n'
                                                + "avg Tc " + str(int(two_Ne)) + " generations)")
 
     if ymax:
@@ -222,6 +222,9 @@ def make_Tc_Ks_Allo_vs_Auto_fig_with_subplots(num_plot_rows, bin_sizes_Ks, bin_s
             print("reading " + ks_file)
             auto_ks_results = read_Ks_csv(ks_file, False)
             auto_run_duration_in_m, auto_version = get_run_time_in_minutes(auto_run_path)
+
+            if not allo_run_name:
+                plot_title = "Ks at Tnow\n" + str(plot_title_lamda(auto_config_used))
         else:
             spx_ks_results = []
             spx_run_duration_in_m = 0
@@ -316,15 +319,15 @@ def add_allo_auto_Ks_annotations(this_ax, config_used, dgks_Ks_results, dgks_his
 
         if config_used.DIV_time_Ge:#allopolyploid
             this_ax.plot(bins, ks_predictions.travelling_kingman_ys,
-                         label='expectation due to Kingman\nfrom Na',
+                         label='Expectation due to Kingman\nfrom Na',
                  linestyle='solid', color='b', alpha=1)
         else:
             this_ax.plot(bins, ks_predictions.autopolyploid_ys,
-                         label='expectation due to Kingman\nfrom Nb',
+                         label='Expectation due to Kingman\nfrom Nb',
                  linestyle='solid', color='k',alpha=1)
 
     if show_predictions[1]:
-        this_ax.plot(bins,ks_predictions.travelling_gaussian_ys,label='expectation due to CLT',
+        this_ax.plot(bins,ks_predictions.travelling_gaussian_ys,label='Expectation due to CLT',
                  linestyle='solid', color='r',alpha=1)
 
     if not include_annotation:
