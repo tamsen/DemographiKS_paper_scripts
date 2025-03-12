@@ -9,11 +9,15 @@ class TestKsByNe(unittest.TestCase):
         demographiKS_out_path = '/home/tamsen/Data/DemographiKS_output_from_mesx/SPKS_vs_DGKS_Ne'
         specks_out_path = '/home/tamsen/Data/DemographiKS_output_from_mesx/SPKS_vs_DGKS_Ne'
 
+        demographics_TE_run_list = [False, "DGKS_Tdiv10_m03d12y2025_h09m21s59",
+                                    "DGKS_Tdiv100_m03d12y2025_h09m21s11",
+                                    "DGKS_Tdiv1000_m03d12y2025_h09m20s10",
+                                    "DGKS_Tdiv5000_m03d12y2025_h09m19s04"]
 
-        demographics_TE_run_list = [False, "DGKS_10_10_m5_RC7_m01d14y2025_h09m14s47",
-                                    "DGKS_100_100_m5_RC7_m01d14y2025_h09m14s18",
-                                    "DGKS_1000_1000_m5_BI40_RC7_m01d13y2025_h15m36s22",
-                                    "DGKS_5000_5000_m5_BI_40K_RC7_m01d14y2025_h09m13s52"]
+        #demographics_TE_run_list = [False, "DGKS_10_10_m5_RC7_m01d14y2025_h09m14s47",
+        #                            "DGKS_100_100_m5_RC7_m01d14y2025_h09m14s18",
+        #                            "DGKS_1000_1000_m5_BI40_RC7_m01d13y2025_h15m36s22",
+        #                            "DGKS_5000_5000_m5_BI_40K_RC7_m01d14y2025_h09m13s52"]
 
         specks_TE_run_list = [False,'specks_TE10_m01d13y2025_h13m18s28',
                               'specks_TE100_m01d13y2025_h13m17s56',
@@ -26,9 +30,9 @@ class TestKsByNe(unittest.TestCase):
         #bin_sizes_Tc = [80, 80, 80, 400, 800]  # looks good
         xmax_Ks = [0.4,0.4,0.4,0.4,0.4] #[0.01,0.01,0.01,0.1,0.2]#False#0.08  # for mut rate e-5
         #bin_sizes_Ks = [0.001, 0.001, 0.001, 0.004, 0.008]
-        bin_sizes_Ks = [xmax_Ks_i / 50 for xmax_Ks_i in xmax_Ks]
+        bin_sizes_Ks = [xmax_Ks_i / 25 for xmax_Ks_i in xmax_Ks]
         xmax_Tc = [2000,2000,2000,20000,40000]
-        bin_sizes_Tc =[xmax_Tc_i / 50 for xmax_Tc_i in xmax_Tc]
+        bin_sizes_Tc =[xmax_Tc_i / 25 for xmax_Tc_i in xmax_Tc]
         ymax_Tc = [False for f in demographics_TE_run_list]
         run_list_num = "_early_DGKS_1000_gen_by_Ne_fast_mut_rate"
         ymax_Ks = [50 for f in demographics_TE_run_list ]

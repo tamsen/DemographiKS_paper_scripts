@@ -35,8 +35,8 @@ class TestKsForAuto(unittest.TestCase):
 
         show_KS_predictions = [False, False, False]
         suptitle = "Auto and Allo Ks histograms\n"
-        include_annotation = True
-        num_plot_rows = 3
+        include_annotation = False
+        num_plot_rows = 2
 
         bin_sizes_Ks_array=[bin_sizes_Ks,bin_sizes_Ks]
         xmax_Ks_array=[xmax_Ks,xmax_Ks]
@@ -72,7 +72,8 @@ class TestKsForAuto(unittest.TestCase):
             'Auto_10KNa_5KNb_m02d20y2025_h17m32s04']
 
         #xmax_Ks = [0.8  for f in demographics_auto_run_list ]
-        xmax_Ks_array = [[0.05, 0.05,0.05,0.05,0.05 ],[0.4, 0.4,0.5,0.6,0.8 ]]
+        #xmax_Ks_array = [[0.05, 0.05,0.05,0.05,0.05 ],[0.4, 0.4,0.5,0.6,0.8 ]]
+        xmax_Ks_array = [[0.05, 0.2,0.8,0.8,0.8 ],[0.4, 0.4,0.5,0.6,0.8 ]]
         bin_sizes_Ks_array  = [[xmax_KS_i/50 for xmax_KS_i in xmax_Ks_array[0]],
                         [xmax_KS_i / 50 for xmax_KS_i in xmax_Ks_array[1]]]
 
@@ -83,14 +84,14 @@ class TestKsForAuto(unittest.TestCase):
                    [100 for f in demographics_auto_run_list]]
 
         ymax_Tc = [False for f in demographics_auto_run_list]
-        run_list_name = "Ks_for_Allo_and_Auto_varying_varying_Nb_10K_Na"
+        run_list_name = "Ks_for_Allo_and_Auto_varying_varying_Nb_10K_Na_1000_years"
 
         show_KS_predictions = [False, False, False]
         suptitle = "Auto and Allo Ks histograms\n"
 
         plot_title_lamda = lambda config: "Polyploid pop size:" + str(config.bottleneck_Ne)
         include_annotation = True
-        num_plot_rows = 3
+        num_plot_rows = 2
 
         make_Tc_Ks_Allo_vs_Auto_fig_with_subplots(num_plot_rows,bin_sizes_Ks_array, bin_sizes_Tc,
         demographiKS_allo_out_path, demographics_allo_run_list, run_list_name,
@@ -130,7 +131,7 @@ class TestKsForAuto(unittest.TestCase):
                    [100 for f in demographics_auto_run_list]]
 
         ymax_Tc = [False for f in demographics_auto_run_list]
-        run_list_name = "Ks_for_Allo_and_Auto_varying_varying_Nb_10K_Na"
+        run_list_name = "Ks_for_Allo_and_Auto_varying_varying_Nb_10K_Na_after_5000_years"
 
         show_KS_predictions = [True, False, False]
         suptitle = "Auto and Allo Ks histograms\n"

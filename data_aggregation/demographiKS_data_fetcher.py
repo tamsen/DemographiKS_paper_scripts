@@ -8,11 +8,8 @@ class MyDGXDataFetcher(unittest.TestCase):
     def test_fetch_demographiKS_data(self):
 
         #/usr/scratch2/userdata2/tdunn/DemographiKS_Output
-        run_list = ['Auto_10KNa_1KNb_5k_m03d11y2025_h09m03s47','Auto10KNa_50Nb_5kTdiv_m03d11y2025_h09m32s08']
-        #'Auto10KNa_10Nb_m03d10y2025_h17m04s17']
-         #           'Auto10KNa_100Nb_5kTdiv_m03d10y2025_h17m15s10',
-         #           'Auto_10KNa_500Nb_5k_m03d10y2025_h17m17s14',
-         #               'Auto10KNa_50Nb_5kTdiv_m03d10y2025_h17m19s32']
+        run_list = ['KSvsNa_500Na_100Nb_m03d12y2025_h10m32s17']
+
         run_collection_name = "TE"
         me_at_remote_URL = 'mesx_cluster'
         output_root_folder = os.path.join("/usr/scratch2/userdata2/tdunn/DemographiKS_Output")

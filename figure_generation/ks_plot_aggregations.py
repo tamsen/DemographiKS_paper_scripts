@@ -108,7 +108,7 @@ def make_Tc_Ks_fig_with_subplots(bin_sizes_Ks, bin_sizes_Tc,
             if os.path.exists(slim_csv_file_0):
                 loci, slim_mrcas_by_gene = read_data_csv(slim_csv_file_0)
             else:
-                slim_csv_file_1 = os.path.join(dgx_run_path, "1_10_simulated_ancestral_gene_mrcas.csv")
+                slim_csv_file_1 = os.path.join(dgx_run_path, "1_5_simulated_ancestral_gene_mrcas.csv")
                 loci, slim_mrcas_by_gene = read_data_csv(slim_csv_file_1)
         else:
             slim_mrcas_by_gene=[]
@@ -208,8 +208,12 @@ def plot_ks(this_ax, config_used, slim_ks_by_gene, spx_ks_by_gene,
     if config_used.t_div_as_ks:
         this_ax.axvline(x=half_bin_size+config_used.t_div_as_ks, color='b', linestyle='-.', label="input Tdiv as Ks")
 
+    if not config_used.DIV_time_Ge: #this would be an autopolyploid
+        this_ax.axvline(x=half_bin_size + config_used.mean_Ks_from_Nb, color='g', linestyle='--',
+                        label="Expected Ks mean (4Nb)")
     theoretical_ks_mean_now=config_used.mean_Ks_from_Tc+config_used.t_div_as_ks
-    this_ax.axvline(x=half_bin_size+theoretical_ks_mean_now, color='r', linestyle='--', label="Expected Ks mean")
+    this_ax.axvline(x=half_bin_size+theoretical_ks_mean_now, color='r', linestyle='--',
+                    label="Expected Ks mean (2Na)")
 
     RC_rate_per_base_per_year=config_used.recombination_rate
     exp_num_RC_per_base_since_DIV=RC_rate_per_base_per_year*theoretical_ks_mean_now/config_used.Ks_per_YR
@@ -218,9 +222,9 @@ def plot_ks(this_ax, config_used, slim_ks_by_gene, spx_ks_by_gene,
     max_x_exp_using_RC = config_used.t_div_as_ks + (config_used.mean_Ks_from_Tc * exp_num_RC_per_gene / (exp_num_RC_per_gene + 1))
 
     if include_RC_model:
-        this_ax.axvline(x=half_bin_size+max_x_exp_using_RC, color='g', linestyle=':',
+            this_ax.axvline(x=half_bin_size+max_x_exp_using_RC, color='g', linestyle=':',
                     label="Predicted Ks peak for\nRC=" + str(exp_num_RC_per_gene_as_int))
-        print("predicted KS peak:\t" + str(half_bin_size+max_x_exp_using_RC))
+            print("predicted KS peak:\t" + str(half_bin_size+max_x_exp_using_RC))
 
     if len(slim_ks_by_gene) > 0:
         dgx_hist_ys_list=list(dgx_hist_ys)
