@@ -23,20 +23,20 @@ def make_Tc_Ks_fig_with_subplots(bin_sizes_Ks, bin_sizes_Tc,
 
     num_runs = len(demographics_run_list)
     png_out = os.path.join(demographiKS_out_path, run_list_name)
+    csv_out = png_out+"csv"
     par_dir = Path(__file__).parent.parent
     image_folder = os.path.join(par_dir, "images")
     png_Tnow = os.path.join(image_folder, 'Ks_now_time_slice.jpg')
     png_Tdiv = os.path.join(image_folder, 'Tdiv_TimeSlice.jpg')
-    png_with_migration_Tnow = os.path.join(image_folder, 'Migration_now.png')
-    png_with_migration_Tdiv = os.path.join(image_folder, 'Migration_Tc.png')
+    png_with_migration_Tnow = os.path.join(image_folder, 'Tnow_with_mig.png')
+    png_with_migration_Tdiv = os.path.join(image_folder, 'Tc_with_mig.png')
 
-    #fig, ax = plt.subplots(2, num_runs, figsize=(40, 20))
-    num_plot_rows= 2
+    num_rows=2
     if include_annotation:
-        fig, ax = plt.subplots(num_plot_rows, num_runs, figsize=(40, 20))
+        fig, ax = plt.subplots(num_rows, num_runs, figsize=(40, 20))
         dpi_req = 350
     else:
-        fig, ax = plt.subplots(num_plot_rows, num_runs, figsize=(20, 8))
+        fig, ax = plt.subplots(num_rows, num_runs, figsize=(20, 8))
         dpi_req = 100
 
     fig.suptitle(suptitle)
@@ -98,10 +98,19 @@ def make_Tc_Ks_fig_with_subplots(bin_sizes_Ks, bin_sizes_Tc,
             specks_mrcas_by_gene = False
 
 
-        plot_ks(ax[0, i], config_used, demographiKS_ks_results, spx_ks_results,
+        dgx_hist_ys, bins=plot_ks(ax[0, i], config_used, demographiKS_ks_results, spx_ks_results,
                 plot_title, bin_sizes_Ks[i], xmax_Ks[i], ymax_Ks[i],
                 show_KS_predictions, include_annotation)
 
+        with open(csv_out, 'a') as f:
+            dgx_hist_ys_string=" ".join( [str(d) for d in dgx_hist_ys])
+            bins_string=" ".join([str(b) for b in bins])
+            run_name=plot_title_lamda(config_used).replace("Ks at Tnow\n","")
+            data=[run_name,bins_string,dgx_hist_ys_string]
+            f.writelines(",".join(data)+ "\n")
+
+        if num_rows  < 2:
+            continue
 
         if dgx_run_name:
             slim_csv_file_0 = os.path.join(dgx_run_path, "simulated_ancestral_gene_mrcas.csv")
@@ -132,19 +141,21 @@ def make_Tc_Ks_fig_with_subplots(bin_sizes_Ks, bin_sizes_Tc,
                              dgx_version,spx_version)
 
     if config_used.mig_rate > 0:
-        plot_expository_images(ax, png_with_migration_Tdiv , png_with_migration_Tnow)
+        plot_expository_images(num_rows, ax, png_with_migration_Tdiv , png_with_migration_Tnow)
     else:
-        plot_expository_images(ax, png_Tdiv, png_Tnow)
+        plot_expository_images(num_rows, ax, png_Tdiv, png_Tnow)
 
     ax[0, 1].set(ylabel="# paralog pairs in bin")
-    ax[1, 1].set(ylabel="# genes in bin")
+
+    if num_rows > 1:
+        ax[1, 1].set(ylabel="# genes in bin")
     plt.tight_layout()
     plt.savefig(png_out, dpi=dpi_req)
     plt.clf()
     plt.close()
 
 
-def plot_expository_images(ax, png_Tdiv, png_Tnow):
+def plot_expository_images(num_rows,ax, png_Tdiv, png_Tnow):
 
         im = mpimg.imread(png_Tnow)
         ax[0, 0].imshow(im)
@@ -159,16 +170,14 @@ def plot_expository_images(ax, png_Tdiv, png_Tnow):
             ax[0, 0].spines[pos].set_visible(False)
         ax[0, 0].set(title="polyploid Ks at T_now")
 
-        #img = Image.open(png_Tdiv)
-        #im = plt.imread(get_sample_data(png_Tdiv))
-        #img.close()
-        im = mpimg.imread(png_Tdiv)
-        ax[1, 0].imshow(im)
-        ax[1, 0].get_xaxis().set_visible(False)
-        ax[1, 0].get_yaxis().set_visible(False)
-        ax[1, 0].set(title="ancestral Tc at T_div")
-        for pos in ['right', 'top', 'bottom', 'left']:
-            ax[1, 0].spines[pos].set_visible(False)
+        if num_rows > 1:
+            im = mpimg.imread(png_Tdiv)
+            ax[1, 0].imshow(im)
+            ax[1, 0].get_xaxis().set_visible(False)
+            ax[1, 0].get_yaxis().set_visible(False)
+            ax[1, 0].set(title="ancestral Tc at T_div")
+            for pos in ['right', 'top', 'bottom', 'left']:
+                ax[1, 0].spines[pos].set_visible(False)
 
 
 def plot_ks(this_ax, config_used, slim_ks_by_gene, spx_ks_by_gene,
@@ -179,8 +188,8 @@ def plot_ks(this_ax, config_used, slim_ks_by_gene, spx_ks_by_gene,
     include_logfit=False
     include_RC_model=False
 
-    if not xmax:
-        xmax = max(slim_ks_by_gene)
+    #if not xmax:
+    #    xmax = max(slim_ks_by_gene)
     bins = np.arange(0, xmax, bin_size)
 
     if len(slim_ks_by_gene) > 0:
@@ -260,7 +269,7 @@ def plot_ks(this_ax, config_used, slim_ks_by_gene, spx_ks_by_gene,
     if config_used.mig_rate > 0:
         mig_start_as_Ks=config_used.t_div_as_ks- (config_used.Ks_per_YR*config_used.mig_start)
         mig_stop_as_Ks=config_used.t_div_as_ks- (config_used.Ks_per_YR*config_used.mig_stop)
-        this_ax.axvline(x=mig_start_as_Ks, color='g', linestyle=':', label="Mig start")
+        this_ax.axvline(x=mig_start_as_Ks, color='g', linestyle=':', label="Mig start", linewidth=3)
         this_ax.axvline(x=mig_stop_as_Ks, color='g', linestyle='--', label="Mig stop")
         this_ax.axvspan(mig_stop_as_Ks, mig_start_as_Ks, alpha=0.25, color='g')
 
@@ -275,6 +284,7 @@ def plot_ks(this_ax, config_used, slim_ks_by_gene, spx_ks_by_gene,
     this_ax.set(title=title)
     this_ax.legend()
 
+    return dgx_hist_ys, bins
 
 def add_Ks_annotations(this_ax, config_used,dgks_Ks_results,dgks_hist_results,
                        bins,show_predictions):

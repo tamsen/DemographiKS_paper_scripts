@@ -1,29 +1,79 @@
+import math
+import os
 import unittest
+
+from matplotlib import pyplot as plt
 
 from figure_generation.ks_plot_aggregations import make_Tc_Ks_fig_with_subplots
 
 
 class TestKsByMig(unittest.TestCase):
 
+    def test_Ks_for_5_gen_of_Migration(self):
+        demographiKS_out_path = '/home/tamsen/Data/DemographiKS_output_from_mesx/KS_vs_Mg/5years'
+
+        run_list_name = "Ks_for_5yr_of_Mig_with_varying_rates_fig_Fig_R-M5."
+        demographics_run_list = [False,
+                                'Mig14v4_m02d14y2025_h09m46s25','Mig15v4_m02d15y2025_h17m50s44',
+                                 'Mig16v4_m02d15y2025_h17m50s37','Mig17v4_m02d15y2025_h17m50s41']
+
+        specks_TE5_run_list = [False, False, False, False, False,False,False]
+        xmax_Ks = [0.02 for f in demographics_run_list]
+        bin_sizes_Ks = [xmax_KS_i/25 for xmax_KS_i in xmax_Ks]
+        xmax_Tc = [10000 for f in demographics_run_list ]
+        bin_sizes_Tc = [xmax_Tc_i/25 for xmax_Tc_i in xmax_Tc]
+        ymax_KS = [2000 for f in demographics_run_list]
+        ymax_Tc = [2400 for f in demographics_run_list]
+
+        show_KS_predictions = [False, False, False]
+        suptitle = "DemographiKS Ks histograms\n"
+        include_annotation=False
+        plot_title_lamda = lambda config: "Ks at Tnow\n"+ "Mig rate:" + str(config.mig_rate)
+        make_Tc_Ks_fig_with_subplots(bin_sizes_Ks, bin_sizes_Tc,
+                                     demographiKS_out_path, demographics_run_list, run_list_name,
+                                     specks_TE5_run_list, demographiKS_out_path,
+                                     xmax_Ks, xmax_Tc, ymax_KS, ymax_Tc,
+                                     suptitle, show_KS_predictions, include_annotation, plot_title_lamda)
+
+        self.assertEqual(True, True)  # add assertion here
+
+    def test_Ks_for_100_gen_of_Migration(self):
+        demographiKS_out_path = '/home/tamsen/Data/DemographiKS_output_from_mesx/KS_vs_Mg/100years'
+
+        run_list_name = "Ks_for_100yr_of_Mig_with_varying_ratesfig_Fig_R-M6."
+        demographics_run_list = [False,
+                                 'Mig14v4_m02d14y2025_h09m46s25',
+                                'Mig13v4_m02d14y2025_h09m46s25',
+                                 'Mig12v4_m02d14y2025_h09m46s25',
+                                 'Mig11v4_m02d14y2025_h09m46s25']
+        specks_TE5_run_list = [False, False, False, False, False, False, False]
+
+
+        xmax_Ks = [0.02 for f in demographics_run_list]
+        bin_sizes_Ks = [xmax_KS_i / 25 for xmax_KS_i in xmax_Ks]
+        xmax_Tc = [10000 for f in demographics_run_list]
+        bin_sizes_Tc = [xmax_Tc_i / 25 for xmax_Tc_i in xmax_Tc]
+        ymax_KS = [2000 for f in demographics_run_list]
+        ymax_Tc = [2400 for f in demographics_run_list]
+
+        show_KS_predictions = [False, False, False]
+        suptitle = "DemographiKS Ks histograms\n"
+        include_annotation=False
+        plot_title_lamda = lambda config: "Ks at Tnow\n"+ "Mig rate:" + str(config.mig_rate)
+        make_Tc_Ks_fig_with_subplots(bin_sizes_Ks, bin_sizes_Tc,
+                                     demographiKS_out_path, demographics_run_list, run_list_name,
+                                     specks_TE5_run_list, demographiKS_out_path,
+                                     xmax_Ks, xmax_Tc, ymax_KS, ymax_Tc,
+                                     suptitle, show_KS_predictions,
+                                     include_annotation,plot_title_lamda)
+
+        self.assertEqual(True, True)  # add assertion here
+
     # Would like to see the impace of migration,
     # Mig rate =0, 10% directly after TDIV,   10% directly after 1/2 TDIV,  50% directly after 1/2 TDIV,
     def test_Ks_for_varying_Migration(self):
         demographiKS_out_path = '/home/tamsen/Data/DemographiKS_output_from_mesx/KS_vs_Mg'
 
-        #When Migration is halfway between DIV and NOW, for 100 years.
-        #run_list_name = "Ks_for_100yr_of_Mig_with_varying_rates"
-        #demographics_run_list = [False,
-        #                         'Mig14v4_m02d14y2025_h09m46s25',
-        #                         'Mig13v4_m02d14y2025_h09m46s25',
-        #                         'Mig12v4_m02d14y2025_h09m46s25',
-        #                         'Mig11v4_m02d14y2025_h09m46s25']
-
-
-
-        #run_list_name = "Ks_for_5yr_of_Mig_with_varying_rates"
-        #demographics_run_list = [False,
-        #                        'Mig14v4_m02d14y2025_h09m46s25','Mig15v4_m02d15y2025_h17m50s44',
-        #                         'Mig16v4_m02d15y2025_h17m50s37','Mig17v4_m02d15y2025_h17m50s41']
 
 
         #run_list_name = "Ks_for_gradual_speciation_ie_Mig_with_varying_duration_10percent"
@@ -76,50 +126,54 @@ class TestKsByMig(unittest.TestCase):
 
         self.assertEqual(True, True)  # add assertion here
 
-    def test_Ks_for_varying_RC_1KNe(self):
-        demographiKS_out_path = '/home/tamsen/Data/DemographiKS_output_from_mesx/KS_vs_RC/save_Ne_1K'
-        specks_out_path = '/home/tamsen/Data/Specks_output_from_mesx'
 
+    def test_Ks_diffs_for_5_gen_of_Migration(self):
+        demographiKS_out_path = '/home/tamsen/Data/DemographiKS_output_from_mesx/KS_vs_Mg/5years'
+        data_file = "Ks_for_5yr_of_Mig_with_varying_rates_fig_Fig_R-M5.csv"
+        png_out = "Ks_for_5yr_of_Mig_with_varying_rates_fig_Fig_R-M5_overlay.png"
+        rmse_plot_label = "Ks perturbation vs mig rate (5 years contact)"
+        make_RMSE_mig_plot(data_file, demographiKS_out_path, png_out, rmse_plot_label)
 
-        #full, w/Ne1000
-        #KSvsRC9_m01d21y2025_h14m24s03
+    def test_Ks_diffs_for_100_gen_of_Migration(self):
+        demographiKS_out_path = '/home/tamsen/Data/DemographiKS_output_from_mesx/KS_vs_Mg/100years'
+        data_file = "Ks_for_100yr_of_Mig_with_varying_ratesfig_Fig_R-M6.csv"
+        png_out = "Ks_for_100yr_of_Mig_with_varying_ratesfig_Fig_R-M6_overlay.png"
+        rmse_plot_label = "Ks perturbation vs mig rate (100 years contact)"
+        make_RMSE_mig_plot(data_file, demographiKS_out_path, png_out, rmse_plot_label)
 
-        #demographics_run_list = [False, 'KSvsRC6_m01d21y2025_h20m06s34', 'KSvsRC7_m01d21y2025_h12m16s26',
-        #                           'KSvsRC8_m01d23y2025_h10m39s34', 'KSvsRC9_m01d21y2025_h14m24s03',
-        #                           'KSvsRC10_m01d24y2025_h09m16s53', 'KSvsRC11_m01d23y2025_h11m04s33']
+def make_RMSE_mig_plot(data_file, demographiKS_out_path, png_out, rmse_plot_label):
+    with open(os.path.join(demographiKS_out_path, data_file), 'r') as f:
+        lines = f.readlines()
+    no_mig_dat_splat = lines[0].split(",")
+    bins = no_mig_dat_splat[1].split(" ")
+    bin_floats = [float(b) for b in bins]
+    xs = [0.5 * (bin_floats[i] + bin_floats[i + 1]) for i in range(0, len(bins) - 1)]
+    ys_no_mig = [float(d) for d in no_mig_dat_splat[2].split(" ")]
+    fig, ax = plt.subplots(1, 2, figsize=(10, 4))
+    rmses = []
+    mig_rates = []
+    for line in lines:
+        line_splat = line.split(",")
+        line_label = line_splat[0]
+        ys = [float(d) for d in line_splat[2].split(" ")]
 
-        #ks_hist_by_Ks_for_varying_varying_RC_test_Ne1000_long_burnin_save_for_paper.png
-        demographics_run_list = [False, 'KSvsRC6_m01d21y2025_h20m06s34','KSvsRC7_m01d21y2025_h12m16s26',
-                                 'KSvsRC8_m01d23y2025_h10m39s34','KSvsRC9_m01d24y2025_h08m51s36',
-                                 'KSvsRC10_m01d24y2025_h09m16s53','KSvsRC11_m01d23y2025_h11m04s33']
+        diffs = [ys[j] - ys_no_mig[j] for j in range(0, len(ys))]
+        rmse = math.sqrt(sum([d * d for d in diffs]) / len(diffs))
 
-        #problems only
-        #demographics_run_list = [False,  'KSvsRC8_m01d23y2025_h10m39s34',
-        #                             'KSvsRC10_m01d24y2025_h10m40s24','KSvsRC11_m01d23y2025_h11m04s33']
-        #demographics_run_list_old= [False,  'KSvsRC8_m01d21y2025_h08m21s04','KSvsRC11_m01d22y2025_h11m14s42']
-
-        specks_TE5_run_list = [False,False,False,False,False,False,False]
-
-        bin_sizes_Tc = [200, 200, 200, 200, 200, 200, 200]
-        bin_sizes_Ks = [0.002, 0.002, 0.002,0.002, 0.002, 0.002, 0.002]
-        xmax_Ks = [0.2 for f in demographics_run_list] #[0.025, 0.025, 0.025, 0.025, 0.025]  # 0.001  # max(demographiKS_ks_results)
-        xmax_Tc = [15000 for f in demographics_run_list]
-        ymax_KS = [140 for f in demographics_run_list]
-        ymax_Tc = [100 for f in demographics_run_list]
-
-        run_list_name = "Ks_for_varying_varying_RC"
-        # since mutation rate is 1.0e-5
-        # we multiply by 1/1.2 since thats syn / total mut rate
-
-        show_KS_predictions = [False, False, False]
-        suptitle = "SLiM and SpecKS Ks histograms\n"
-        make_Tc_Ks_fig_with_subplots(bin_sizes_Ks, bin_sizes_Tc,
-                                     demographiKS_out_path, demographics_run_list, run_list_name,
-                                     specks_TE5_run_list, specks_out_path,
-                                     xmax_Ks, xmax_Tc, ymax_KS, ymax_Tc,
-                                     suptitle, show_KS_predictions)
-
-        self.assertEqual(True, True)  # add assertion here
+        ax[0].plot(xs, ys, label=line_label)
+        rmses.append(rmse)
+        mig_rates.append(float(line_label.replace("Mig rate:", "")))
+    ax[1].plot(mig_rates, rmses, label='line_label', marker='o')
+    ax[0].legend()
+    # this_ax.set(xlim=[0, xmax])
+    ax[0].set(xlabel="Ks")
+    ax[0].set(ylabel="# paralogs")
+    ax[1].set(xlabel="Mig rate")
+    ax[1].set(ylabel="Ks perturbation (RMSE)")
+    ax[0].set(title="Ks histogram overlay")
+    ax[1].set(title=rmse_plot_label)
+    plt.savefig(os.path.join(demographiKS_out_path, png_out))
+    plt.clf()
 
 
 if __name__ == '__main__':

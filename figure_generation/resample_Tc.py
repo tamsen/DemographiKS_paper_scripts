@@ -12,6 +12,7 @@ class TestResampleTc(unittest.TestCase):
 
     def test_ResampleTc(self):
 
+        #data from simulations at "/home/tamsen/Data/DemographiKS_output_from_mesx/KS_vs_Inb"
         output_folder = "/home/tamsen/Data/DemographiKS_output_from_mesx/trees_file_testing"
         trees_file="allotetraploid_bottleneck_trees_at_div_32.txt"
         png_number="32"
