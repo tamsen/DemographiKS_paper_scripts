@@ -69,27 +69,8 @@ class TestKsByMig(unittest.TestCase):
 
         self.assertEqual(True, True)  # add assertion here
 
-    # Would like to see the impace of migration,
-    # Mig rate =0, 10% directly after TDIV,   10% directly after 1/2 TDIV,  50% directly after 1/2 TDIV,
-    def test_Ks_for_varying_Migration(self):
-        demographiKS_out_path = '/home/tamsen/Data/DemographiKS_output_from_mesx/KS_vs_Mg'
-
-
-
-        #run_list_name = "Ks_for_gradual_speciation_ie_Mig_with_varying_duration_10percent"
-        #demographics_run_list = [False,
-        #                         'Mig14v4_m02d14y2025_h09m46s25',
-        #                         'Mig26v4_m02d16y2025_h14m03s20',
-        #                         'Mig27v4_m02d16y2025_h14m03s22',
-        #                         'Mig28v4_m02d16y2025_h14m03s34',
-        #                         'Mig29v4_m02d16y2025_h14m03s57']
-
-        #run_list_name = "Ks_for_gradual_speciation_ie_Mig_with_varying_duration_1percent"
-        #demographics_run_list = [False,
-        # 'Mig14v4_m02d14y2025_h09m46s25','Mig26v4p1_m02d17y2025_h18m42s39',
-        #  'Mig27v4p1_m02d17y2025_h18m42s40',
-        # 'Mig28v4p1_m02d17y2025_h18m42s43', 'Mig29v4p1_m02d17y2025_h18m42s46']
-
+    def test_Ks_for_gradual_speciation_0p1_Migration(self):
+        demographiKS_out_path = '/home/tamsen/Data/DemographiKS_output_from_mesx/KS_vs_Mg/0p1percent'
         run_list_name = "Ks_for_gradual_speciation_ie_Mig_with_varying_duration_0p1percent"
         demographics_run_list = [False,
             'Mig14v4_m02d14y2025_h09m46s25',
@@ -98,34 +79,90 @@ class TestKsByMig(unittest.TestCase):
             'Mig28v4p001_m02d19y2025_h09m33s19',
             'Mig29v4p001_m02d19y2025_h09m33s17']
 
-
         specks_TE5_run_list = [False, False, False, False, False,False,False]
-
-
-        #xmax_Ks = [0.01,0.05,0.05,0.1,0.5,1]
         xmax_Ks = [0.02 for f in demographics_run_list]
         bin_sizes_Ks = [xmax_KS_i/25 for xmax_KS_i in xmax_Ks]
-
-        #xmax_Tc = [5000,5000,5000,10000,50000,100000]
         xmax_Tc = [10000 for f in demographics_run_list ]
         bin_sizes_Tc = [xmax_Tc_i/25 for xmax_Tc_i in xmax_Tc]
-
-
-
-        #ymax_KS = [1500 for f in demographics_run_list]
         ymax_KS = [2000 for f in demographics_run_list]
         ymax_Tc = [2400 for f in demographics_run_list]
-
         show_KS_predictions = [False, False, False]
-        suptitle = "Ks histograms\n"
+        suptitle = "DemographiKS Ks histograms\n"
+        include_annotation=False
+        plot_title_lamda = lambda config: "Ks at Tnow\n"+ \
+                                          "Mig duration:" + \
+                                          str(config.mig_stop-config.mig_start) + " gen"
         make_Tc_Ks_fig_with_subplots(bin_sizes_Ks, bin_sizes_Tc,
                                      demographiKS_out_path, demographics_run_list, run_list_name,
                                      specks_TE5_run_list, demographiKS_out_path,
                                      xmax_Ks, xmax_Tc, ymax_KS, ymax_Tc,
-                                     suptitle, show_KS_predictions)
+                                     suptitle, show_KS_predictions,
+                                     include_annotation, plot_title_lamda)
 
         self.assertEqual(True, True)  # add assertion here
 
+    def test_Ks_for_gradual_speciation_1p0_Migration(self):
+        demographiKS_out_path = '/home/tamsen/Data/DemographiKS_output_from_mesx/KS_vs_Mg/1percent'
+        run_list_name = "Ks_for_gradual_speciation_ie_Mig_with_varying_duration_1percent."
+        demographics_run_list = [False,
+         'Mig14v4_m02d14y2025_h09m46s25','Mig26v4p1_m02d17y2025_h18m42s39',
+        'Mig27v4p1_m02d17y2025_h18m42s40',
+         'Mig28v4p1_m02d17y2025_h18m42s43', 'Mig29v4p1_m02d17y2025_h18m42s46']
+
+        specks_TE5_run_list = [False, False, False, False, False,False,False]
+        xmax_Ks = [0.02 for f in demographics_run_list]
+        bin_sizes_Ks = [xmax_KS_i/25 for xmax_KS_i in xmax_Ks]
+        xmax_Tc = [10000 for f in demographics_run_list ]
+        bin_sizes_Tc = [xmax_Tc_i/25 for xmax_Tc_i in xmax_Tc]
+        ymax_KS = [2000 for f in demographics_run_list]
+        ymax_Tc = [2400 for f in demographics_run_list]
+        show_KS_predictions = [False, False, False]
+        suptitle = "DemographiKS Ks histograms\n"
+        include_annotation=False
+        plot_title_lamda = lambda config: "Ks at Tnow\n" + \
+                                          "Mig duration:" + \
+                                          str(config.mig_stop - config.mig_start)+ " gen"
+        make_Tc_Ks_fig_with_subplots(bin_sizes_Ks, bin_sizes_Tc,
+                                     demographiKS_out_path, demographics_run_list, run_list_name,
+                                     specks_TE5_run_list, demographiKS_out_path,
+                                     xmax_Ks, xmax_Tc, ymax_KS, ymax_Tc,
+                                     suptitle, show_KS_predictions,
+                                     include_annotation, plot_title_lamda)
+
+        self.assertEqual(True, True)  # add assertion here
+
+
+    def test_Ks_for_gradual_speciation_10_Migration(self):
+        demographiKS_out_path = '/home/tamsen/Data/DemographiKS_output_from_mesx/KS_vs_Mg/10percent'
+        run_list_name = "Ks_for_gradual_speciation_ie_Mig_with_varying_duration_10percent."
+        demographics_run_list = [False,
+                                 'Mig14v4_m02d14y2025_h09m46s25',
+                                 'Mig26v4_m02d16y2025_h14m03s20',
+                                 'Mig27v4_m02d16y2025_h14m03s22',
+                                 'Mig28v4_m02d16y2025_h14m03s34',
+                                 'Mig29v4_m02d16y2025_h14m03s57']
+
+        specks_TE5_run_list = [False, False, False, False, False,False,False]
+        xmax_Ks = [0.02 for f in demographics_run_list]
+        bin_sizes_Ks = [xmax_KS_i/25 for xmax_KS_i in xmax_Ks]
+        xmax_Tc = [10000 for f in demographics_run_list ]
+        bin_sizes_Tc = [xmax_Tc_i/25 for xmax_Tc_i in xmax_Tc]
+        ymax_KS = [2000 for f in demographics_run_list]
+        ymax_Tc = [2400 for f in demographics_run_list]
+        show_KS_predictions = [False, False, False]
+        suptitle = "DemographiKS Ks histograms\n"
+        include_annotation=False
+        plot_title_lamda = lambda config: "Ks at Tnow\n"+ \
+                                          "Mig duration:" + \
+                                          str(config.mig_stop-config.mig_start)+ " gen"
+        make_Tc_Ks_fig_with_subplots(bin_sizes_Ks, bin_sizes_Tc,
+                                     demographiKS_out_path, demographics_run_list, run_list_name,
+                                     specks_TE5_run_list, demographiKS_out_path,
+                                     xmax_Ks, xmax_Tc, ymax_KS, ymax_Tc,
+                                     suptitle, show_KS_predictions,
+                                     include_annotation, plot_title_lamda)
+
+        self.assertEqual(True, True)  # add assertion here
 
     def test_Ks_diffs_for_5_gen_of_Migration(self):
         demographiKS_out_path = '/home/tamsen/Data/DemographiKS_output_from_mesx/KS_vs_Mg/5years'

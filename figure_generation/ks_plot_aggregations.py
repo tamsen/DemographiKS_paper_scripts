@@ -109,6 +109,10 @@ def make_Tc_Ks_fig_with_subplots(bin_sizes_Ks, bin_sizes_Tc,
             data=[run_name,bins_string,dgx_hist_ys_string]
             f.writelines(",".join(data)+ "\n")
 
+        #if i==2:
+        #    ax[0, i].legend(loc = 'upper left', bbox_to_anchor = (-1.7,1))
+        #    #ax[0, i].legend()
+
         if num_rows  < 2:
             continue
 
@@ -282,8 +286,8 @@ def plot_ks(this_ax, config_used, slim_ks_by_gene, spx_ks_by_gene,
     this_ax.set(xlim=[0, xmax])
     this_ax.set(xlabel="Ks")
     this_ax.set(title=title)
-    this_ax.legend()
-
+    #this_ax.legend(loc='upper left', bbox_to_anchor=(-1, -1))
+    #this_ax.legend()
     return dgx_hist_ys, bins
 
 def add_Ks_annotations(this_ax, config_used,dgks_Ks_results,dgks_hist_results,

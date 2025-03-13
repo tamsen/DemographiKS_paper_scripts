@@ -159,8 +159,8 @@ def plot_mrca(this_ax, slim_mrcas_by_gene, specks_mrcas_by_gene, theoretical_mrc
     this_ax.set(xlim=[0, xmax])
     this_ax.set(xlabel="MRCA time")
     this_ax.set(title=title)
+    #this_ax.legend(loc='upper center')
     this_ax.legend()
-
     return avg_simulated_slim_Tc
 
 
