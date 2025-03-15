@@ -52,9 +52,9 @@ class MyTestCase(unittest.TestCase):
             os.makedirs(hist_comparison_out_folder)
 
         out_png1 = os.path.join(hist_comparison_out_folder, "real_" + species_run_name + "_out.png")
-        list_of_hist_data= make_simple_histogram(real_ks_results, p0,lognorm_fit_range,
-                              species_run_name, bin_size, color, wgd_ks,
-                                           max_Ks, density, out_png1)
+        list_of_hist_data= curve_fit_with_histogram(real_ks_results, p0, lognorm_fit_range,
+                                                    species_run_name, bin_size, color, wgd_ks,
+                                                    max_Ks, density, out_png1)
 
         out_png2 = os.path.join(hist_comparison_out_folder, "real_" + species_run_name + "_overlay.png")
         overlay_differences_in_curves(species_run_name, list_of_hist_data, wgd_ks, out_png2)
@@ -81,9 +81,9 @@ class MyTestCase(unittest.TestCase):
         p0 = [amp,shape,loc,scale]
         lognorm_fit_range=[0.12,max_Ks]
         out_png1 = os.path.join(hist_comparison_out_folder, "real_" + species_run_name + "_out.png")
-        list_of_hist_data= make_simple_histogram(real_ks_results, p0,lognorm_fit_range,
-                              species_run_name, bin_size, color, wgd_ks,
-                                           max_Ks, density, out_png1)
+        list_of_hist_data= curve_fit_with_histogram(real_ks_results, p0, lognorm_fit_range,
+                                                    species_run_name, bin_size, color, wgd_ks,
+                                                    max_Ks, density, out_png1)
 
         out_png2 = os.path.join(hist_comparison_out_folder, "real_" + species_run_name + "_overlay.png")
         overlay_differences_in_curves(species_run_name, list_of_hist_data, wgd_ks, out_png2)
@@ -111,16 +111,16 @@ class MyTestCase(unittest.TestCase):
         p0 = [amp,shape,loc,scale]
 
         out_png1 = os.path.join(hist_comparison_out_folder, "real_" + species_run_name + "_out.png")
-        list_of_hist_data= make_simple_histogram(real_ks_results, p0,lognorm_fit_range,
-                              species_run_name, bin_size, color, wgd_ks,
-                                           max_Ks, density, out_png1)
+        list_of_hist_data= curve_fit_with_histogram(real_ks_results, p0, lognorm_fit_range,
+                                                    species_run_name, bin_size, color, wgd_ks,
+                                                    max_Ks, density, out_png1)
 
         out_png2 = os.path.join(hist_comparison_out_folder, "real_" + species_run_name + "_overlay.png")
         overlay_differences_in_curves(species_run_name, list_of_hist_data, wgd_ks, out_png2)
 
 
-def make_simple_histogram(Ks_results, p0, lognorm_fit_range,
-                          species_name, bin_size, color,WGD_ks, max_Ks, density, out_png):
+def curve_fit_with_histogram(Ks_results, p0, lognorm_fit_range,
+                             species_name, bin_size, color, WGD_ks, max_Ks, density, out_png):
 
     # MBE says: 600 - 1200 dpi for line drawings
     # and 350 dpi for color and half-tone artwork)
@@ -186,6 +186,7 @@ def make_simple_histogram(Ks_results, p0, lognorm_fit_range,
     fit_both=False
     if fit_exp:
         p2=[*popt_exp,*popt_wgd]
+        #print("popt_exp:" + str(popt_exp))
         fit_both, xs_for_both, popt_both = \
         curve_fitting.fit_curve_to_xs_and_ys(bins_centers,hist_ys,
                                              curve_fitting.wgd_kingman_and_ln, p0=p2)
@@ -193,12 +194,14 @@ def make_simple_histogram(Ks_results, p0, lognorm_fit_range,
         if fit_both:
             popt_in_sci_notation = ["{:.2E}".format(p) for p in popt_both]
             plot_label = "fit popt:" + ",".join(popt_in_sci_notation)
+            print(plot_label)
             plt.plot(xs_for_both, fit_both, color='k', alpha=0.95, label=plot_label,linestyle="-")
             hist_data2=[fit_both, bins]
 
     if not fit_both:
         popt_in_sci_notation = ["{:.2E}".format(p) for p in popt_wgd]
         plot_label = "fit popt:" + ",".join(popt_in_sci_notation)
+        print(plot_label)
         fit_curve_ys = [curve_fitting.wgd_lognorm2(x, *popt_wgd) for x in bins_centers]
         plt.plot(bins_centers, fit_curve_ys, color='k', alpha=0.95, label=plot_label, linestyle="-")
         hist_data2 = [fit_curve_ys, bins]
