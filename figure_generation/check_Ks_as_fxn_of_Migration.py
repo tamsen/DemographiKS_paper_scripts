@@ -4,6 +4,7 @@ import unittest
 
 from matplotlib import pyplot as plt
 
+from figure_generation.colors_for_figures import lighten_color
 from figure_generation.ks_plot_aggregations import make_Tc_Ks_fig_with_subplots
 
 
@@ -178,6 +179,175 @@ class TestKsByMig(unittest.TestCase):
         rmse_plot_label = "Ks perturbation vs mig rate (100 years contact)"
         make_RMSE_mig_plot(data_file, demographiKS_out_path, png_out, rmse_plot_label)
 
+    def test_Ks_diffs_for_gradual_speciation(self):
+        demographiKS_out_path = '/home/tamsen/Data/DemographiKS_output_from_mesx/KS_vs_Mg'
+        data_file_0p1 = "Ks_for_gradual_speciation_ie_Mig_with_varying_duration_0p1percent.csv"
+        data_file_1p0 = "Ks_for_gradual_speciation_ie_Mig_with_varying_duration_1percent.csv"
+        data_file_10 = "Ks_for_gradual_speciation_ie_Mig_with_varying_duration_10percent.csv"
+        png_out = "Ks_for_gradual_speciation_overlay.png"
+        rmse_plot_label = "Ks perturbation vs mig rate"
+
+        with open(os.path.join(demographiKS_out_path, data_file_0p1), 'r') as f:
+            lines_0p1 = f.readlines()
+        with open(os.path.join(demographiKS_out_path, data_file_1p0), 'r') as f:
+            lines_1p0 = f.readlines()
+        with open(os.path.join(demographiKS_out_path, data_file_10), 'r') as f:
+            lines_10 = f.readlines()
+
+        data_list=[lines_0p1,lines_1p0,lines_10]
+
+        no_mig_dat_splat = lines_0p1[0].split(",")
+        bins = no_mig_dat_splat[1].split(" ")
+        bin_floats = [float(b) for b in bins]
+        xs = [0.5 * (bin_floats[i] + bin_floats[i + 1]) for i in range(0, len(bins) - 1)]
+        ys_no_mig = [float(d) for d in no_mig_dat_splat[2].split(" ")]
+        fig, ax = plt.subplots(1, 2, figsize=(10, 4))
+        #rmses = []
+        mig_rates = ["0.1%","1%","10%"]
+        color_adjustment=[1.0,.8,.6]
+        marker_style = ["o","x","+",">","s"]
+        #line_style = ["-", ":", "--","-.","-."]
+        colors=['b','g','r']
+        duration_colors=['b','g','r','c','purple']
+        for percent_index in range(0,len(data_list)):
+            lines_p=data_list[percent_index]
+            percent_color=colors[percent_index]
+            rmses = []
+            mig_durations = []
+            for duration_index in range(0,len(lines_p)):
+                line=lines_p[duration_index]
+                line_splat = line.split(",")
+                duration_string=line_splat[0].replace("Mig duration:", "").replace(" gen", "")
+                line_label = "mig rate:" +mig_rates[percent_index]
+                ys = [float(d) for d in line_splat[2].split(" ")]
+
+                diffs = [ys[j] - ys_no_mig[j] for j in range(0, len(ys))]
+                rmse = math.sqrt(sum([d * d for d in diffs]) / len(diffs))
+
+                #base_color=duration_colors[duration_index]
+                #adjusted_color=lighten_color(base_color, amount=color_adjustment[percent_index])
+                #if duration_index==0:
+                #    adjusted_color =duration_colors[duration_index]
+                #    ax[0].plot(xs, ys, label=line_label,color=adjusted_color,
+                #               linestyle=line_style[duration_index])
+                #else:
+                #    ax[0].plot(xs, ys, color=adjusted_color,
+                #               linestyle=line_style[duration_index])
+
+                if duration_index==0:
+                    ax[0].plot(xs, ys, label=line_label,color=percent_color,
+                               marker=marker_style[duration_index],
+                               mfc='gray', mec='gray', markersize=5,alpha=0.5)
+                else:
+                    ax[0].plot(xs, ys, color=percent_color,
+                               marker=marker_style[duration_index],
+                               mfc='gray', mec='gray', markersize=5,alpha=0.5)
+                duration_float=float(duration_string)
+                rmses.append(rmse)
+                mig_durations.append(duration_float)
+                if percent_index==0:
+                    ax[1].scatter(duration_float, rmse,
+                              marker=marker_style[duration_index],
+                              color='gray', s=50, label=duration_string + " gen")
+
+            ax[1].plot(mig_durations, rmses,color=percent_color,alpha=0.5)
+
+        ax[0].legend()
+        ax[1].legend()
+        # this_ax.set(xlim=[0, xmax])
+        ax[0].set(xlabel="Ks")
+        ax[0].set(ylabel="# paralogs")
+        ax[1].set(xlabel="Mig duration")
+        ax[1].set(ylabel="Ks perturbation (RMSE)")
+        ax[0].set(title="Ks histogram overlay")
+        ax[1].set(title=rmse_plot_label)
+        plt.savefig(os.path.join(demographiKS_out_path, png_out))
+        plt.clf()
+
+    def test_Ks_diffs_for_gradual_speciation_try_again(self):
+        demographiKS_out_path = '/home/tamsen/Data/DemographiKS_output_from_mesx/KS_vs_Mg'
+        data_file_0p1 = "Ks_for_gradual_speciation_ie_Mig_with_varying_duration_0p1percent.csv"
+        data_file_1p0 = "Ks_for_gradual_speciation_ie_Mig_with_varying_duration_1percent.csv"
+        data_file_10 = "Ks_for_gradual_speciation_ie_Mig_with_varying_duration_10percent.csv"
+        png_out = "Ks_for_gradual_speciation_overlay_alternative.png"
+        rmse_plot_label = "Ks perturbation vs mig rate"
+        marker_displacement=[0,0.1,-0.1,0.2,-0.2]
+        with open(os.path.join(demographiKS_out_path, data_file_0p1), 'r') as f:
+            lines_0p1 = f.readlines()
+        with open(os.path.join(demographiKS_out_path, data_file_1p0), 'r') as f:
+            lines_1p0 = f.readlines()
+        with open(os.path.join(demographiKS_out_path, data_file_10), 'r') as f:
+            lines_10 = f.readlines()
+
+        data_list=[lines_0p1,lines_1p0,lines_10]
+
+        no_mig_dat_splat = lines_0p1[0].split(",")
+        bins = no_mig_dat_splat[1].split(" ")
+        bin_floats = [float(b) for b in bins]
+        xs = [0.5 * (bin_floats[i] + bin_floats[i + 1]) for i in range(0, len(bins) - 1)]
+        ys_no_mig = [float(d) for d in no_mig_dat_splat[2].split(" ")]
+        fig, ax = plt.subplots(1, 2, figsize=(10, 4))
+        #rmses = []
+        mig_rates = ["0.1%","1%","10%"]
+        color_adjustment=[1.0,.8,.6]
+        percent_styles = ["o","x","+",">","s"]
+        #line_style = ["-", ":", "--","-.","-."]
+        #colors=['b','g','r']
+        duration_colors=['b','g','r','c','purple']
+        for percent_index in range(0,len(data_list)):
+            lines_p=data_list[percent_index]
+            #percent_color=colors[percent_index]
+            rmses = []
+            mig_durations = []
+            for duration_index in range(0,len(lines_p)):
+                line=lines_p[duration_index]
+                line_splat = line.split(",")
+                duration_string=line_splat[0].replace("Mig duration:", "").replace(" gen", "")
+                percent_string = "mig rate:" +mig_rates[percent_index]
+                ys = [float(d) for d in line_splat[2].split(" ")]
+
+                diffs = [ys[j] - ys_no_mig[j] for j in range(0, len(ys))]
+                rmse = math.sqrt(sum([d * d for d in diffs]) / len(diffs))
+
+                if percent_index==0:
+                    ax[0].plot(xs, ys, label=duration_string + " gen"
+                               ,color=duration_colors[duration_index],
+                               marker=percent_styles[percent_index],
+                               mfc='gray', mec='gray', markersize=5)
+                else:
+                    ax[0].plot(xs, ys, color=duration_colors[duration_index],
+                               marker=percent_styles[percent_index],
+                               mfc='gray', mec='gray', markersize=5)
+                duration_float=float(duration_string)
+                rmses.append(rmse)
+                mig_durations.append(duration_float)
+                if duration_index==0:
+                    ax[1].scatter(duration_float, rmse,
+                              marker=percent_styles[percent_index],
+                              color='gray',
+                                  s=50, label=percent_string, zorder=0)
+                ax[1].scatter(duration_float,rmse +500*marker_displacement[percent_index],
+                              marker=percent_styles[percent_index],
+                              color=duration_colors[duration_index],
+                                  s=50)
+
+            ax[1].plot(mig_durations,[r+500*marker_displacement[percent_index] for r in rmses],
+                       color='gray',
+                       alpha=0.5)
+
+        ax[0].legend()
+        ax[1].legend()
+        # this_ax.set(xlim=[0, xmax])
+        ax[0].set(xlabel="Ks")
+        ax[0].set(ylabel="# paralogs")
+        ax[1].set(xlabel="Mig duration")
+        ax[1].set(ylabel="Ks perturbation (RMSE)")
+        ax[0].set(title="Ks histogram overlay")
+        ax[1].set(title=rmse_plot_label)
+        plt.savefig(os.path.join(demographiKS_out_path, png_out))
+        plt.clf()
+
+
 def make_RMSE_mig_plot(data_file, demographiKS_out_path, png_out, rmse_plot_label):
     with open(os.path.join(demographiKS_out_path, data_file), 'r') as f:
         lines = f.readlines()
@@ -187,8 +357,10 @@ def make_RMSE_mig_plot(data_file, demographiKS_out_path, png_out, rmse_plot_labe
     xs = [0.5 * (bin_floats[i] + bin_floats[i + 1]) for i in range(0, len(bins) - 1)]
     ys_no_mig = [float(d) for d in no_mig_dat_splat[2].split(" ")]
     fig, ax = plt.subplots(1, 2, figsize=(10, 4))
+    percent_styles = ["o", "x", "+", ">", "s"]
     rmses = []
     mig_rates = []
+    p_int=0
     for line in lines:
         line_splat = line.split(",")
         line_label = line_splat[0]
@@ -199,9 +371,13 @@ def make_RMSE_mig_plot(data_file, demographiKS_out_path, png_out, rmse_plot_labe
 
         ax[0].plot(xs, ys, label=line_label)
         rmses.append(rmse)
-        mig_rates.append(float(line_label.replace("Mig rate:", "")))
-    ax[1].plot(mig_rates, rmses, label='line_label', marker='o')
+        mig_rate=float(line_label.replace("Mig rate:", ""))
+        ax[1].scatter(mig_rate, rmse, label=line_label, marker = percent_styles[p_int])
+        mig_rates.append(mig_rate)
+        p_int =p_int+1
+    ax[1].plot(mig_rates, rmses, color='gray')
     ax[0].legend()
+    ax[1].legend()
     # this_ax.set(xlim=[0, xmax])
     ax[0].set(xlabel="Ks")
     ax[0].set(ylabel="# paralogs")

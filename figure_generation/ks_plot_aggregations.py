@@ -28,8 +28,8 @@ def make_Tc_Ks_fig_with_subplots(bin_sizes_Ks, bin_sizes_Tc,
     image_folder = os.path.join(par_dir, "images")
     png_Tnow = os.path.join(image_folder, 'Ks_now_time_slice.jpg')
     png_Tdiv = os.path.join(image_folder, 'Tdiv_TimeSlice.jpg')
-    png_with_migration_Tnow = os.path.join(image_folder, 'Tnow_with_mig.png')
-    png_with_migration_Tdiv = os.path.join(image_folder, 'Tc_with_mig.png')
+    png_with_migration_Tnow = os.path.join(image_folder, 'Ks_with_migration.png')
+    png_with_migration_Tdiv = os.path.join(image_folder, 'Tc_with_migration.png')
 
     num_rows=2
     if include_annotation:
@@ -108,10 +108,6 @@ def make_Tc_Ks_fig_with_subplots(bin_sizes_Ks, bin_sizes_Tc,
             run_name=plot_title_lamda(config_used).replace("Ks at Tnow\n","")
             data=[run_name,bins_string,dgx_hist_ys_string]
             f.writelines(",".join(data)+ "\n")
-
-        #if i==2:
-        #    ax[0, i].legend(loc = 'upper left', bbox_to_anchor = (-1.7,1))
-        #    #ax[0, i].legend()
 
         if num_rows  < 2:
             continue

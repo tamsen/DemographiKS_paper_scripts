@@ -46,14 +46,16 @@ class TestKsByNa(unittest.TestCase):
         self.assertEqual(True, True)  # add assertion here
 
 
-    def test_Ks_for_varying_Nb_one_bottleneck_Nb_fixed_at_10K(self):
+    def test_Ks_for_varying_Na_one_bottleneck_Nb_fixed_at_10K(self):
         demographiKS_out_path = '/home/tamsen/Data/DemographiKS_output_from_mesx/KS_vs_Na/Nb10K'
         specks_out_path = '/home/tamsen/Data/Specks_output_from_mesx'
 
         #full, w/Ne 10K
         demographics_run_list = [False,
-                                 'KSvs10KNa_100Nb_m01d27y2025_h16m40s00','KSvs10KNa_1KNb_m01d27y2025_h16m40s00',
-                                 'KSvs10KNa_500Nb_m01d27y2025_h16m40s00','KSvs10KNa_5KNb_m01d27y2025_h16m41s35']
+                                  'KSvsNa_100Na_10KNb_m03d13y2025_h09m46s52',
+                                 'KSvsNa_500Na_10KNb_m03d13y2025_h09m46s52',
+                                    'KSvsNa_1000Na_10KNb_m03d12y2025_h10m38s39',
+                                 'KSvsNa_5000Na_10KNb_m03d12y2025_h10m38s41']
         specks_TE5_run_list = [False,False,False,False,False,False,False]
 
 
@@ -67,14 +69,14 @@ class TestKsByNa(unittest.TestCase):
         ymax_KS = [False for f in demographics_run_list]
         ymax_Tc = [False for f in demographics_run_list]
 
-        run_list_name = "Ks_for_varying_Nb_constantRC8andNa10K"
+        run_list_name = "Ks_for_varying_Na_constant_Nb10K_figR-NaNb4"
         # since mutation rate is 1.0e-5
         # we multiply by 1/1.2 since thats syn / total mut rate
 
         show_KS_predictions = [False, False, False]
         suptitle = "SLiM and SpecKS Ks histograms\n"
         include_annotation=False
-        plot_title_lamda = lambda config: "Ks at Tnow\n"+ "Nb:" + str(config.bottleneck_Ne)
+        plot_title_lamda = lambda config: "Ks at Tnow\n"+ "Na:" + str(config.ancestral_Ne)
         make_Tc_Ks_fig_with_subplots(bin_sizes_Ks, bin_sizes_Tc,
                                      demographiKS_out_path, demographics_run_list, run_list_name,
                                      specks_TE5_run_list, specks_out_path,

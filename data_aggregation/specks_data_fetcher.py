@@ -10,12 +10,20 @@ class MySPXDataFetcher(unittest.TestCase):
     def test_fetch_specks_data(self):
 
         #/ usr / scratch2 / userdata2 / tdunn / DemographiKS_output / SP / SP1MY_m12d24y2024_h09m00s34
-        TE5_run_list = ["SpecKS_KSvsRC0_at_m03d08y2025_h15m59s40/SpecKS_KSvsRC0_at"]
+        #TE5_run_list = ["SpecKS_KSvsRC0_at_m03d08y2025_h15m59s40/SpecKS_KSvsRC0_at"]
+        #/usr/scratch2/userdata2/tdunn/SpecKS_Output/TE/specks_TE10_m03d14y2025_h13m33s57
+        TE5_run_list = ["specks_TE10000_m03d14y2025_h13m24s06"]
+        #   "specks_TE10_m03d14y2025_h13m33s57",
+        #                "specks_TE100_m03d14y2025_h13m33s57",
+        #                "specks_TE500_m03d14y2025_h13m33s57",
+        #                "specks_TE1000_m03d14y2025_h13m24s06",
+        #                "specks_TE5000_m03d14y2025_h13m24s06",
+        #                "specks_TE10000_m03d14y2025_h13m24s06"]
         run_list=TE5_run_list
-        #run_collection_name="TE"
+        run_collection_name="TE"
         me_at_remote_URL =  'mesx_cluster'
-        output_root_folder=os.path.join("/usr/scratch2/userdata2/tdunn/SpecKS_Output/")
-        #                                run_collection_name)
+        output_root_folder=os.path.join("/usr/scratch2/userdata2/tdunn/SpecKS_Output/",\
+                                        run_collection_name)
 
         for i in range(0,len(run_list)):
             run_name = run_list[i]
@@ -32,8 +40,8 @@ class MySPXDataFetcher(unittest.TestCase):
         if not os.path.exists(local_output_folder):
             os.makedirs(local_output_folder)
 
-        file_needed_from_allo_folder=["8_final_results/*.csv",
-                                      "2_randomized_gene_trees/*.png", "2_randomized_gene_trees/*.txt"]
+        file_needed_from_allo_folder=["*/8_final_results/*.csv",
+                                      "*/2_randomized_gene_trees/*.png", "*/2_randomized_gene_trees/*.txt"]
         file_needed_from_run_folder=["*log*", "*.used.xml"]
 
         for file in file_needed_from_allo_folder:

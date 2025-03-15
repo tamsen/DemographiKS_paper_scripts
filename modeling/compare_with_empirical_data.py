@@ -2,6 +2,8 @@ import math
 import os
 import unittest
 import numpy as np
+import scipy
+import tskit
 from matplotlib import pyplot as plt
 from matplotlib.patches import Rectangle
 import config
@@ -15,6 +17,10 @@ from figure_generation import curve_fitting
 class MyTestCase(unittest.TestCase):
 
     MBE_dpi=350
+    def test_check_versions(self):
+        print(scipy.__version__)
+        print(tskit.__version__)
+
     def test_coffee_histogram(self):
 
         coffee_num=20#coffee_num=17
@@ -267,6 +273,7 @@ def overlay_differences_in_curves(species_for_plot_title, list_of_hist_data, WGD
     plt.close()
 
     return n, bins
+
 
 if __name__ == '__main__':
     unittest.main()
