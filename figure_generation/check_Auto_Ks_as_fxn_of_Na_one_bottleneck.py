@@ -11,8 +11,11 @@ class TestKsForAuto(unittest.TestCase):
         demographics_auto_out_path = '/home/tamsen/Data/DemographiKS_output_from_mesx/Auto/Auto_vs_Na/Nb100'
 
         demographics_allo_run_list = [False,
-         'KSvs100Na_100Nb_m01d27y2025_h16m51s00', 'KSvs100Na_500Nb_m01d27y2025_h16m51s10',
-         'KSvs100Na_1KNb_m01d27y2025_h16m52s55', 'KSvs100Na_5KNb_m01d27y2025_h16m52s44']
+                                      'KSvsNa_100Na_100Nb_m03d12y2025_h10m32s13',
+                                      'KSvsNa_500Na_100Nb_m03d12y2025_h10m32s17',
+                                      'KSvsNa_1000Na_100Nb_m03d12y2025_h10m30s08',
+                                      'KSvsNa_5000Na_100Nb_m03d12y2025_h10m29s20'
+                                      ]
 
         demographics_auto_run_list   = [False,
                                       'KSvsNa_100Na_100Nb_au_m03d14y2025_h09m53s35',
@@ -24,7 +27,7 @@ class TestKsForAuto(unittest.TestCase):
         xmax_Ks = [0.10 for f in demographics_auto_run_list ]
         bin_sizes_Ks = [xmax_KS_i/50 for xmax_KS_i in xmax_Ks]
 
-        xmax_Tc = [5000 for f in demographics_auto_run_list]
+        xmax_Tc = [2000 for f in demographics_auto_run_list]
         bin_sizes_Tc = [xmax_Tc_i / 50 for xmax_Tc_i in xmax_Tc]
 
         ymax_KS = [100 for f in demographics_auto_run_list]
@@ -60,15 +63,19 @@ class TestKsForAuto(unittest.TestCase):
 
         demographics_allo_run_list = [
             False,
-               'KSvs10KNa_100Nb_m01d27y2025_h16m40s00', 'KSvs10KNa_500Nb_m01d27y2025_h16m40s00',
-            'KSvs10KNa_1KNb_m01d27y2025_h16m40s00','KSvs10KNa_5KNb_m01d27y2025_h16m41s35']
+            'KSvsNa_100Na_10KNb_m03d13y2025_h09m46s52',
+            'KSvsNa_500Na_10KNb_m03d13y2025_h09m46s52',
+            'KSvsNa_1000Na_10KNb_m03d12y2025_h10m38s39',
+            'KSvsNa_5000Na_10KNb_m03d12y2025_h10m38s41',
+               ]
 
         demographics_auto_run_list = [
             False,
-            'Auto10KNa_100Nb_m02d20y2025_h17m32s04',
-            'Auto_10KNa_500Nb_m02d20y2025_h17m32s04',
-            'Auto_10KNa_1KNb_m02d20y2025_h17m32s04',
-            'Auto_10KNa_5KNb_m02d20y2025_h17m32s04']
+            'KSvsNa_100Na_10KNb_au_m03d14y2025_h18m16s21',
+            'KSvsNa_500Na_10KNb_au_m03d14y2025_h18m16s29',
+            'KSvsNa_1000Na_10KNb_au_m03d14y2025_h12m09s15',
+            'KSvsNa_5000Na_10KNb_au_m03d14y2025_h12m09s15'
+            ]
 
         #xmax_Ks = [0.8  for f in demographics_auto_run_list ]
         #xmax_Ks_array = [[0.05, 0.05,0.05,0.05,0.05 ],[0.4, 0.4,0.5,0.6,0.8 ]]
@@ -79,17 +86,17 @@ class TestKsForAuto(unittest.TestCase):
         xmax_Tc = [80000 for f in demographics_auto_run_list]
         bin_sizes_Tc = [xmax_Tc_i / 50 for xmax_Tc_i in xmax_Tc]
 
-        ymax_Ks_array = [[200 for f in demographics_auto_run_list],
+        ymax_Ks_array = [[400 for f in demographics_auto_run_list],
                    [100 for f in demographics_auto_run_list]]
 
         ymax_Tc = [False for f in demographics_auto_run_list]
-        run_list_name = "Ks_for_Allo_and_Auto_varying_varying_Na_10K_Nb"
+        run_list_name = "Ks_for_Allo_and_Auto_varying_varying_Na_10K_Nb_Fig_R-NaNb8"
 
         show_KS_predictions = [False, False, False]
         suptitle = "Auto and Allo Ks histograms\n"
 
         plot_title_lamda = lambda config: "Ancestral pop size:" + str(config.ancestral_Ne)
-        include_annotation = True
+        include_annotation = False
         num_plot_rows = 2
 
         make_Tc_Ks_Allo_vs_Auto_fig_with_subplots(num_plot_rows,bin_sizes_Ks_array, bin_sizes_Tc,
