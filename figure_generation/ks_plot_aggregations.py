@@ -19,7 +19,9 @@ def make_Tc_Ks_fig_with_subplots(bin_sizes_Ks, bin_sizes_Tc,
                                  demographiKS_out_path, demographics_run_list, run_list_name,
                                  specks_run_list, specks_out_path,
                                  xmax_Ks, xmax_Tc, ymax_Ks, ymax_Tc,
-                                 suptitle, show_KS_predictions, include_annotation, plot_title_lamda):
+                                 suptitle, show_KS_predictions, include_annotation,
+                                 plots_to_show_legend,
+                                 plot_title_lamda):
 
     num_runs = len(demographics_run_list)
     png_out = os.path.join(demographiKS_out_path, run_list_name)
@@ -98,9 +100,9 @@ def make_Tc_Ks_fig_with_subplots(bin_sizes_Ks, bin_sizes_Tc,
             specks_mrcas_by_gene = False
 
 
-        dgx_hist_ys, bins=plot_ks(ax[0, i], config_used, demographiKS_ks_results, spx_ks_results,
+        dgx_hist_ys, bins=plot_ks(i,ax[0, i], config_used, demographiKS_ks_results, spx_ks_results,
                 plot_title, bin_sizes_Ks[i], xmax_Ks[i], ymax_Ks[i],
-                show_KS_predictions, include_annotation)
+                show_KS_predictions, include_annotation,plots_to_show_legend)
 
         with open(csv_out, 'a') as f:
             dgx_hist_ys_string=" ".join( [str(d) for d in dgx_hist_ys])
@@ -150,7 +152,10 @@ def make_Tc_Ks_fig_with_subplots(bin_sizes_Ks, bin_sizes_Tc,
     if num_rows > 1:
         ax[1, 1].set(ylabel="# genes in bin")
     plt.tight_layout()
-    plt.savefig(png_out, dpi=dpi_req)
+    if include_annotation:
+        plt.savefig(png_out +"_annotated.png", dpi=dpi_req)
+    else:
+        plt.savefig(png_out, dpi=dpi_req)
     plt.clf()
     plt.close()
 
@@ -180,8 +185,8 @@ def plot_expository_images(num_rows,ax, png_Tdiv, png_Tnow):
                 ax[1, 0].spines[pos].set_visible(False)
 
 
-def plot_ks(this_ax, config_used, slim_ks_by_gene, spx_ks_by_gene,
-            title, bin_size, xmax, ymax, show_predictions, include_annotations):
+def plot_ks(i, this_ax, config_used, slim_ks_by_gene, spx_ks_by_gene,
+            title, bin_size, xmax, ymax, show_predictions, include_annotations,plots_to_show_legend):
 
     num_slim_genes = len(slim_ks_by_gene)
     num_specks_genes = len(spx_ks_by_gene)
@@ -194,10 +199,9 @@ def plot_ks(this_ax, config_used, slim_ks_by_gene, spx_ks_by_gene,
 
     if len(slim_ks_by_gene) > 0:
         if include_annotations:
-            my_label='SLiM Ks by gene'
+            my_label='SLiM Ks by gene' + "(" + str(num_slim_genes) + " paralogs in genome)"
         else:
-            my_label='SLiM Ks by gene\n'\
-                           + "(" + str(num_slim_genes) + " paralogs in genome)"
+            my_label='SLiM Ks by gene'
         dgx_hist_ys, bins, patches = this_ax.hist(slim_ks_by_gene, bins=bins, facecolor='b', alpha=0.25,
                      label=my_label,
                      density=False)
@@ -205,17 +209,18 @@ def plot_ks(this_ax, config_used, slim_ks_by_gene, spx_ks_by_gene,
     if len(spx_ks_by_gene) > 0:
 
         if include_annotations:
-            my_label='SpecKS Ks by gene'
+            my_label='SpecKS Ks by gene'\
+                + "(" + str(num_specks_genes) + " paralogs in genome)"
         else:
-            my_label='SpecKS Ks by gene\n'\
-                           + "(" + str(num_specks_genes) + " paralogs in genome)"
+            my_label='SpecKS Ks by gene'
         this_ax.hist(spx_ks_by_gene, bins=bins, facecolor='c', alpha=0.25,
                      label=my_label,
                      density=False)
 
     half_bin_size=0.5*bin_size
     if config_used.t_div_as_ks:
-        this_ax.axvline(x=half_bin_size+config_used.t_div_as_ks, color='b', linestyle='-.', label="input Tdiv as Ks")
+        this_ax.axvline(x=half_bin_size+config_used.t_div_as_ks, color='b', linestyle='-.',
+                        label="input Tdiv as Ks")
 
     if not config_used.DIV_time_Ge: #this would be an autopolyploid
         this_ax.axvline(x=half_bin_size + config_used.mean_Ks_from_Nb, color='g', linestyle='--',
@@ -283,7 +288,8 @@ def plot_ks(this_ax, config_used, slim_ks_by_gene, spx_ks_by_gene,
     this_ax.set(xlabel="Ks")
     this_ax.set(title=title)
     #this_ax.legend(loc='upper left', bbox_to_anchor=(-1, -1))
-    #this_ax.legend()
+    if i in plots_to_show_legend:
+        this_ax.legend()
     return dgx_hist_ys, bins
 
 def add_Ks_annotations(this_ax, config_used,dgks_Ks_results,dgks_hist_results,
