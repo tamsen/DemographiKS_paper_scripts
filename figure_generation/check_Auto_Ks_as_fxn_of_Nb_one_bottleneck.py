@@ -25,12 +25,12 @@ class TestKsForAuto(unittest.TestCase):
         xmax_Ks = [0.10 for f in demographics_auto_run_list ]
         bin_sizes_Ks = [xmax_KS_i/50 for xmax_KS_i in xmax_Ks]
 
-        xmax_Tc = [5000 for f in demographics_auto_run_list]
+        xmax_Tc = [3000 for f in demographics_auto_run_list]
         bin_sizes_Tc = [xmax_Tc_i / 50 for xmax_Tc_i in xmax_Tc]
 
-        ymax_KS = [100 for f in demographics_auto_run_list]
-        ymax_Tc = [100 for f in demographics_auto_run_list]
-        run_list_name = "Ks_for_Allo_and_Auto_varying_varying_Nb_100Na"
+        ymax_KS = [200 for f in demographics_auto_run_list]
+        ymax_Tc = [300 for f in demographics_auto_run_list]
+        run_list_name = "Ks_for_Allo_and_Auto_varying_varying_Nb_100Na_Fig_R-NaNb5"
 
 
         show_KS_predictions = [False, False, False]
@@ -84,13 +84,13 @@ class TestKsForAuto(unittest.TestCase):
                    [100 for f in demographics_auto_run_list]]
 
         ymax_Tc = [False for f in demographics_auto_run_list]
-        run_list_name = "Ks_for_Allo_and_Auto_varying_varying_Nb_10K_Na_1000_years"
+        run_list_name = "Ks_for_Allo_and_Auto_varying_varying_Nb_10K_Na_Fig_R-NaNb6"
 
         show_KS_predictions = [False, False, False]
         suptitle = "Auto and Allo Ks histograms\n"
 
         plot_title_lamda = lambda config: "Polyploid pop size:" + str(config.bottleneck_Ne)
-        include_annotation = True
+        include_annotation = False
         num_plot_rows = 2
 
         make_Tc_Ks_Allo_vs_Auto_fig_with_subplots(num_plot_rows,bin_sizes_Ks_array, bin_sizes_Tc,

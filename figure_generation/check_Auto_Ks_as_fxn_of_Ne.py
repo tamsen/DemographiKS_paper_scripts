@@ -5,7 +5,7 @@ from figure_generation.ks_plot_aggregations_auto_vs_allo import make_Tc_Ks_Allo_
 
 class TestAutoKsByNe(unittest.TestCase):
 
-    def test_Auto_Ks_for_varying_Ne_Tdiv_1000(self):
+    def test_Auto_Ks_for_varying_Ne(self):
 
         demographiKS_auto_out_path = '/home/tamsen/Data/DemographiKS_output_from_mesx/Auto'
         demographiKS_allo_out_path = '/home/tamsen/Data/DemographiKS_output_from_mesx/SPKS_vs_DGKS_Ne'
@@ -33,7 +33,8 @@ class TestAutoKsByNe(unittest.TestCase):
         suptitle = "Auto vs Allo, Tcoal and Ks\n" + \
                    "Recombination rate = 1.26e-7, mut rate 1.0e-5"
         show_KS_predictions=[False,False,False]
-
+        plot_title_lamda = lambda config: "Polyploid pop size:" + str(config.bottleneck_Ne)
+        include_annotation = False
 
         make_Tc_Ks_Allo_vs_Auto_fig_with_subplots(bin_sizes_Ks, bin_sizes_Tc,
                                      demographiKS_allo_out_path, demographiKS_allo_run_list, run_list_name,

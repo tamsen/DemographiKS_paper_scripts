@@ -47,7 +47,7 @@ class TestKsByNe(unittest.TestCase):
         demographiKS_out_path = '/home/tamsen/Data/DemographiKS_output_from_mesx/KS_vs_RC/save_Ne_10K'
         specks_out_path = '/home/tamsen/Data/DemographiKS_output_from_mesx/KS_vs_RC/save_Ne_10K'
 
-        run_list_name = "Ks_for_varying_varying_RC_At_like"
+        run_list_name = "Ks_for_varying_varying_RC_At_like_Fig R-RC1"
         #  'KSvsRC10_At10K_m03d07y2025_h15m56s54',
         demographics_run_list = [False,
                                  False,
@@ -73,14 +73,19 @@ class TestKsByNe(unittest.TestCase):
         # since mutation rate is 1.0e-5
         # we multiply by 1/1.2 since thats syn / total mut rate
 
+        which_plot_panels_to_show_legend = [1, 2, 3]
         show_KS_predictions = [False, False, False]
-        show_Annotations = True
+        show_Annotations = False
         suptitle = "DemographiKS and SpecKS Ks histograms\n"
+        plot_title_lamda = lambda config: "Ks at Tnow\n" + "RC:" + str(config.recombination_rate)
+
         make_Tc_Ks_fig_with_subplots(bin_sizes_Ks, bin_sizes_Tc,
                                      demographiKS_out_path, demographics_run_list, run_list_name,
                                      specks_TE5_run_list, specks_out_path,
                                      xmax_Ks, xmax_Tc, ymax_KS, ymax_Tc,
-                                     suptitle, show_KS_predictions,show_Annotations  )
+                                     suptitle, show_KS_predictions,
+                                     show_Annotations,which_plot_panels_to_show_legend,
+                                     plot_title_lamda)
 
         self.assertEqual(True, True)  # add assertion here
 
@@ -107,13 +112,19 @@ class TestKsByNe(unittest.TestCase):
         # since mutation rate is 1.0e-5
         # we multiply by 1/1.2 since thats syn / total mut rate
 
+        which_plot_panels_to_show_legend = [1, 2, 3, 4]
         show_KS_predictions = [False, False, False]
-        suptitle = "SLiM and SpecKS Ks histograms\n"
+        show_Annotations = False
+        suptitle = "DemographiKS and SpecKS Ks histograms\n"
+        plot_title_lamda = lambda config: "Ks at Tnow\n" + "RC:" + str(config.recombination_rate)
+
         make_Tc_Ks_fig_with_subplots(bin_sizes_Ks, bin_sizes_Tc,
                                      demographiKS_out_path, demographics_run_list, run_list_name,
                                      specks_TE5_run_list, specks_out_path,
                                      xmax_Ks, xmax_Tc, ymax_KS, ymax_Tc,
-                                     suptitle, show_KS_predictions)
+                                     suptitle, show_KS_predictions,
+                                     show_Annotations,
+                                     which_plot_panels_to_show_legend,plot_title_lamda )
 
         self.assertEqual(True, True)  # add assertion here
 

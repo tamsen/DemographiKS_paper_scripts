@@ -91,7 +91,14 @@ def make_Tc_Ks_fig_with_subplots(bin_sizes_Ks, bin_sizes_Tc,
 
             glob_results=glob.glob(spx_run_path + '/*.used.xml')
             input_xml_file = glob_results[0]
-            specks_config_used = config.DemographiKS_config(input_xml_file)
+            #specks_config_used = config.DemographiKS_config(input_xml_file)
+            config_used = config.DemographiKS_config(input_xml_file)
+
+            if not dgx_run_name:
+                if include_annotation:
+                    plot_title = "Ks at Tnow\n"
+                else:
+                    plot_title = str(plot_title_lamda(config_used))
 
         else:
             spx_ks_results = []
@@ -105,13 +112,15 @@ def make_Tc_Ks_fig_with_subplots(bin_sizes_Ks, bin_sizes_Tc,
                 show_KS_predictions, include_annotation,plots_to_show_legend)
 
         with open(csv_out, 'a') as f:
-            dgx_hist_ys_string=" ".join( [str(d) for d in dgx_hist_ys])
-            bins_string=" ".join([str(b) for b in bins])
-            run_name=plot_title_lamda(config_used).replace("Ks at Tnow\n","")
-            data=[run_name,bins_string,dgx_hist_ys_string]
-            f.writelines(",".join(data)+ "\n")
 
-        if num_rows  < 2:
+            run_name=plot_title_lamda(config_used).replace("Ks at Tnow\n","")
+            if include_annotation:
+                dgx_hist_ys_string=" ".join( [str(d) for d in dgx_hist_ys])
+                bins_string=" ".join([str(b) for b in bins])
+                data = [run_name, bins_string, dgx_hist_ys_string]
+                f.writelines(",".join(data) + "\n")
+
+        if num_rows < 2:
             continue
 
         if dgx_run_name:
@@ -191,7 +200,7 @@ def plot_ks(i, this_ax, config_used, slim_ks_by_gene, spx_ks_by_gene,
     num_slim_genes = len(slim_ks_by_gene)
     num_specks_genes = len(spx_ks_by_gene)
     include_logfit=False
-    include_RC_model=False
+    include_RC_model=True
 
     #if not xmax:
     #    xmax = max(slim_ks_by_gene)
@@ -237,7 +246,8 @@ def plot_ks(i, this_ax, config_used, slim_ks_by_gene, spx_ks_by_gene,
 
     if include_RC_model:
             this_ax.axvline(x=half_bin_size+max_x_exp_using_RC, color='g', linestyle=':',
-                    label="Predicted Ks peak for\nRC=" + str(exp_num_RC_per_gene_as_int))
+                    label="Predicted Ks peak for\nRC=" + str(exp_num_RC_per_gene_as_int),
+                            lw=4)
             print("predicted KS peak:\t" + str(half_bin_size+max_x_exp_using_RC))
 
     if len(slim_ks_by_gene) > 0:

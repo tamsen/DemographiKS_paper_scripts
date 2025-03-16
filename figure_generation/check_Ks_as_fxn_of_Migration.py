@@ -28,13 +28,16 @@ class TestKsByMig(unittest.TestCase):
 
         show_KS_predictions = [False, False, False]
         suptitle = "DemographiKS Ks histograms\n"
-        include_annotation=False
+        include_annotation=True
         plot_title_lamda = lambda config: "Ks at Tnow\n"+ "Mig rate:" + str(config.mig_rate)
+        plots_to_show_legend=[1,2,3,4,5]
         make_Tc_Ks_fig_with_subplots(bin_sizes_Ks, bin_sizes_Tc,
                                      demographiKS_out_path, demographics_run_list, run_list_name,
                                      specks_TE5_run_list, demographiKS_out_path,
                                      xmax_Ks, xmax_Tc, ymax_KS, ymax_Tc,
-                                     suptitle, show_KS_predictions, include_annotation, plot_title_lamda)
+                                     suptitle, show_KS_predictions, include_annotation,
+                                     plots_to_show_legend,
+                                     plot_title_lamda)
 
         self.assertEqual(True, True)  # add assertion here
 

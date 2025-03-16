@@ -3,17 +3,14 @@ import os
 import unittest
 import random
 
-from matplotlib.lines import lineStyles
-from scipy.optimize import curve_fit
-from scipy.stats import lognorm, norm, chisquare, pearsonr
 import numpy as np
 from matplotlib import pyplot as plt
-from mkl import second
+
 from scipy.stats import expon
 
 from figure_generation import curve_fitting
 from figure_generation.colors_for_figures import lighten_color
-from figure_generation.curve_fitting import fit_curve_to_xs_and_ys, lognorm_by_sigma_mu, wgd_lognorm2
+from figure_generation.curve_fitting import  wgd_lognorm2
 
 
 class TestModelEffectsOfCLT(unittest.TestCase):
@@ -95,7 +92,7 @@ class TestModelEffectsOfCLT(unittest.TestCase):
     def test_effects_of_CLT(self):
 
         output_folder = "/home/tamsen/Data/DemographiKS_output_from_mesx/CLT_testing"
-
+        include_fits_in_labels=False
         #make a bunch of exponential distributions
         num_genes=50000
         N=1000
@@ -194,11 +191,11 @@ class TestModelEffectsOfCLT(unittest.TestCase):
         p2 = [amp,shape,loc,scale]
 
 
-        png_out = os.path.join(output_folder, "composite_CLT_RC_2.png")
+        png_out = os.path.join(output_folder, "composite_CLT_RC_2_Fig R-RC3.png")
         csv_out = os.path.join(output_folder, "fits_CLT_RC.csv")
         histograms_from_fit_distributions_ys = plot_composite_tc_2(
             histograms_from_resampled_distributions_ys,p2,two_Ne,num_genes,
-                          bins,data_labels,data_colors,png_out, csv_out)
+                          bins,data_labels,data_colors,png_out, include_fits_in_labels, csv_out)
 
         csv_out = os.path.join(output_folder, "hist_data_from_fit_CLT_RC.csv")
         write_histogram_distribution_data(csv_out, data_labels, bins, histograms_from_fit_distributions_ys)
@@ -208,8 +205,9 @@ class TestModelEffectsOfCLT(unittest.TestCase):
 
     def test_plot_predicitons_vs_expectations(self):
         output_folder = "/home/tamsen/Data/DemographiKS_output_from_mesx/KS_vs_RC"
-        png_out = os.path.join(output_folder, "Theoretical Ks Peak vs Simulated Ks Peak by RC.png")
-        fig = plt.figure(figsize=(4, 4), dpi=100)
+        png_out = os.path.join(output_folder,
+               "Theoretical Ks Peak vs Simulated Ks Peak by RC_Fig R-RC4.png")
+        fig = plt.figure(figsize=(6, 6), dpi=100)
         label = "Theoretical Ks Peak vs Simulated Ks Peak by RC"
         theory=[0,0.0050,0.0109,0.0127,0.0129]
         simulation=[0,0,0.01,0.01,0.0125]
@@ -223,22 +221,21 @@ class TestModelEffectsOfCLT(unittest.TestCase):
         plt.plot([0,0.013], [0,0.013], alpha=1,color='b')
         plt.plot([0, 0.013], [0.0025,0.013+ 0.0025], alpha=1, color='gray')
         plt.plot([0, 0.013], [-0.0025,0.013- 0.0025], alpha=1, color='gray')
-
+        plt.scatter(0,0.0050,marker='o',s=400,facecolors='none',color='r')
         plt.title(label)
-        #plt.legend()
-        #plt.ylim([0,1200])
+        plt.tight_layout(pad=4.0)
         plt.xlabel("DemographiKS Ks peak")
-        plt.ylabel("Modeled Ks peak")
+        plt.ylabel("Theoretical Ks peak")
         plt.savefig(png_out)
         plt.clf()
         plt.close()
         return
 
 def plot_composite_tc_2(list_of_simulated_data, p0, two_Ne, num_genes,bins,
-                      data_labels, data_colors, png_out, csv_out):
+                      data_labels, data_colors, png_out, include_fits_in_labels, csv_out):
 
-    fig, ax = plt.subplots(1, 2, figsize=(20, 10))
-    label = "Coalescent Times For Genes From Sampled From Polyploid Ohnologs"
+    #fig, ax = plt.subplots(1, 2, figsize=(20, 10))
+    fig, ax = plt.subplots(1, 2, figsize=(10, 5))
     bins_centers = [ 0.5*(bins[i]+bins[i+1]) for i in range(0,len(bins)-1)]
     bin_size= bins_centers[1]-bins_centers[0]
     kingman_on_centers = [min(num_genes,
@@ -272,8 +269,13 @@ def plot_composite_tc_2(list_of_simulated_data, p0, two_Ne, num_genes,bins,
 
             popt_in_sci_notation=["{:.2E}".format(p) for p in popt]
             plot_label= "fit popt:"  + ",".join(popt_in_sci_notation)
-            ax[0].plot(xs_for_wgd, fit_curve_ys_ln2, color=color, alpha=0.95, label=
-                    str(num_RC) + "_"+ plot_label,
+
+            full_label=None
+            if include_fits_in_labels:
+                full_label = str(num_RC) + "_" + plot_label
+
+            ax[0].plot(xs_for_wgd, fit_curve_ys_ln2, color=color, alpha=0.95,
+                       label=full_label,
                      linestyle=":")
             fit_distributions_popts.append(popt)
             fit_distributions_ys.append(fit_curve_ys_ln2)
@@ -312,13 +314,14 @@ def plot_composite_tc_2(list_of_simulated_data, p0, two_Ne, num_genes,bins,
     write_some_data(expt_csv, RCs, true_max, max_exp)
     ax[1].plot([0,2000], [0,2000], color='gray', alpha=0.95, linestyle="-")
 
-    plt.title(label)
+    #plt.title(label)
     ax[0].legend()
     ax[0].set(xlabel="MRCA time")
     ax[0].set(ylabel="# genes in bin")
-    ax[1].set(xlabel="true position of Ks max")
-    ax[1].set(ylabel="expected position of Ks max")
-    ax[0].set(title=label)
+    ax[1].set(xlabel="position of Ks max by simulation")
+    ax[1].set(ylabel="position of Ks max using CLT")
+    ax[0].set(title= "Histogram: Num genes with a given\n avg Tc after with sampling by RC")
+    ax[1].set(title="Histogram peak location\n(Theoretical vs simulated)")
     plt.savefig(png_out)
     plt.clf()
     plt.close()
