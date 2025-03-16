@@ -131,7 +131,7 @@ class TestKsForAuto(unittest.TestCase):
                    [100 for f in demographics_auto_run_list]]
 
         ymax_Tc = [False for f in demographics_auto_run_list]
-        run_list_name = "Ks_for_Allo_and_Auto_varying_varying_Nb_10K_Na_after_5000_years"
+        run_list_name = "Ks_for_Allo_and_Auto_varying_varying_Nb_10K_Na_after_5000_years_Fig R-HomEx-Nb"
 
         show_KS_predictions = [True, False, False]
         suptitle = "Auto and Allo Ks histograms\n"
