@@ -16,6 +16,9 @@ def wgd_lognorm(x, amp, scale, x_shift,skew):
 def wgd_lognorm2(x, amp, shape,loc,scale):
     return amp * lognorm.pdf(x,shape,loc,scale)
 
+def wgd_lognorm2_with_constant(x, amp, shape,loc,scale,const):
+    return amp * lognorm.pdf(x,shape,loc,scale) + const
+
 #https://towardsdatascience.com/log-normal-distribution-a-simple-explanation-7605864fb67c/
 def lognorm_by_sigma_mu(x, amp, sigma,mu):
 
@@ -44,6 +47,13 @@ def wgd_kingman_and_ln(x,
 
         sum= wgd_kingman(x, bin_size,num_genes,two_Ne) +  wgd_lognorm2(x,amp, shape,loc,scale)
         return sum
+
+
+def wgd_kingman_and_lognorm_and_constant(x,
+                       bin_size, num_genes, two_Ne,
+                       amp, shape, loc, scale, const):
+    sum = wgd_kingman(x, bin_size, num_genes, two_Ne) + wgd_lognorm2(x, amp, shape, loc, scale)
+    return sum + const
 
 def wgd_kingman(x, bin_size,num_genes,two_Ne):
         return (bin_size * num_genes / two_Ne) * math.e ** ((-1 * x) / two_Ne)

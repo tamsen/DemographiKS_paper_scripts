@@ -6,7 +6,6 @@ import scipy
 import tskit
 from matplotlib import pyplot as plt
 from matplotlib.patches import Rectangle
-import config
 import ks_parsers
 from figure_generation import curve_fitting
 

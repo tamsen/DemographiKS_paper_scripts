@@ -12,6 +12,9 @@ from figure_generation import curve_fitting
 
 class MyTestSelectionTerm(unittest.TestCase):
 
+    coffee_popt=[]+[9.21E-01, 9.41E-01, -1.30E-03, 3.13E-02]
+    zea_popt=[9.97E-05,4.56E+03,4.67E-02]+[6.13E-01, 6.30E-01, 4.36E-02, 1.54E-01]
+    populus_popt=[8.41E-05,3.88E+03,3.06E-02]+[6.33E-01, 4.17E-01, 7.99E-02, 1.61E-01]
 
     def test_selection_term_in_coffee(self):
 
@@ -19,7 +22,7 @@ class MyTestSelectionTerm(unittest.TestCase):
 
         coffee_num=20#coffee_num=17
         ksrates_out_folder = "/home/tamsen/Data/SpecKS_input/ks_data"
-        hist_comparison_out_folder = "/home/tamsen/Data/DemographiKS_output_from_mesx/Auto_vs_allo_testing"
+        hist_comparison_out_folder = "/home/tamsen/Data/DemographiKS_output_from_mesx/Empirical_data_testing"
         specks_csv_file = "Allo_Coffea{0}_ML_rep0_Ks_by_GeneTree.csv".format(coffee_num)
         ksrates_csv_file="coffea.ks.tsv"
 
@@ -33,30 +36,25 @@ class MyTestSelectionTerm(unittest.TestCase):
         color='blue'
         wgd_ks=0.015
         density = True
-
-        shape=0.5 #sigma
-        scale = 0.02#two_Ne#going from scale 1 to 2 halves the height and makes it twice as wide
-        loc = 0.01 #predic loc=0 when the mean is over the scale value.
-        amp= 1.0  #0.5*num_genes*two_Ne*bin_size
-        p0 = [amp,shape,loc,scale]
-        lognorm_fit_range=[0.001,0.2]
+        p0 = self.coffee_popt
+        const_guess=0.5
         real_ks_results = ks_parsers.parse_external_ksfile(real_full_path)
 
         if not os.path.exists(hist_comparison_out_folder):
             os.makedirs(hist_comparison_out_folder)
 
-        out_png1 = os.path.join(hist_comparison_out_folder, "real_" + species_run_name + "_out.png")
-        list_of_hist_data= make_simple_histogram(real_ks_results, p0,lognorm_fit_range,
+        out_png1 = os.path.join(hist_comparison_out_folder, "3-term_" + species_run_name + "_out.png")
+        list_of_hist_data= plot_histogram_with_fit(real_ks_results, p0,const_guess,
                               species_run_name, bin_size, color, wgd_ks,
                                            max_Ks, density, out_png1)
 
-        out_png2 = os.path.join(hist_comparison_out_folder, "real_" + species_run_name + "_overlay.png")
+        out_png2 = os.path.join(hist_comparison_out_folder, "3-term_" + species_run_name + "_overlay.png")
         overlay_differences_in_curves(species_run_name, list_of_hist_data, wgd_ks, out_png2)
 
     def test_poplar_histogram(self):
 
         ksrates_out_folder = "/home/tamsen/Data/SpecKS_input/ks_data"
-        hist_comparison_out_folder = "/home/tamsen/Data/DemographiKS_output_from_mesx/Auto_vs_allo_testing"
+        hist_comparison_out_folder = "/home/tamsen/Data/DemographiKS_output_from_mesx/Empirical_data_testing"
         ksrates_csv_file = "poplar.ks.tsv"
         species_run_name ='Populus trichocarpa'
         real_full_path = os.path.join(ksrates_out_folder, ksrates_csv_file)
@@ -67,25 +65,20 @@ class MyTestSelectionTerm(unittest.TestCase):
         color = 'blue'
         wgd_ks=0.21
         density  = True
-
-        shape=0.5 #sigma
-        scale = 0.5#two_Ne#going from scale 1 to 2 halves the height and makes it twice as wide
-        loc = 0.02 #predic loc=0 when the mean is over the scale value.
-        amp= 200  #0.5*num_genes*two_Ne*bin_size
-        p0 = [amp,shape,loc,scale]
-        lognorm_fit_range=[0.12,max_Ks]
-        out_png1 = os.path.join(hist_comparison_out_folder, "real_" + species_run_name + "_out.png")
-        list_of_hist_data= make_simple_histogram(real_ks_results, p0,lognorm_fit_range,
+        p0 = self.populus_popt
+        const_guess=0.5
+        out_png1 = os.path.join(hist_comparison_out_folder,"3-term_" + species_run_name + "_out.png")
+        list_of_hist_data= plot_histogram_with_fit(real_ks_results, p0,const_guess,
                               species_run_name, bin_size, color, wgd_ks,
                                            max_Ks, density, out_png1)
 
-        out_png2 = os.path.join(hist_comparison_out_folder, "real_" + species_run_name + "_overlay.png")
+        out_png2 = os.path.join(hist_comparison_out_folder,"3-term_" + species_run_name + "_overlay.png")
         overlay_differences_in_curves(species_run_name, list_of_hist_data, wgd_ks, out_png2)
 
     def test_maize_histogram(self):
 
         ksrates_out_folder = "/home/tamsen/Data/SpecKS_input/ks_data"
-        hist_comparison_out_folder = "/home/tamsen/Data/DemographiKS_output_from_mesx/Auto_vs_allo_testing"
+        hist_comparison_out_folder = "/home/tamsen/Data/DemographiKS_output_from_mesx/Empirical_data_testing"
         ksrates_csv_file="mays.ks.tsv"
         species_run_name='Zea mays'
         real_full_path=os.path.join(ksrates_out_folder,ksrates_csv_file)
@@ -96,128 +89,77 @@ class MyTestSelectionTerm(unittest.TestCase):
         color='blue'
         wgd_ks=0.13
         density = True
-
-        shape=1.8 #sigma
-        scale = 0.16#two_Ne#going from scale 1 to 2 halves the height and makes it twice as wide
-        loc = 0.05 #predic loc=0 when the mean is over the scale value.
-        amp= 300  #0.5*num_genes*two_Ne*bin_size
-        lognorm_fit_range=[0.10,max_Ks]
-        p0 = [amp,shape,loc,scale]
-
-        out_png1 = os.path.join(hist_comparison_out_folder, "real_" + species_run_name + "_out.png")
-        list_of_hist_data= make_simple_histogram(real_ks_results, p0,lognorm_fit_range,
+        p0 = self.zea_popt
+        const_guess=0.5
+        out_png1 = os.path.join(hist_comparison_out_folder, "3-term_" + species_run_name + "_out.png")
+        list_of_hist_data= plot_histogram_with_fit(real_ks_results, p0,const_guess,
                               species_run_name, bin_size, color, wgd_ks,
                                            max_Ks, density, out_png1)
 
-        out_png2 = os.path.join(hist_comparison_out_folder, "real_" + species_run_name + "_overlay.png")
+        out_png2 = os.path.join(hist_comparison_out_folder, "3-term_" + species_run_name + "_overlay.png")
         overlay_differences_in_curves(species_run_name, list_of_hist_data, wgd_ks, out_png2)
 
 
-def make_simple_histogram(Ks_results, p0, lognorm_fit_range,
+def plot_histogram_with_fit(Ks_results, p0,const_guess,
                           species_name, bin_size, color,WGD_ks, max_Ks, density, out_png):
 
     # MBE says: 600 - 1200 dpi for line drawings
     # and 350 dpi for color and half-tone artwork)
-    fig = plt.figure(figsize=(10, 10), dpi=MyTestCase.MBE_dpi)
-    x = Ks_results
-    # print(PAML_hist_out_file)
+    fig = plt.figure(figsize=(5, 5), dpi=350)
+
     #[n, bins] = hist_data
     label="hist for " + os.path.basename(out_png).replace("_out.png","")
     if max_Ks:
         bins = np.arange(bin_size, max_Ks + 0.1, bin_size)
-        hist_ys, bins, patches = plt.hist(x, bins=bins, facecolor=color, alpha=0.25,
+        hist_ys, bins, patches = plt.hist(Ks_results, bins=bins, facecolor=color, alpha=0.25,
                                     label=label, density=density)
         plt.xlim([0, max_Ks * (1.1)])
         hist_ys_1=[hist_ys, bins]
 
-    #fit lognorm
-    #bins_centers = [0.5 * (bins_1[i] + bins_1[i + 1]) for i in range(0, len(bins_1) - 1)]
-    bins_centers = [0.5 * (bins[i] + bins[i + 1]) for i in range(0, len(bins) - 1)]
-    fit_wgd_xs=[]
-    fit_wgd_ys=[]
-    fit_exp_xs=[]
-    fit_exp_ys=[]
-    for i in range(0,len(bins_centers)):
-        x_value=bins_centers[i]
-        if x_value >= lognorm_fit_range[0]:
-            if x_value < lognorm_fit_range[1]:
-                fit_wgd_xs.append(x_value)
-                fit_wgd_ys.append(hist_ys[i])
-        else:
-            fit_exp_xs.append(x_value)
-            fit_exp_ys.append(hist_ys[i])
 
-    fit_curve_ys_ln2, xs_for_wgd, popt_wgd = \
-        curve_fitting.fit_curve_to_xs_and_ys(fit_wgd_xs,fit_wgd_ys, curve_fitting.wgd_lognorm2, p0=p0)
-
-    if fit_curve_ys_ln2:
-        popt_in_sci_notation = ["{:.2E}".format(p) for p in popt_wgd]
-        plot_label = "fit popt:" + ",".join(popt_in_sci_notation)
-        plt.plot(xs_for_wgd, fit_curve_ys_ln2, color='g', alpha=0.95, label=plot_label,linestyle=":")
-
-        full_exp_ys = [curve_fitting.wgd_lognorm2(x, *popt_wgd) for x in bins]
-        portion_wgd_genes = bin_size * sum(full_exp_ys)
-        plot_label_3 = "wgd genes: " + "{:.2E}".format(portion_wgd_genes)
-        plt.plot(bins, full_exp_ys, color='g', alpha=0.95, label=plot_label_3, linestyle="-")
-
-    #fit exp
-    #wgd_kingman(x, bin_size, num_genes, two_Ne)
-    p0=[bin_size,len(Ks_results),100]
-    fit_exp, xs_for_exp, popt_exp = \
-        curve_fitting.fit_curve_to_xs_and_ys(fit_exp_xs,fit_exp_ys,
-                                             curve_fitting.wgd_kingman, p0=p0)
-
-    if fit_exp:
-        popt_in_sci_notation = ["{:.2E}".format(p) for p in popt_exp]
-        plot_label = "fit popt:" + ",".join(popt_in_sci_notation)
-        full_exp_ys = [curve_fitting.wgd_kingman(x, *popt_exp) for x in bins]
-        #plt.plot(fit_exp_xs, fit_exp, color='y', alpha=0.95, label=plot_label,linestyle=":")
-        portion_exp_genes=bin_size*sum(full_exp_ys)
-        plot_label_2 = "exp genes: " + "{:.2E}".format(portion_exp_genes)
-        plt.plot(bins, full_exp_ys, color='r', alpha=0.95, label=plot_label_2,linestyle="-")
-
-    #fit exp and wgd together:
-    fit_both=False
-    if fit_exp:
-        p2=[*popt_exp,*popt_wgd]
-        fit_both, xs_for_both, popt_both = \
-        curve_fitting.fit_curve_to_xs_and_ys(bins_centers,hist_ys,
-                                             curve_fitting.wgd_kingman_and_ln, p0=p2)
-
-        if fit_both:
-            popt_in_sci_notation = ["{:.2E}".format(p) for p in popt_both]
-            plot_label = "fit popt:" + ",".join(popt_in_sci_notation)
-            plt.plot(xs_for_both, fit_both, color='k', alpha=0.95, label=plot_label,linestyle="-")
-            hist_data2=[fit_both, bins]
-
-    if not fit_both:
-        popt_in_sci_notation = ["{:.2E}".format(p) for p in popt_wgd]
-        plot_label = "fit popt:" + ",".join(popt_in_sci_notation)
-        fit_curve_ys = [curve_fitting.wgd_lognorm2(x, *popt_wgd) for x in bins_centers]
-        plt.plot(bins_centers, fit_curve_ys, color='k', alpha=0.95, label=plot_label, linestyle="-")
-        hist_data2 = [fit_curve_ys, bins]
-
-
-    if not fit_both:
-        percent_homeologous_exchange = 100*(1 -portion_wgd_genes )
+    bar_plot_xs = [0.5*(bins[i]+bins[i+1]) for i in range(0,len(bins) - 1)]  # to match bar-plot axes
+    if len(p0) >4:
+        exp_params=p0[0:3]
+        exp_ys = [curve_fitting.wgd_kingman(x, *exp_params) for x in bar_plot_xs]
+        plt.plot(bar_plot_xs, exp_ys, color='r', alpha=0.95, label="exp fit", linestyle="-")
+        ln_params=p0[3:9]
+        ln_ys = [curve_fitting.wgd_lognorm2(x, *ln_params) for x in bar_plot_xs]
+        plt.plot(bar_plot_xs, ln_ys, color='g', alpha=0.95, label="wgd fit", linestyle="-")
     else:
-        percent_homeologous_exchange=portion_exp_genes*100
+        t2_ys = [curve_fitting.wgd_lognorm2(x, *p0) for x in bar_plot_xs]
+        plt.plot(bar_plot_xs, t2_ys, color='g', alpha=0.95, label="wgd fit", linestyle="-")
+    #hist_ys_2=[t2_ys, list(bins)]
 
-    phex_str =  round(percent_homeologous_exchange,2)
+    p0_with_const=p0+[const_guess]
+    if len(p0) >4:
+        fit_curve_ys, xs_for_wgd, popt=curve_fitting.fit_curve_to_xs_and_ys(bar_plot_xs, hist_ys,
+                                             curve_fitting.wgd_kingman_and_lognorm_and_constant,
+                                                                            p0=p0_with_const)
+        t3_ys = [curve_fitting.wgd_kingman_and_lognorm_and_constant(x, *popt) for x in bar_plot_xs]
+    else:
+        fit_curve_ys, xs_for_wgd, popt=curve_fitting.fit_curve_to_xs_and_ys(bar_plot_xs, hist_ys,
+                                             curve_fitting.wgd_lognorm2_with_constant, p0=p0_with_const)
 
-    #plt.axvline(x=WGD_ks, color='b', linestyle='-', label="WGD paralog start")
-    num_pairs=sum(hist_ys)
-    num_after_wgd=sum([hist_ys[i] for i in range(0,len(hist_ys)) if bins[i] > WGD_ks])
+        t3_ys = [curve_fitting.wgd_lognorm2_with_constant(x, *popt) for x in bar_plot_xs]
+
+    print("popt:\t" + str(popt))
+    hist_ys_3=[t3_ys, list(bins)]
+
+    cont_ys = [popt[-1] for x in bar_plot_xs]
+    plt.plot(bar_plot_xs, cont_ys, color='b', alpha=0.95, label="const fit", linestyle="-")
+
+    plot_label_4 = "3-term fit"
+    plt.plot(bar_plot_xs, t3_ys, color='k', alpha=0.95, label=plot_label_4, linestyle="-")
+
     plt.legend()
     plt.xlabel("Ks")
     plt.ylabel("Count in Bin")
-    plt.title("Ks histogram for {0}.\n{1}% estimated homeologous exchange.".format(
-        species_name,phex_str))
+    plt.title("Ks histogram for function fit\nincluding selection")
     plt.savefig(out_png)
     plt.clf()
     plt.close()
 
-    return [hist_ys_1,hist_data2]
+    return [hist_ys_1,hist_ys_3]
 
 def overlay_differences_in_curves(species_for_plot_title, list_of_hist_data, WGD_ks,out_png):
 
