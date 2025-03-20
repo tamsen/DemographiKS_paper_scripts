@@ -120,7 +120,6 @@ class MyTestCase(unittest.TestCase):
                                 "real_" + species_run_name + "_overlay_R-Empirical.png")
         overlay_differences_in_curves(species_run_name, list_of_hist_data, wgd_ks, out_png2)
 
-
 def curve_fit_with_histogram(Ks_results, p0, lognorm_fit_range,
                              species_name, bin_size, color, WGD_ks, max_Ks, density, out_png):
 
