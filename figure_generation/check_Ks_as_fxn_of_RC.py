@@ -73,11 +73,11 @@ class TestKsByNe(unittest.TestCase):
         # since mutation rate is 1.0e-5
         # we multiply by 1/1.2 since thats syn / total mut rate
 
-        which_plot_panels_to_show_legend = [1, 2, 3]
+        which_plot_panels_to_show_legend = [1, 2, 3,4,5,6]
         show_KS_predictions = [False, False, False]
         show_Annotations = False
         suptitle = "DemographiKS and SpecKS Ks histograms\n"
-        plot_title_lamda = lambda config: "Ks at Tnow\n" + "RC:" + str(config.recombination_rate)
+        plot_title_lamda = lambda config: "Ks at Tnow\n" + "RC rate:" + str(config.recombination_rate)
 
         make_Tc_Ks_fig_with_subplots(bin_sizes_Ks, bin_sizes_Tc,
                                      demographiKS_out_path, demographics_run_list, run_list_name,

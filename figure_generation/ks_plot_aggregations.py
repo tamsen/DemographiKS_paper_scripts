@@ -5,6 +5,7 @@ import unittest
 from pathlib import Path
 import numpy as np
 from PyQt5.uic.Compiler.qtproxies import i18n_func
+from fontTools.subset import subset
 from matplotlib import pyplot as plt
 import matplotlib.image as mpimg
 
@@ -199,8 +200,8 @@ def plot_ks(i, this_ax, config_used, slim_ks_by_gene, spx_ks_by_gene,
 
     num_slim_genes = len(slim_ks_by_gene)
     num_specks_genes = len(spx_ks_by_gene)
-    include_logfit=False
-    include_RC_model=True
+    include_logfit=("RC" in title)
+    include_RC_model=("RC" in title)
 
     #if not xmax:
     #    xmax = max(slim_ks_by_gene)
@@ -222,7 +223,7 @@ def plot_ks(i, this_ax, config_used, slim_ks_by_gene, spx_ks_by_gene,
                 + "(" + str(num_specks_genes) + " paralogs in genome)"
         else:
             my_label='SpecKS Ks by gene'
-        this_ax.hist(spx_ks_by_gene, bins=bins, facecolor='c', alpha=0.25,
+        dgx_hist_ys, bins, patches =this_ax.hist(spx_ks_by_gene, bins=bins, facecolor='c', alpha=0.25,
                      label=my_label,
                      density=False)
 
@@ -245,9 +246,9 @@ def plot_ks(i, this_ax, config_used, slim_ks_by_gene, spx_ks_by_gene,
     max_x_exp_using_RC = config_used.t_div_as_ks + (config_used.mean_Ks_from_Tc * exp_num_RC_per_gene / (exp_num_RC_per_gene + 1))
 
     if include_RC_model:
+            rc_label="Predicted Ks peak for\nRC=" + str(exp_num_RC_per_gene_as_int)
             this_ax.axvline(x=half_bin_size+max_x_exp_using_RC, color='g', linestyle=':',
-                    label="Predicted Ks peak for\nRC=" + str(exp_num_RC_per_gene_as_int),
-                            lw=4)
+                    label="Predicted Ks peak",lw=4)
             print("predicted KS peak:\t" + str(half_bin_size+max_x_exp_using_RC))
 
     if len(slim_ks_by_gene) > 0:
@@ -259,7 +260,9 @@ def plot_ks(i, this_ax, config_used, slim_ks_by_gene, spx_ks_by_gene,
         print("half_bin_size:\t" + str(half_bin_size))
 
     # a good start..
-    if len(slim_ks_by_gene) > 0:
+    #if len(slim_ks_by_gene) > 0:
+    if include_logfit:
+        bin_centers=[0.5*(bins[k] + bins[k+1]) for k in range(0,len(bins)-1)]
         shape = 0.5
         num_genes= num_slim_genes
         loc = -1*config_used.ancestral_Ne*config_used.Ks_per_YR #-1000  # should be -N
@@ -268,10 +271,27 @@ def plot_ks(i, this_ax, config_used, slim_ks_by_gene, spx_ks_by_gene,
         fit_curve_ys_ln2, xs_for_wgd, popt = \
             curve_fitting.fit_curve_to_xs_and_ys(bins[0:-1],
                                              dgx_hist_ys, curve_fitting.wgd_lognorm2, p0=p0)
-        if include_logfit:
-            if fit_curve_ys_ln2:
-                this_ax.plot(xs_for_wgd,fit_curve_ys_ln2,color='g', label="Ks logfit")
+        if fit_curve_ys_ln2:
+                this_ax.plot(bin_centers,fit_curve_ys_ln2,color='g', label="Ks logfit")
+        else:
+            subset_xs=[]
+            subset_ys=[]
 
+            #as a rescue, just fit around the main peak
+            for j in range(0,len(dgx_hist_ys)):
+                x=bins[j]
+                if x>config_used.theoretical_ks_mean_now - 2*bin_size:
+                    subset_xs.append(x)
+                    subset_ys.append(dgx_hist_ys[j])
+
+            fit_curve_ys_subset, xs_subset, popt = \
+                curve_fitting.fit_curve_to_xs_and_ys(subset_xs,
+                                                     subset_ys, curve_fitting.wgd_lognorm2, p0=p0)
+            if fit_curve_ys_subset:
+                fit_curve_ys_ln2 = [curve_fitting.wgd_lognorm2(x, *popt) for x in xs_for_wgd]
+                this_ax.plot(bin_centers, fit_curve_ys_ln2, color='g', label="Ks lognorm fit")
+                fit_curve_ys_ln2 = True
+                dgx_hist_ys = True
     else:
         fit_curve_ys_ln2 = False
         dgx_hist_ys = False
@@ -297,9 +317,15 @@ def plot_ks(i, this_ax, config_used, slim_ks_by_gene, spx_ks_by_gene,
     this_ax.set(xlim=[0, xmax])
     this_ax.set(xlabel="Ks")
     this_ax.set(title=title)
-    #this_ax.legend(loc='upper left', bbox_to_anchor=(-1, -1))
+    #this_ax.legend(loc='upper left', bbox_to_anchor=(-1, 2))
+
+
     if i in plots_to_show_legend:
-        this_ax.legend()
+        if include_RC_model:
+            this_ax.legend(loc='upper center', bbox_to_anchor=(0.5, 2.0), ncol=1)
+        else:
+            this_ax.legend()
+
     return dgx_hist_ys, bins
 
 def add_Ks_annotations(this_ax, config_used,dgks_Ks_results,dgks_hist_results,
