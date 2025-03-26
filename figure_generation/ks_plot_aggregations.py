@@ -93,7 +93,8 @@ def make_Tc_Ks_fig_with_subplots(bin_sizes_Ks, bin_sizes_Tc,
             glob_results=glob.glob(spx_run_path + '/*.used.xml')
             input_xml_file = glob_results[0]
             #specks_config_used = config.DemographiKS_config(input_xml_file)
-            config_used = config.DemographiKS_config(input_xml_file)
+            if not config_used:
+                config_used = config.DemographiKS_config(input_xml_file)
 
             if not dgx_run_name:
                 if include_annotation:
