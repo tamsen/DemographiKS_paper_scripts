@@ -3,17 +3,14 @@ import math
 import os.path
 import unittest
 from pathlib import Path
-
 import numpy as np
-import tskit
 from matplotlib import pyplot as plt
 import config
-from figure_generation.coalescent_plot_aggregation import get_run_time_in_minutes, read_data_csv, add_mrca_annotations, \
-    plot_mrca
+from figure_generation.coalescent_plot_aggregation \
+    import get_run_time_in_minutes, read_data_csv, add_mrca_annotations
+
 from figure_generation.histogram_plotter import read_Ks_csv
 from figure_generation.ks_plot_aggregations import plot_ks, plot_expository_images
-from modules import trees_file_processor
-
 
 class TestResampleTc(unittest.TestCase):
 
@@ -38,7 +35,7 @@ class TestResampleTc(unittest.TestCase):
         xmax_Tc = [200 for f in run_list ]
         bin_sizes_Tc =[xmax_Tc_i / 25 for xmax_Tc_i in xmax_Tc]
         ymax_Tc = [False for f in run_list]
-        run_list_num = "DGKS_1000_gen_by_Ne_fast_mut_rate_Fig R-Ne1."
+        run_list_num = "DGKS_1000_gen_by_Ne_fast_mut_rate_Replicates_Ne10."
         ymax_Ks = [400 for f in run_list ]
         specks_TE_run_list = [False for f in run_list ]
         suptitle = "SLiM vs SpecKS, Tcoal and Ks"
