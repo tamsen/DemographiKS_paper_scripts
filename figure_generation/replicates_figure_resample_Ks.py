@@ -56,7 +56,41 @@ class TestResampleTc(unittest.TestCase):
 
     plt.close()
 
+    run_list = [
+            'DGKS_Ne100_rep1_m03d26y2025_h15m02s34',
+            'DGKS_Ne100_rep2_m03d26y2025_h15m02s36',
+            'DGKS_Ne100_rep3_m03d26y2025_h15m02s38',
+            'DGKS_Ne100_rep4_m03d26y2025_h15m02s39',
+            'DGKS_Ne100_rep5_m03d26y2025_h15m02s41',
+            'DGKS_Ne100_rep6_m03d26y2025_h15m02s43',
+            'DGKS_Ne100_rep7_m03d26y2025_h15m02s45',
+            'DGKS_Ne100_rep8_m03d26y2025_h15m02s47',
+            'DGKS_Ne100_rep9_m03d26y2025_h15m02s49',
+            'DGKS_Ne100_rep10_m03d26y2025_h15m02s52'
+        ]
 
+    #    'DGKS_Ne500_rep1_m03d26y2025_h17m09s08',
+    #    'DGKS_Ne500_rep2_m03d26y2025_h17m09s07',
+    #    'DGKS_Ne500_rep3_m03d26y2025_h17m09s11',
+    #    'DGKS_Ne500_rep4_m03d26y2025_h17m09s16',
+    #    'DGKS_Ne500_rep5_m03d26y2025_h17m09s19',
+    #    'DGKS_Ne500_rep6_m03d26y2025_h17m09s21',
+    #    'DGKS_Ne500_rep7_m03d26y2025_h17m09s23',
+    #    'DGKS_Ne500_rep8_m03d26y2025_h17m09s25',
+    #    'DGKS_Ne500_rep9_m03d26y2025_h17m09s29',
+    #    'DGKS_Ne500_rep10_m03d26y2025_h17m09s32',
+    # ]
+    #    'DGKS_Ne1000_rep1_m04d08y2025_h13m41s15',
+    #    'DGKS_Ne1000_rep2_m04d08y2025_h13m41s16',
+    #    'DGKS_Ne1000_rep3_m04d08y2025_h13m41s18',
+    #    'DGKS_Ne1000_rep4_m04d08y2025_h13m41s20',
+    #    'DGKS_Ne1000_rep5_m04d08y2025_h13m41s22',
+    #    'DGKS_Ne1000_rep6_m04d08y2025_h13m41s25',
+    #    'DGKS_Ne1000_rep7_m04d08y2025_h13m41s27',
+    #    'DGKS_Ne1000_rep8_m04d08y2025_h13m41s30',
+    #    'DGKS_Ne1000_rep9_m04d08y2025_h13m41s32',
+    #    'DGKS_Ne1000_rep10_m04d08y2025_h13m41s12']
+    
 def make_Tc_Ks_fig_for_replicates(bin_sizes_Ks, bin_sizes_Tc,
                                  demographiKS_out_path, demographics_run_list, run_list_name,
                                  specks_run_list, specks_out_path,
