@@ -6,35 +6,20 @@ import process_wrapper
 class MyDGXDataFetcher(unittest.TestCase):
 
     def test_fetch_demographiKS_data(self):
-
         #/usr/scratch2/userdata2/tdunn/DemographiKS_Output
         run_list = [
-
-            'DGKS_Ne1000_rep8_m04d08y2025_h13m41s30',
-            'DGKS_Ne1000_rep10_m04d08y2025_h13m41s12'
+        'TE09_fix_rep3_m04d16y2025_h10m20s46',
         ]
-
-        #    'DGKS_Ne1000_rep1_m04d08y2025_h13m41s15',
-        #    'DGKS_Ne1000_rep2_m04d08y2025_h13m41s16',
-        #    'DGKS_Ne1000_rep3_m04d08y2025_h13m41s18',
-        #    'DGKS_Ne1000_rep4_m04d08y2025_h13m41s20',
-        #    'DGKS_Ne1000_rep5_m04d08y2025_h13m41s22',
-        #    'DGKS_Ne1000_rep6_m04d08y2025_h13m41s25',
-        #    'DGKS_Ne1000_rep7_m04d08y2025_h13m41s27',
-        #    'DGKS_Ne1000_rep8_m04d08y2025_h13m41s30',
-        #    'DGKS_Ne1000_rep9_m04d08y2025_h13m41s32',
-        #    'DGKS_Ne1000_rep10_m04d08y2025_h13m41s12']
-
 
 
         run_collection_name = "TE"
         me_at_remote_URL = 'tdunn@mesx_cluster'
         output_root_folder = os.path.join("/usr/scratch2/userdata2/tdunn/DemographiKS_Output")
-        #if False:
-        #    output_root_folder = os.path.join("/usr/scratch2/userdata2/tdunn/DemographiKS_Output")
-        #else:
-        #    output_root_folder=os.path.join("/usr/scratch2/userdata2/tdunn/DemographiKS_output",
-        #                                run_collection_name)
+        if False:
+            output_root_folder = os.path.join("/usr/scratch2/userdata2/tdunn/DemographiKS_Output")
+        else:
+            output_root_folder=os.path.join("/usr/scratch2/userdata2/tdunn/DemographiKS_output",
+                                        run_collection_name)
 
 
 

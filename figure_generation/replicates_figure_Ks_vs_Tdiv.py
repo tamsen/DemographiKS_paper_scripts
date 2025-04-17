@@ -15,21 +15,57 @@ from figure_generation.ks_plot_aggregations import plot_ks, plot_expository_imag
 class TestResampleTc(unittest.TestCase):
 
     #        <DIV_time_Ge>10000</DIV_time_Ge>
+    #< DIV_time_Ge > 100000 < / DIV_time_Ge >
+    #< DIV_time_Ge > 500000 < / DIV_time_Ge >
+    #< DIV_time_Ge > 1000000 < / DIV_time_Ge >
     def test_Replicates_With_Tdiv(self):
 
         demographiKS_out_path = '/home/tamsen/Data/DemographiKS_output_from_mesx/SPCKS_vs_DGKS_replicates/Ne10'
         specks_out_path = '/home/tamsen/Data/DemographiKS_output_from_mesx/SPCKS_vs_DGKS_replicates/Ne10'
-
-        run_list = ['DGKS_Ne10_rep1_m03d26y2025_h13m01s26',
-                    'DGKS_Ne10_rep2_m03d26y2025_h13m01s24',
-                    'DGKS_Ne10_rep3_m03d26y2025_h13m01s11',
-                    'DGKS_Ne10_rep4_m03d26y2025_h13m01s08',
-                    'DGKS_Ne10_rep5_m03d26y2025_h13m01s06',
-                    'DGKS_Ne10_rep6_m03d26y2025_h13m01s03',
-                    'DGKS_Ne10_rep7_m03d26y2025_h13m01s01',
-                    'DGKS_Ne10_rep8_m03d26y2025_h13m00s59',
-                    'DGKS_Ne10_rep9_m03d26y2025_h12m59s52',
-                    'DGKS_Ne10_rep10_m03d26y2025_h12m28s17']
+        #/ usr / scratch2 / userdata2 / tdunn / DemographiKS_output / TE
+        run_list = [
+        'TE05fix_rep1_m04d12y2025_h11m07s35',
+        'TE05fix_rep2_m04d12y2025_h11m16s05',
+        'TE05fix_rep3_m04d12y2025_h11m16s06',
+        'TE05fix_rep4_m04d12y2025_h11m16s08',
+        'TE05fix_rep5_m04d12y2025_h11m16s10',
+        'TE05fix_rep6_m04d12y2025_h11m16s13',
+        'TE05fix_rep7_m04d12y2025_h11m16s15',
+        'TE05fix_rep8_m04d12y2025_h11m16s17',
+        'TE05fix_rep9_m04d12y2025_h11m16s20',
+        'TE05fix_rep10_m04d12y2025_h11m16s23',
+        'TE07_fix_rep1_m04d14y2025_h10m26s12',
+        'TE07_fix_rep2_m04d14y2025_h10m35s02',
+        'TE07_fix_rep3_m04d14y2025_h10m35s04',
+        'TE07_fix_rep4_m04d14y2025_h10m35s05',
+        'TE07_fix_rep5_m04d14y2025_h10m35s09',
+        'TE07_fix_rep6_m04d14y2025_h10m35s10',
+        'TE07_fix_rep7_m04d14y2025_h10m35s12',
+        'TE07_fix_rep8_m04d14y2025_h10m35s14',
+        'TE07_fix_rep9_m04d14y2025_h10m35s16',
+        'TE07_fix_rep10_m04d14y2025_h10m35s19',
+        'TE08_fix_rep1_m04d15y2025_h09m17s04',
+        'TE08_fix_rep1_m04d15y2025_h09m21s40',
+        'TE08_fix_rep1_m04d15y2025_h11m17s19',
+        'TE08_fix_rep2_m04d15y2025_h11m09s33',
+        'TE08_fix_rep3_m04d15y2025_h11m10s14',
+        'TE08_fix_rep4_m04d15y2025_h11m16s54',
+        'TE08_fix_rep5_m04d15y2025_h11m16s56',
+        'TE08_fix_rep6_m04d15y2025_h11m16s58',
+        'TE08_fix_rep7_m04d15y2025_h11m17s00',
+        'TE08_fix_rep8_m04d15y2025_h11m17s03',
+        'TE08_fix_rep9_m04d15y2025_h11m17s08',
+        'TE08_fix_rep10_m04d15y2025_h11m17s12',
+        'TE09_fix_rep1_m04d16y2025_h10m20s41',
+        'TE09_fix_rep2_m04d16y2025_h10m20s44',
+        'TE09_fix_rep3_m04d16y2025_h10m20s46',
+        'TE09_fix_rep4_m04d16y2025_h10m20s48',
+        'TE09_fix_rep5_m04d16y2025_h10m20s50',
+        'TE09_fix_rep6_m04d16y2025_h10m20s54',
+        'TE09_fix_rep7_m04d16y2025_h10m20s56',
+        'TE09_fix_rep8_m04d16y2025_h10m20s58',
+        'TE09_fix_rep9_m04d16y2025_h10m21s05',
+        'TE09_fix_rep10_m04d16y2025_h10m21s08']
 
         xmax_Ks = [0.15 for f in run_list]
         bin_sizes_Ks = [xmax_Ks_i / 25 for xmax_Ks_i in xmax_Ks]
