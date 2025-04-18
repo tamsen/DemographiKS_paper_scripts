@@ -18,11 +18,10 @@ class TestResampleTc(unittest.TestCase):
     #< DIV_time_Ge > 100000 < / DIV_time_Ge >
     #< DIV_time_Ge > 500000 < / DIV_time_Ge >
     #< DIV_time_Ge > 1000000 < / DIV_time_Ge >
-    def test_Replicates_With_Tdiv(self):
+    def test_Replicates_With_Tdiv_10000(self):
 
-        demographiKS_out_path = '/home/tamsen/Data/DemographiKS_output_from_mesx/SPCKS_vs_DGKS_replicates/Ne10'
-        specks_out_path = '/home/tamsen/Data/DemographiKS_output_from_mesx/SPCKS_vs_DGKS_replicates/Ne10'
-        #/ usr / scratch2 / userdata2 / tdunn / DemographiKS_output / TE
+        demographiKS_out_path = '/home/tamsen/Data/DemographiKS_output_from_mesx/SPCKS_vs_DGKS_replicates/Tdiv_10000'
+        specks_out_path = '/home/tamsen/Data/DemographiKS_output_from_mesx/SPCKS_vs_DGKS_replicates/Tdiv_10000'
         run_list = [
         'TE05fix_rep1_m04d12y2025_h11m07s35',
         'TE05fix_rep2_m04d12y2025_h11m16s05',
@@ -33,129 +32,14 @@ class TestResampleTc(unittest.TestCase):
         'TE05fix_rep7_m04d12y2025_h11m16s15',
         'TE05fix_rep8_m04d12y2025_h11m16s17',
         'TE05fix_rep9_m04d12y2025_h11m16s20',
-        'TE05fix_rep10_m04d12y2025_h11m16s23',
-        'TE07_fix_rep1_m04d14y2025_h10m26s12',
-        'TE07_fix_rep2_m04d14y2025_h10m35s02',
-        'TE07_fix_rep3_m04d14y2025_h10m35s04',
-        'TE07_fix_rep4_m04d14y2025_h10m35s05',
-        'TE07_fix_rep5_m04d14y2025_h10m35s09',
-        'TE07_fix_rep6_m04d14y2025_h10m35s10',
-        'TE07_fix_rep7_m04d14y2025_h10m35s12',
-        'TE07_fix_rep8_m04d14y2025_h10m35s14',
-        'TE07_fix_rep9_m04d14y2025_h10m35s16',
-        'TE07_fix_rep10_m04d14y2025_h10m35s19',
-        'TE08_fix_rep1_m04d15y2025_h09m17s04',
-        'TE08_fix_rep1_m04d15y2025_h09m21s40',
-        'TE08_fix_rep1_m04d15y2025_h11m17s19',
-        'TE08_fix_rep2_m04d15y2025_h11m09s33',
-        'TE08_fix_rep3_m04d15y2025_h11m10s14',
-        'TE08_fix_rep4_m04d15y2025_h11m16s54',
-        'TE08_fix_rep5_m04d15y2025_h11m16s56',
-        'TE08_fix_rep6_m04d15y2025_h11m16s58',
-        'TE08_fix_rep7_m04d15y2025_h11m17s00',
-        'TE08_fix_rep8_m04d15y2025_h11m17s03',
-        'TE08_fix_rep9_m04d15y2025_h11m17s08',
-        'TE08_fix_rep10_m04d15y2025_h11m17s12',
-        'TE09_fix_rep1_m04d16y2025_h10m20s41',
-        'TE09_fix_rep2_m04d16y2025_h10m20s44',
-        'TE09_fix_rep3_m04d16y2025_h10m20s46',
-        'TE09_fix_rep4_m04d16y2025_h10m20s48',
-        'TE09_fix_rep5_m04d16y2025_h10m20s50',
-        'TE09_fix_rep6_m04d16y2025_h10m20s54',
-        'TE09_fix_rep7_m04d16y2025_h10m20s56',
-        'TE09_fix_rep8_m04d16y2025_h10m20s58',
-        'TE09_fix_rep9_m04d16y2025_h10m21s05',
-        'TE09_fix_rep10_m04d16y2025_h10m21s08']
+        'TE05fix_rep10_m04d12y2025_h11m16s23']
 
-        xmax_Ks = [0.15 for f in run_list]
-        bin_sizes_Ks = [xmax_Ks_i / 25 for xmax_Ks_i in xmax_Ks]
-        xmax_Tc = [1000 for f in run_list ]
-        bin_sizes_Tc =[xmax_Tc_i / 25 for xmax_Tc_i in xmax_Tc]
-        ymax_Tc = [False for f in run_list]
-        run_list_num = "DGKS_1000_gen_by_Ne_fast_mut_rate_Replicates_Ne10."
-        ymax_Ks = [400 for f in run_list ]
-        specks_TE_run_list = [False for f in run_list ]
-        suptitle = "SLiM vs SpecKS, Tcoal and Ks"
-        show_KS_predictions=[False,False,False]
-        include_annotation=False
-        plot_title_lamda = lambda config: "Ks at Tnow\n"+ "Ne:" + str(config.ancestral_Ne)
-        which_plot_panels_to_show_legend = [1]
-
-        make_Tc_Ks_fig_for_replicates(bin_sizes_Ks, bin_sizes_Tc,
-                                     demographiKS_out_path, run_list, run_list_num,
-                                     specks_TE_run_list, specks_out_path,
-                                     xmax_Ks, xmax_Tc, ymax_Ks, ymax_Tc,
-                                      suptitle, show_KS_predictions,
-                                     include_annotation,which_plot_panels_to_show_legend,plot_title_lamda)
-
-        self.assertEqual(True, True)  # add assertion here
-        plt.close()
-
-
-    def test_Replicates_With_Ne100(self):
-
-        demographiKS_out_path = '/home/tamsen/Data/DemographiKS_output_from_mesx/SPCKS_vs_DGKS_replicates/Ne100'
-        specks_out_path = '/home/tamsen/Data/DemographiKS_output_from_mesx/SPCKS_vs_DGKS_replicates/Ne100'
-
-        run_list = [
-            'DGKS_Ne100_rep1_m03d26y2025_h15m02s34',
-            'DGKS_Ne100_rep2_m03d26y2025_h15m02s36',
-            'DGKS_Ne100_rep3_m03d26y2025_h15m02s38',
-            'DGKS_Ne100_rep4_m03d26y2025_h15m02s39',
-            'DGKS_Ne100_rep5_m03d26y2025_h15m02s41',
-            'DGKS_Ne100_rep6_m03d26y2025_h15m02s43',
-            'DGKS_Ne100_rep7_m03d26y2025_h15m02s45',
-            'DGKS_Ne100_rep8_m03d26y2025_h15m02s47',
-            'DGKS_Ne100_rep9_m03d26y2025_h15m02s49',
-            'DGKS_Ne100_rep10_m03d26y2025_h15m02s52']
-
-        xmax_Ks = [0.15 for f in run_list]
-        bin_sizes_Ks = [xmax_Ks_i / 25 for xmax_Ks_i in xmax_Ks]
-        xmax_Tc = [2000 for f in run_list ]
-        bin_sizes_Tc =[xmax_Tc_i / 25 for xmax_Tc_i in xmax_Tc]
-        ymax_Tc = [False for f in run_list]
-        run_list_num = "DGKS_1000_gen_by_Ne_fast_mut_rate_Replicates_Ne100."
-        ymax_Ks = [400 for f in run_list ]
-        specks_TE_run_list = [False for f in run_list ]
-        suptitle = "SLiM vs SpecKS, Tcoal and Ks"
-        show_KS_predictions=[False,False,False]
-        include_annotation=False
-        plot_title_lamda = lambda config: "Ks at Tnow\n"+ "Ne:" + str(config.ancestral_Ne)
-        which_plot_panels_to_show_legend = [1]
-
-        make_Tc_Ks_fig_for_replicates(bin_sizes_Ks, bin_sizes_Tc,
-                                     demographiKS_out_path, run_list, run_list_num,
-                                     specks_TE_run_list, specks_out_path,
-                                     xmax_Ks, xmax_Tc, ymax_Ks, ymax_Tc,
-                                      suptitle, show_KS_predictions,
-                                     include_annotation,which_plot_panels_to_show_legend,plot_title_lamda)
-
-        self.assertEqual(True, True)  # add assertion here
-        plt.close()
-
-    def test_Replicates_With_Ne500(self):
-
-        demographiKS_out_path = '/home/tamsen/Data/DemographiKS_output_from_mesx/SPCKS_vs_DGKS_replicates/Ne500'
-        specks_out_path = '/home/tamsen/Data/DemographiKS_output_from_mesx/SPCKS_vs_DGKS_replicates/Ne500'
-
-        run_list = [
-            'DGKS_Ne500_rep1_m03d26y2025_h17m09s08',
-            'DGKS_Ne500_rep2_m03d26y2025_h17m09s07',
-            'DGKS_Ne500_rep3_m03d26y2025_h17m09s11',
-            'DGKS_Ne500_rep4_m03d26y2025_h17m09s16',
-            'DGKS_Ne500_rep5_m03d26y2025_h17m09s19',
-            'DGKS_Ne500_rep6_m03d26y2025_h17m09s21',
-            'DGKS_Ne500_rep7_m03d26y2025_h17m09s23',
-            'DGKS_Ne500_rep8_m03d26y2025_h17m09s25',
-            'DGKS_Ne500_rep9_m03d26y2025_h17m09s29',
-            'DGKS_Ne500_rep10_m03d26y2025_h17m09s32']
-
-        xmax_Ks = [0.15 for f in run_list]
+        xmax_Ks = [0.025 for f in run_list]
         bin_sizes_Ks = [xmax_Ks_i / 25 for xmax_Ks_i in xmax_Ks]
         xmax_Tc = [10000 for f in run_list ]
         bin_sizes_Tc =[xmax_Tc_i / 25 for xmax_Tc_i in xmax_Tc]
         ymax_Tc = [False for f in run_list]
-        run_list_num = "DGKS_1000_gen_by_Ne_fast_mut_rate_Replicates_Ne500."
+        run_list_num = "DGKS_Replicates_Tdiv_10000."
         ymax_Ks = [400 for f in run_list ]
         specks_TE_run_list = [False for f in run_list ]
         suptitle = "SLiM vs SpecKS, Tcoal and Ks"
@@ -175,35 +59,124 @@ class TestResampleTc(unittest.TestCase):
         plt.close()
 
 
-    def test_Replicates_With_Ne1000(self):
+    def test_Replicates_With_Tdiv_100000(self):
 
-        demographiKS_out_path = '/home/tamsen/Data/DemographiKS_output_from_mesx/SPCKS_vs_DGKS_replicates/Ne1000'
-        specks_out_path = '/home/tamsen/Data/DemographiKS_output_from_mesx/SPCKS_vs_DGKS_replicates/Ne1000'
+        demographiKS_out_path = '/home/tamsen/Data/DemographiKS_output_from_mesx/SPCKS_vs_DGKS_replicates/Tdiv_100000'
+        specks_out_path = '/home/tamsen/Data/DemographiKS_output_from_mesx/SPCKS_vs_DGKS_replicates/Tdiv_100000'
 
         run_list = [
-                'DGKS_Ne1000_rep1_m04d08y2025_h13m41s15',
-                'DGKS_Ne1000_rep2_m04d08y2025_h13m41s16',
-                'DGKS_Ne1000_rep3_m04d08y2025_h13m41s18',
-                'DGKS_Ne1000_rep4_m04d08y2025_h13m41s20',
-                'DGKS_Ne1000_rep5_m04d08y2025_h13m41s22',
-                'DGKS_Ne1000_rep6_m04d08y2025_h13m41s25',
-                'DGKS_Ne1000_rep7_m04d08y2025_h13m41s27',
-                'DGKS_Ne1000_rep8_m04d08y2025_h13m41s30',
-                'DGKS_Ne1000_rep9_m04d08y2025_h13m41s32',
-                'DGKS_Ne1000_rep10_m04d08y2025_h13m41s12']
+            'TE07_fix_rep1_m04d14y2025_h10m26s12',
+            'TE07_fix_rep2_m04d14y2025_h10m35s02',
+            'TE07_fix_rep3_m04d14y2025_h10m35s04',
+            'TE07_fix_rep4_m04d14y2025_h10m35s05',
+            'TE07_fix_rep5_m04d14y2025_h10m35s09',
+            'TE07_fix_rep6_m04d14y2025_h10m35s10',
+            'TE07_fix_rep7_m04d14y2025_h10m35s12',
+            'TE07_fix_rep8_m04d14y2025_h10m35s14',
+            'TE07_fix_rep9_m04d14y2025_h10m35s16',
+            'TE07_fix_rep10_m04d14y2025_h10m35s19',
+         ]
 
-        xmax_Ks = [0.15 for f in run_list]
+        xmax_Ks = [0.025 for f in run_list]
         bin_sizes_Ks = [xmax_Ks_i / 25 for xmax_Ks_i in xmax_Ks]
-        xmax_Tc = [80000 for f in run_list ]
+        xmax_Tc = [10000 for f in run_list ]
         bin_sizes_Tc =[xmax_Tc_i / 25 for xmax_Tc_i in xmax_Tc]
         ymax_Tc = [False for f in run_list]
-        run_list_num = "DGKS_1000_gen_by_Ne_fast_mut_rate_Replicates_Ne1000."
-        ymax_Ks = [400 for f in run_list ]
+        bin_sizes_Tc =[xmax_Tc_i / 25 for xmax_Tc_i in xmax_Tc]
+        ymax_Tc = [False for f in run_list]
+        run_list_num = "DGKS_Replicates_Tdiv_100000."
+        ymax_Ks = [False for f in run_list ]
         specks_TE_run_list = [False for f in run_list ]
         suptitle = "SLiM vs SpecKS, Tcoal and Ks"
         show_KS_predictions=[False,False,False]
         include_annotation=False
         plot_title_lamda = lambda config: "Ks at Tnow\n"+ "Ne:" + str(config.ancestral_Ne)
+        which_plot_panels_to_show_legend = [1]
+
+        make_Tc_Ks_fig_for_replicates(bin_sizes_Ks, bin_sizes_Tc,
+                                     demographiKS_out_path, run_list, run_list_num,
+                                     specks_TE_run_list, specks_out_path,
+                                     xmax_Ks, xmax_Tc, ymax_Ks, ymax_Tc,
+                                      suptitle, show_KS_predictions,
+                                     include_annotation,which_plot_panels_to_show_legend,plot_title_lamda)
+
+        self.assertEqual(True, True)  # add assertion here
+        plt.close()
+
+    def test_Replicates_With_Tdiv_500000(self):
+
+        demographiKS_out_path = '/home/tamsen/Data/DemographiKS_output_from_mesx/SPCKS_vs_DGKS_replicates/Tdiv_500000'
+        specks_out_path = '/home/tamsen/Data/DemographiKS_output_from_mesx/SPCKS_vs_DGKS_replicates/Tdiv_500000'
+
+        run_list = [
+            'TE08_fix_rep1_m04d15y2025_h11m17s19',
+            'TE08_fix_rep2_m04d15y2025_h11m09s33',
+            'TE08_fix_rep3_m04d15y2025_h11m10s14',
+            'TE08_fix_rep4_m04d15y2025_h11m16s54',
+            'TE08_fix_rep5_m04d15y2025_h11m16s56',
+            'TE08_fix_rep6_m04d15y2025_h11m16s58',
+            'TE08_fix_rep7_m04d15y2025_h11m17s00',
+            'TE08_fix_rep8_m04d15y2025_h11m17s03',
+            'TE08_fix_rep9_m04d15y2025_h11m17s08',
+            'TE08_fix_rep10_m04d15y2025_h11m17s12']
+
+        xmax_Ks = [0.025 for f in run_list]
+        bin_sizes_Ks = [xmax_Ks_i / 25 for xmax_Ks_i in xmax_Ks]
+        xmax_Tc = [10000 for f in run_list ]
+        bin_sizes_Tc =[xmax_Tc_i / 25 for xmax_Tc_i in xmax_Tc]
+        ymax_Tc = [False for f in run_list]
+
+        run_list_num = "Replicates_Tdiv_500000."
+        ymax_Ks = [False for f in run_list ]
+        specks_TE_run_list = [False for f in run_list ]
+        suptitle = "SLiM vs SpecKS, Tcoal and Ks"
+        show_KS_predictions=[False,False,False]
+        include_annotation=False
+        plot_title_lamda = lambda config: "Ks at Tnow\n"+ "Ne:" + str(config.ancestral_Ne)
+        which_plot_panels_to_show_legend = [1]
+
+        make_Tc_Ks_fig_for_replicates(bin_sizes_Ks, bin_sizes_Tc,
+                                     demographiKS_out_path, run_list, run_list_num,
+                                     specks_TE_run_list, specks_out_path,
+                                     xmax_Ks, xmax_Tc, ymax_Ks, ymax_Tc,
+                                      suptitle, show_KS_predictions,
+                                     include_annotation,which_plot_panels_to_show_legend,plot_title_lamda)
+
+        self.assertEqual(True, True)  # add assertion here
+        plt.close()
+
+
+    def test_Replicates_With_Tdiv_1000000(self):
+
+        demographiKS_out_path = '/home/tamsen/Data/DemographiKS_output_from_mesx/SPCKS_vs_DGKS_replicates/Tdiv_1000000'
+        specks_out_path = '/home/tamsen/Data/DemographiKS_output_from_mesx/SPCKS_vs_DGKS_replicates/Tdiv_1000000'
+
+        run_list = [
+            'TE09_fix_rep1_m04d16y2025_h10m20s41',
+            'TE09_fix_rep2_m04d16y2025_h10m20s44',
+            'TE09_fix_rep3_m04d16y2025_h10m20s46',
+            'TE09_fix_rep4_m04d16y2025_h10m20s48',
+            'TE09_fix_rep5_m04d16y2025_h10m20s50',
+            'TE09_fix_rep6_m04d16y2025_h10m20s54',
+            'TE09_fix_rep7_m04d16y2025_h10m20s56',
+            'TE09_fix_rep8_m04d16y2025_h10m20s58',
+            'TE09_fix_rep9_m04d16y2025_h10m21s05',
+            'TE09_fix_rep10_m04d16y2025_h10m21s08']
+
+
+        xmax_Ks = [0.025 for f in run_list]
+        bin_sizes_Ks = [xmax_Ks_i / 25 for xmax_Ks_i in xmax_Ks]
+        xmax_Tc = [10000 for f in run_list ]
+        bin_sizes_Tc =[xmax_Tc_i / 25 for xmax_Tc_i in xmax_Tc]
+        ymax_Tc = [False for f in run_list]
+
+        run_list_num = "Replicates_Tdiv_1000000."
+        ymax_Ks = [False for f in run_list ]
+        specks_TE_run_list = [False for f in run_list ]
+        suptitle = "SLiM vs SpecKS, Tcoal and Ks"
+        show_KS_predictions=[False,False,False]
+        include_annotation=False
+        plot_title_lamda = lambda config: "Ks at Tnow\n"+ "Tdiv:" + str(config.DIV_time_Ge)
         which_plot_panels_to_show_legend = [1]
 
         make_Tc_Ks_fig_for_replicates(bin_sizes_Ks, bin_sizes_Tc,
