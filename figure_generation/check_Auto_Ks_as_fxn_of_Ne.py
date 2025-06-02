@@ -35,12 +35,15 @@ class TestAutoKsByNe(unittest.TestCase):
         show_KS_predictions=[False,False,False]
         plot_title_lamda = lambda config: "Polyploid pop size:" + str(config.bottleneck_Ne)
         include_annotation = False
-
-        make_Tc_Ks_Allo_vs_Auto_fig_with_subplots(bin_sizes_Ks, bin_sizes_Tc,
+        num_plot_rows=2
+        make_Tc_Ks_Allo_vs_Auto_fig_with_subplots(num_plot_rows,
+                                                  bin_sizes_Ks, bin_sizes_Tc,
                                      demographiKS_allo_out_path, demographiKS_allo_run_list, run_list_name,
                                      demographiKS_auto_run_list, demographiKS_auto_out_path ,
                                      xmax_Ks, xmax_Tc, ymax_Ks, ymax_Tc,
-        suptitle, show_KS_predictions)
+        suptitle, show_KS_predictions,include_annotation, plot_title_lamda)
+
+
 
         self.assertEqual(True, True)  # add assertion here
 
