@@ -28,7 +28,7 @@ class TestKsByMig(unittest.TestCase):
 
         show_KS_predictions = [False, False, False]
         suptitle = "DemographiKS Ks histograms\n"
-        include_annotation=True
+        include_annotation=False
         plot_title_lamda = lambda config: "Ks at Tnow\n"+ "Mig rate:" + str(config.mig_rate)
         plots_to_show_legend=[1,2,3,4,5]
         make_Tc_Ks_fig_with_subplots(bin_sizes_Ks, bin_sizes_Tc,
@@ -63,13 +63,15 @@ class TestKsByMig(unittest.TestCase):
         show_KS_predictions = [False, False, False]
         suptitle = "DemographiKS Ks histograms\n"
         include_annotation=False
+        plots_to_show_legend=[1,2,3,4,5]
         plot_title_lamda = lambda config: "Ks at Tnow\n"+ "Mig rate:" + str(config.mig_rate)
         make_Tc_Ks_fig_with_subplots(bin_sizes_Ks, bin_sizes_Tc,
                                      demographiKS_out_path, demographics_run_list, run_list_name,
                                      specks_TE5_run_list, demographiKS_out_path,
                                      xmax_Ks, xmax_Tc, ymax_KS, ymax_Tc,
                                      suptitle, show_KS_predictions,
-                                     include_annotation,plot_title_lamda)
+                                     include_annotation,plots_to_show_legend,
+                                     plot_title_lamda)
 
         self.assertEqual(True, True)  # add assertion here
 
@@ -93,6 +95,7 @@ class TestKsByMig(unittest.TestCase):
         show_KS_predictions = [False, False, False]
         suptitle = "DemographiKS Ks histograms\n"
         include_annotation=False
+        plots_to_show_legend=[]
         plot_title_lamda = lambda config: "Ks at Tnow\n"+ \
                                           "Mig duration:" + \
                                           str(config.mig_stop-config.mig_start) + " gen"
@@ -101,7 +104,8 @@ class TestKsByMig(unittest.TestCase):
                                      specks_TE5_run_list, demographiKS_out_path,
                                      xmax_Ks, xmax_Tc, ymax_KS, ymax_Tc,
                                      suptitle, show_KS_predictions,
-                                     include_annotation, plot_title_lamda)
+                                     include_annotation, plots_to_show_legend,
+                                     plot_title_lamda)
 
         self.assertEqual(True, True)  # add assertion here
 
@@ -123,6 +127,7 @@ class TestKsByMig(unittest.TestCase):
         show_KS_predictions = [False, False, False]
         suptitle = "DemographiKS Ks histograms\n"
         include_annotation=False
+        plots_to_show_legend=[]
         plot_title_lamda = lambda config: "Ks at Tnow\n" + \
                                           "Mig duration:" + \
                                           str(config.mig_stop - config.mig_start)+ " gen"
@@ -131,7 +136,8 @@ class TestKsByMig(unittest.TestCase):
                                      specks_TE5_run_list, demographiKS_out_path,
                                      xmax_Ks, xmax_Tc, ymax_KS, ymax_Tc,
                                      suptitle, show_KS_predictions,
-                                     include_annotation, plot_title_lamda)
+                                     include_annotation, plots_to_show_legend,
+                                     plot_title_lamda)
 
         self.assertEqual(True, True)  # add assertion here
 
@@ -156,6 +162,7 @@ class TestKsByMig(unittest.TestCase):
         show_KS_predictions = [False, False, False]
         suptitle = "DemographiKS Ks histograms\n"
         include_annotation=False
+        plots_to_show_legend=[]
         plot_title_lamda = lambda config: "Ks at Tnow\n"+ \
                                           "Mig duration:" + \
                                           str(config.mig_stop-config.mig_start)+ " gen"
@@ -164,20 +171,21 @@ class TestKsByMig(unittest.TestCase):
                                      specks_TE5_run_list, demographiKS_out_path,
                                      xmax_Ks, xmax_Tc, ymax_KS, ymax_Tc,
                                      suptitle, show_KS_predictions,
-                                     include_annotation, plot_title_lamda)
+                                     include_annotation,
+                                     plots_to_show_legend, plot_title_lamda)
 
         self.assertEqual(True, True)  # add assertion here
 
     def test_Ks_diffs_for_5_gen_of_Migration(self):
         demographiKS_out_path = '/home/tamsen/Data/DemographiKS_output_from_mesx/KS_vs_Mg/5years'
-        data_file = "Ks_for_5yr_of_Mig_with_varying_rates_fig_Fig_R-M5.csv"
+        data_file = "Ks_for_5yr_of_Mig_with_varying_rates_fig_Fig_R-M5_save.csv"
         png_out = "Ks_for_5yr_of_Mig_with_varying_rates_fig_Fig_R-M5_overlay.png"
         rmse_plot_label = "Ks perturbation vs mig rate (5 years contact)"
         make_RMSE_mig_plot(data_file, demographiKS_out_path, png_out, rmse_plot_label)
 
     def test_Ks_diffs_for_100_gen_of_Migration(self):
         demographiKS_out_path = '/home/tamsen/Data/DemographiKS_output_from_mesx/KS_vs_Mg/100years'
-        data_file = "Ks_for_100yr_of_Mig_with_varying_ratesfig_Fig_R-M6.csv"
+        data_file = "Ks_for_100yr_of_Mig_with_varying_ratesfig_Fig_R-M6_save.csv"
         png_out = "Ks_for_100yr_of_Mig_with_varying_ratesfig_Fig_R-M6_overlay.png"
         rmse_plot_label = "Ks perturbation vs mig rate (100 years contact)"
         make_RMSE_mig_plot(data_file, demographiKS_out_path, png_out, rmse_plot_label)
