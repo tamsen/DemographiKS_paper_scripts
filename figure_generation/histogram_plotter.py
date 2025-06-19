@@ -98,8 +98,9 @@ def read_Ks_csv(csv_file, expect_header):
                 reading_header=False
                 continue
             data = line.split(",")
-            #print(data)
-            ks_value=float(data[2])
-            ks_results.append(ks_value)
+            if len(data[2])>0:
+                ks_value=float(data[2])
+                #if ks_value > 0:
+                ks_results.append(ks_value)
 
     return ks_results

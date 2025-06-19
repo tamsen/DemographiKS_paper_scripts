@@ -8,11 +8,11 @@ class MyDGXDataFetcher(unittest.TestCase):
     def test_fetch_demographiKS_data(self):
         #/usr/scratch2/userdata2/tdunn/DemographiKS_Output
         run_list = [
-        'TE09_fix_rep3_m04d16y2025_h10m20s46',
+            'EMP_Coff_17_m06d18y2025_h12m12s04'
         ]
 
 
-        run_collection_name = "TE"
+        run_collection_name = "EMP"
         me_at_remote_URL = 'tdunn@mesx_cluster'
         output_root_folder = os.path.join("/usr/scratch2/userdata2/tdunn/DemographiKS_Output")
         if False:
