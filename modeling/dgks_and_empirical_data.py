@@ -1,6 +1,6 @@
 import unittest
 
-from figure_generation.ks_plot_aggregations import make_Tc_Ks_fig_with_subplots
+from figure_generation.ks_plot_aggregations_dgks_vs_truth import make_Tc_Ks_vs_truth_fig_with_subplots
 
 
 class DGKS_and_Empirical_Data_Test(unittest.TestCase):
@@ -37,14 +37,14 @@ class DGKS_and_Empirical_Data_Test(unittest.TestCase):
         include_annotation = False
         plots_to_show_legend = [1, 2, 3, 4]
         plot_title_lamda = lambda config: "Ks at Tnow\n" + "Na:" + str(config.ancestral_Ne)
-        make_Tc_Ks_fig_with_subplots(bin_sizes_Ks, bin_sizes_Tc,
-                                     demographiKS_out_path, demographics_run_list, run_list_name,
-                                     specks_TE5_run_list, specks_out_path,
-                                     xmax_Ks, xmax_Tc, ymax_KS, ymax_Tc,
-                                     suptitle, show_KS_predictions,
-                                     include_annotation,
-                                     plots_to_show_legend,
-                                     plot_title_lamda)
+        make_Tc_Ks_vs_truth_fig_with_subplots(bin_sizes_Ks, bin_sizes_Tc,
+                                              demographiKS_out_path, demographics_run_list, run_list_name,
+                                              specks_TE5_run_list, specks_out_path,
+                                              xmax_Ks, xmax_Tc, ymax_KS, ymax_Tc,
+                                              suptitle, show_KS_predictions,
+                                              include_annotation,
+                                              plots_to_show_legend,
+                                              plot_title_lamda)
 
         self.assertEqual(True, True)  # add assertion here
 
@@ -53,13 +53,13 @@ class DGKS_and_Empirical_Data_Test(unittest.TestCase):
     def test_coffee_allopolyploid(self):
 
         demographiKS_out_path = '/home/tamsen/Data/DemographiKS_output_from_mesx/EmpiricalDataTesting_2/Coffee'
-        specks_out_path = 'foo'
+        truth_out_path = '/home/tamsen/Data/DemographiKS_output_from_mesx/EmpiricalDataTesting_2/Coffee/Truth'
         demographics_run_list = [False,
                                  'EMP_Coff_17_m06d18y2025_h12m12s04',
                                  'EMP_Coff_16_m06d18y2025_h09m03s22',
                                  'Truth'
                                   ]# 'EMP_Coff_10_m06d12y2025_h17m06s38'
-        specks_TE5_run_list = [False,False,False,False,False,False,False]
+        truth_run_list = ['coffea.ks.tsv' for f in demographics_run_list ]
 
 
         xmax_Ks = [0.1 for f in demographics_run_list ]
@@ -80,14 +80,14 @@ class DGKS_and_Empirical_Data_Test(unittest.TestCase):
         include_annotation = False
         plots_to_show_legend = [1, 2, 3, 4]
         plot_title_lamda = lambda config: "Ks at Tnow\n" + "Na:" + str(config.ancestral_Ne)
-        make_Tc_Ks_fig_with_subplots(bin_sizes_Ks, bin_sizes_Tc,
-                                     demographiKS_out_path, demographics_run_list, run_list_name,
-                                     specks_TE5_run_list, specks_out_path,
-                                     xmax_Ks, xmax_Tc, ymax_KS, ymax_Tc,
-                                     suptitle, show_KS_predictions,
-                                     include_annotation,
-                                     plots_to_show_legend,
-                                     plot_title_lamda)
+        make_Tc_Ks_vs_truth_fig_with_subplots(bin_sizes_Ks, bin_sizes_Tc,
+                                              demographiKS_out_path, demographics_run_list, run_list_name,
+                                              truth_run_list, truth_out_path,
+                                              xmax_Ks, xmax_Tc, ymax_KS, ymax_Tc,
+                                              suptitle, show_KS_predictions,
+                                              include_annotation,
+                                              plots_to_show_legend,
+                                              plot_title_lamda)
 
         self.assertEqual(True, True)  # add assertion here
 
