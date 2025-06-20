@@ -63,7 +63,7 @@ def make_Tc_Ks_vs_truth_fig_with_subplots(bin_sizes_Ks, bin_sizes_Tc,
             dgx_run_duration_in_m, dgx_version = get_run_time_in_minutes(dgx_run_path)
 
             if include_annotation:
-                plot_title = "Ks at Tnow\n" + \
+                plot_title = "Ks for "+ dgx_run_name+"\n" + \
                          "burnin time=" + str(config_used.burnin_time) + " gen, " \
                      + "Na=" + str(config_used.ancestral_Ne)  + ", Nb=" + str(config_used.bottleneck_Ne) +\
                          ",\nTdiv=" + str(config_used.DIV_time_Ge) + ", RC=" + str(config_used.recombination_rate)
@@ -73,7 +73,7 @@ def make_Tc_Ks_vs_truth_fig_with_subplots(bin_sizes_Ks, bin_sizes_Tc,
                 else:
                     plot_title = plot_title + ", MigRate=0"
             else:
-                plot_title = str(plot_title_lamda(config_used))
+                plot_title = "Ks for "+ dgx_run_name+"\n"  + str(plot_title_lamda(config_used))
 
         else:
             config_used = False
@@ -85,13 +85,14 @@ def make_Tc_Ks_vs_truth_fig_with_subplots(bin_sizes_Ks, bin_sizes_Tc,
         truth_tsv_file = truth_run_list[i]
         if truth_tsv_file:
             truth_run_path = os.path.join(truth_out_path, truth_tsv_file)
-            truth_ks_results = ks_parsers.parse_external_ksfile(truth_run_path)
+            raw_ks_results = ks_parsers.parse_external_ksfile(truth_run_path)
+            truth_ks_results = [ks for ks in raw_ks_results if ks > 0]
             spx_run_duration_in_m = 0
             spx_version = "NA"
             #specks_csv_file = os.path.join(truth_run_path, "variations_in_div_time.txt")
             #loci, specks_mrcas_by_gene = read_data_csv(specks_csv_file)
 
-            glob_results=glob.glob(truth_run_path + '/*.used.xml')
+            glob_results=glob.glob(truth_out_path + '/*.used.xml')
             input_xml_file = glob_results[0]
             #specks_config_used = config.DemographiKS_config(input_xml_file)
             if not config_used:
@@ -144,8 +145,9 @@ def make_Tc_Ks_vs_truth_fig_with_subplots(bin_sizes_Ks, bin_sizes_Tc,
         else:
             plot_title = "Tcoal at Tdiv"
 
-        theory_mrcas_by_gene=False
-        avg_slim_Tc = plot_mrca(ax[1, i], slim_mrcas_by_gene, specks_mrcas_by_gene, theory_mrcas_by_gene,
+        theory_mrcas_by_gene= False
+        truth_mrcas_by_gene = False
+        avg_slim_Tc = plot_mrca(ax[1, i], slim_mrcas_by_gene, truth_mrcas_by_gene, theory_mrcas_by_gene,
                   plot_title, config_used.ancestral_Ne,
                   bin_sizes_Tc[i], xmax_Tc[i], ymax_Tc[i], config_used.num_genes, include_annotation)
 
@@ -197,11 +199,11 @@ def plot_expository_images(num_rows,ax, png_Tdiv, png_Tnow):
                 ax[1, 0].spines[pos].set_visible(False)
 
 
-def plot_ks(i, this_ax, config_used, slim_ks_by_gene, spx_ks_by_gene,
-            title, bin_size, xmax, ymax, show_predictions, include_annotations,plots_to_show_legend):
+def plot_ks(i, this_ax, config_used, slim_ks_by_gene, true_ks_by_gene,
+            title, bin_size, xmax, ymax, show_predictions, include_annotations, plots_to_show_legend):
 
     num_slim_genes = len(slim_ks_by_gene)
-    num_specks_genes = len(spx_ks_by_gene)
+    num_specks_genes = len(true_ks_by_gene)
     include_logfit=("RC" in title)
     include_RC_model=("RC" in title)
 
@@ -211,23 +213,23 @@ def plot_ks(i, this_ax, config_used, slim_ks_by_gene, spx_ks_by_gene,
 
     if len(slim_ks_by_gene) > 0:
         if include_annotations:
-            my_label='SLiM Ks by gene' + "(" + str(num_slim_genes) + " paralogs in genome)"
+            my_label='DGKS Ks by gene' + "(" + str(num_slim_genes) + " paralogs in genome)"
         else:
-            my_label='SLiM Ks by gene'
+            my_label='DGKS Ks by gene'
         dgx_hist_ys, bins, patches = this_ax.hist(slim_ks_by_gene, bins=bins, facecolor='b', alpha=0.25,
                      label=my_label,
-                     density=False)
+                     density=True)
 
-    if len(spx_ks_by_gene) > 0:
+    if len(true_ks_by_gene) > 0:
 
         if include_annotations:
-            my_label='SpecKS Ks by gene'\
+            my_label='Truth Ks by gene'\
                 + "(" + str(num_specks_genes) + " paralogs in genome)"
         else:
-            my_label='SpecKS Ks by gene'
-        dgx_hist_ys, bins, patches =this_ax.hist(spx_ks_by_gene, bins=bins, facecolor='c', alpha=0.25,
-                     label=my_label,
-                     density=False)
+            my_label='Truth Ks by gene'
+        dgx_hist_ys, bins, patches =this_ax.hist(true_ks_by_gene, bins=bins, facecolor='c', alpha=0.25,
+                                                 label=my_label,
+                                                 density=True)
 
     half_bin_size=0.5*bin_size
     if config_used.t_div_as_ks:
