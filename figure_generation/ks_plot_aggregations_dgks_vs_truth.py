@@ -86,7 +86,8 @@ def make_Tc_Ks_vs_truth_fig_with_subplots(bin_sizes_Ks, bin_sizes_Tc,
         if truth_tsv_file:
             truth_run_path = os.path.join(truth_out_path, truth_tsv_file)
             raw_ks_results = ks_parsers.parse_external_ksfile(truth_run_path)
-            truth_ks_results = [ks for ks in raw_ks_results if ks > 0]
+            truth_ks_results = [ks for ks in raw_ks_results if ks > 0.0001]
+            #truth_ks_results = raw_ks_results
             spx_run_duration_in_m = 0
             spx_version = "NA"
             #specks_csv_file = os.path.join(truth_run_path, "variations_in_div_time.txt")
