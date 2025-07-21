@@ -7,8 +7,8 @@ class MyDGXDataFetcher(unittest.TestCase):
 
     def test_fetch_demographiKS_data(self):
         #/usr/scratch2/userdata2/tdunn/DemographiKS_Output
-        run_list = ['EMP_Pop_09_m07d18y2025_h11m06s20']
-
+        run_list = [
+            'EMP_Pop_11_m07d18y2025_h13m55s45']
 
 
         run_collection_name = "EMP"
@@ -24,10 +24,10 @@ class MyDGXDataFetcher(unittest.TestCase):
 
         for i in range(0,len(run_list)):
             run_name = run_list[i]
-            #local_output_folder = os.path.join("/home/tamsen/Data/DemographiKS_output_from_mesx",
-            #                                   run_name)
-            local_output_folder = os.path.join("/Users/tamsen/Data/DemographiKS_output_from_mesx",
+            local_output_folder = os.path.join("/home/tamsen/Data/DemographiKS_output_from_mesx",
                                                run_name)
+            #local_output_folder = os.path.join("/Users/tamsen/Data/DemographiKS_output_from_mesx",
+            #                                   run_name)
             self.pull_down_run_data(local_output_folder, me_at_remote_URL, output_root_folder, run_name)
 
         self.assertEqual(True, True)  # add assertion here

@@ -169,8 +169,9 @@ class DGKS_and_Empirical_Data_Test(unittest.TestCase):
                                   'EMP_Pop_05_m07d16y2025_h10m46s20',
                                  'EMP_Pop_06_m07d17y2025_h11m35s43',
                                  'EMP_Pop_07_m07d17y2025_h16m44s40',
-                                 'EMP_Pop_09_m07d18y2025_h11m06s20'
-                                  ]
+                                 'EMP_Pop_09_m07d18y2025_h11m06s20',
+                                 'EMP_Pop_10_m07d18y2025_h11m40s57',
+                                  'EMP_Pop_11_m07d18y2025_h13m55s45']
         #'EMP_Pop_02_m07d14y2025_h11m32s24',
         #'EMP_Pop_04_m07d14y2025_h17m21s10',
 
