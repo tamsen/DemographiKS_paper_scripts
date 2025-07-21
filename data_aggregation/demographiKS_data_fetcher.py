@@ -7,7 +7,7 @@ class MyDGXDataFetcher(unittest.TestCase):
 
     def test_fetch_demographiKS_data(self):
         #/usr/scratch2/userdata2/tdunn/DemographiKS_Output
-        run_list = ['EMP_Ory_02_m07d17y2025_h16m24s51']
+        run_list = ['EMP_Pop_09_m07d18y2025_h11m06s20']
 
 
 

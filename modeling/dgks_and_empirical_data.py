@@ -166,11 +166,13 @@ class DGKS_and_Empirical_Data_Test(unittest.TestCase):
         truth_out_path = '/Users/tamsen/Data/DemographiKS_output_from_mesx/EmpiricalDataTesting_2/Poplar/Truth'
 
         demographics_run_list = [False,
-                                 'EMP_Pop_02_m07d14y2025_h11m32s24',
-                                 'EMP_Pop_04_m07d14y2025_h17m21s10',
-                                 'EMP_Pop_05_m07d16y2025_h10m46s20',
-                                 'EMP_Pop_06_m07d17y2025_h11m35s43'
+                                  'EMP_Pop_05_m07d16y2025_h10m46s20',
+                                 'EMP_Pop_06_m07d17y2025_h11m35s43',
+                                 'EMP_Pop_07_m07d17y2025_h16m44s40',
+                                 'EMP_Pop_09_m07d18y2025_h11m06s20'
                                   ]
+        #'EMP_Pop_02_m07d14y2025_h11m32s24',
+        #'EMP_Pop_04_m07d14y2025_h17m21s10',
 
         truth_run_list = ['poplar.ks.tsv' for f in demographics_run_list ]
 
@@ -217,7 +219,8 @@ class DGKS_and_Empirical_Data_Test(unittest.TestCase):
 
         demographics_run_list = [False,
                                  'EMP_Ory_06_m07d17y2025_h12m08s40',
-                                 'EMP_Ory_02_m07d17y2025_h16m24s51'
+                                 'EMP_Ory_02_m07d17y2025_h16m24s51',
+
                                   ]
 
         truth_run_list = [False for f in demographics_run_list ]
