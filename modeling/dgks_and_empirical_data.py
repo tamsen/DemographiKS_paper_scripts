@@ -1,5 +1,8 @@
+import math
 import os
 import unittest
+
+import numpy as np
 from matplotlib.patches import Rectangle
 from matplotlib import pyplot as plt
 
@@ -13,12 +16,12 @@ class DGKS_and_Empirical_Data_Test(unittest.TestCase):
     def test_maize_as_segmental_polyploid(self):
 
         # linux
-        #demographiKS_out_path = '/home/tamsen/Data/DemographiKS_output_from_mesx/EmpiricalDataTesting_2/Maize'
-        #truth_out_path = '/home/tamsen/Data/DemographiKS_output_from_mesx/EmpiricalDataTesting_2/Maize/Truth'
+        demographiKS_out_path = '/home/tamsen/Data/DemographiKS_output_from_mesx/EmpiricalDataTesting_2/Maize'
+        truth_out_path = '/home/tamsen/Data/DemographiKS_output_from_mesx/EmpiricalDataTesting_2/Maize/Truth'
 
         # mac
-        demographiKS_out_path = '/Users/tamsen/Data/DemographiKS_output_from_mesx/EmpiricalDataTesting_2/Maize'
-        truth_out_path = '/Users/tamsen/Data/DemographiKS_output_from_mesx/EmpiricalDataTesting_2/Maize/Truth'
+        # demographiKS_out_path = '/Users/tamsen/Data/DemographiKS_output_from_mesx/EmpiricalDataTesting_2/Maize'
+        # truth_out_path = '/Users/tamsen/Data/DemographiKS_output_from_mesx/EmpiricalDataTesting_2/Maize/Truth'
 
         demographics_run_list = [False,
                                  'EMP_Mays_26_m07d09y2025_h11m39s07',
@@ -26,14 +29,7 @@ class DGKS_and_Empirical_Data_Test(unittest.TestCase):
                                  'EMP_Mays_29_m07d14y2025_h17m35s58',
                                  'EMP_Mays_26_29_combined'
                                  ]
-        #                         'EMP_Mays_22_combined',  'EMP_Mays_26_25_combined'
-        #                         'EMP_Mays_09_m06d17y2025_h10m05s25',   'EMP_Mays_23_m07d03y2025_h16m18s38',
-        #                                  'EMP_Mays_21_m07d02y2025_h11m32s40',      'EMP_Mays_26_m07d09y2025_h11m39s07',
-        #                                  'EMP_Mays_22_m07d02y2025_h12m02s50',
-        #                        ]
-                                 #'EMP_Mays,
-                                 #'EMP_Mays_15_07_combined'
-                                 # ]
+
         truth_run_list = ['mays.ks.tsv' for f in demographics_run_list ]
 
         xmax_Ks = [0.4 for f in demographics_run_list ]
@@ -72,19 +68,21 @@ class DGKS_and_Empirical_Data_Test(unittest.TestCase):
         truth_out_path = '/home/tamsen/Data/DemographiKS_output_from_mesx/EmpiricalDataTesting_2/Maize/Truth'
         out_png= os.path.join(demographiKS_out_path, 'final.png')
 
-        species_for_plot_title = 'EMP_Mays_26_29_combined'
+        species_for_plot_title =     'EMP_Mays_26_29_combined'
         real_full_path =  os.path.join(truth_out_path, 'mays.ks.tsv')
         real_ks_results = ks_parsers.parse_external_ksfile(real_full_path)
 
         sim_full_path =  os.path.join(demographiKS_out_path,
-                                              'EMP_Mays_15_07_combined',
+                                              species_for_plot_title,
                                               'allotetraploid_bottleneck.csv')
         demographiKS_ks_results = read_Ks_csv(sim_full_path,False)
-
-        hist_ys_real, bins_real, patches = plt.hist(real_ks_results, bins=50, facecolor='b', alpha=0.25,
+        bin_size=0.01
+        max_Ks=0.4
+        bins = np.arange(bin_size, max_Ks + 0.1, bin_size)
+        hist_ys_real, bins_real, patches = plt.hist(real_ks_results, bins=bins, facecolor='b', alpha=0.25,
                                           density=True)
 
-        hist_ys_sim, bins_sim, patches = plt.hist(demographiKS_ks_results, bins=50, facecolor='b', alpha=0.25,
+        hist_ys_sim, bins_sim, patches = plt.hist(demographiKS_ks_results, bins=bins, facecolor='b', alpha=0.25,
                                           density=True)
 
         hist_ys_1 = [hist_ys_real, bins_real]
@@ -263,20 +261,20 @@ class DGKS_and_Empirical_Data_Test(unittest.TestCase):
         # truth_out_path = '/Users/tamsen/Data/DemographiKS_output_from_mesx/EmpiricalDataTesting_2/Rice/Truth'
 
         demographics_run_list = [False,
-                                 'EMP_Ory_02_m07d17y2025_h16m24s51',
+                                 'EMP_Sac_01_m07d24y2025_h14m01s54',
                                   ]
 
         truth_run_list = ['saccharum.ks.tsv' for f in demographics_run_list ]
 
 
-        xmax_Ks = [0.2 for f in demographics_run_list ]
+        xmax_Ks = [0.5 for f in demographics_run_list ]
         bin_sizes_Ks = [xmax_KS_i/100 for xmax_KS_i in xmax_Ks]
 
         xmax_Tc = [80000 for f in demographics_run_list ]
         bin_sizes_Tc = [xmax_Tc_i/100 for xmax_Tc_i in xmax_Tc]
 
 
-        ymax_KS = [False for f in demographics_run_list]
+        ymax_KS = [8 for f in demographics_run_list]
         ymax_Tc = [False for f in demographics_run_list]
         run_list_name = "Simulated_Ks_for_Saccharum_spontaneum"
         # since mutation rate is 1.0e-5
