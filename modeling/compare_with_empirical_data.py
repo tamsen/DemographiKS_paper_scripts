@@ -9,9 +9,6 @@ from matplotlib.patches import Rectangle
 import ks_parsers
 from figure_generation import curve_fitting
 
-#actinidia.ks.tsv
-#triticum.ks.tsv
-#final_ks_values_TORX.fa
 
 class MyTestCase(unittest.TestCase):
 
