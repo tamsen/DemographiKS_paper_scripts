@@ -226,22 +226,29 @@ class DGKS_and_Empirical_Data_Test(unittest.TestCase):
         # mac
         # demographiKS_out_path = '/Users/tamsen/Data/DemographiKS_output_from_mesx/EmpiricalDataTesting_2/Rice'
         # truth_out_path = '/Users/tamsen/Data/DemographiKS_output_from_mesx/EmpiricalDataTesting_2/Rice/Truth'
-
+        #'EMP_Sac_11_m08d27y2025_h11m55s59',
+        #'EMP_Sac_12_m08d27y2025_h11m56s01',
+        # 'EMP_Sac_16_m09d02y2025_h11m45s38',
+        #'EMP_Sac_17_m09d02y2025_h11m45s41',
+        #'EMP_Sac_14_m08d27y2025_h14m04s46',
         demographics_run_list = [False,
-                                 'EMP_Sac_01_m07d24y2025_h14m01s54',
-                                  ]
+                                 'EMP_Sac_10_m08d26y2025_h17m19s09',
+                                 'EMP_Sac_15_m09d02y2025_h11m45s35',
+                                 'EMP_Sac_18_m09d02y2025_h13m52s20',
+                                 'EMP_Sac_19_m09d02y2025_h13m52s24'
+                                 ]
 
         truth_run_list = ['saccharum.ks.tsv' for f in demographics_run_list ]
 
 
-        xmax_Ks = [0.5 for f in demographics_run_list ]
-        bin_sizes_Ks = [xmax_KS_i/100 for xmax_KS_i in xmax_Ks]
+        xmax_Ks = [1.0 for f in demographics_run_list ]
+        bin_sizes_Ks = [xmax_KS_i/50 for xmax_KS_i in xmax_Ks]
 
-        xmax_Tc = [80000 for f in demographics_run_list ]
-        bin_sizes_Tc = [xmax_Tc_i/100 for xmax_Tc_i in xmax_Tc]
+        xmax_Tc = [20000 for f in demographics_run_list ]
+        bin_sizes_Tc = [xmax_Tc_i/50 for xmax_Tc_i in xmax_Tc]
 
 
-        ymax_KS = [8 for f in demographics_run_list]
+        ymax_KS = [20 for f in demographics_run_list]
         ymax_Tc = [False for f in demographics_run_list]
         run_list_name = "Simulated_Ks_for_Saccharum_spontaneum"
         # since mutation rate is 1.0e-5
