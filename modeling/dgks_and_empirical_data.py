@@ -231,11 +231,17 @@ class DGKS_and_Empirical_Data_Test(unittest.TestCase):
         # 'EMP_Sac_16_m09d02y2025_h11m45s38',
         #'EMP_Sac_17_m09d02y2025_h11m45s41',
         #'EMP_Sac_14_m08d27y2025_h14m04s46',
+        # #'EMP_Sac_10_m08d26y2025_h17m19s09',
+        #'EMP_Sac_15_m09d02y2025_h11m45s35',
+        #'EMP_Sac_18_m09d02y2025_h13m52s20',
+        #'EMP_Sac_19_m09d02y2025_h13m52s24',
+        #'EMP_Sac_20_m09d02y2025_h16m24s58',
+        #'EMP_Sac_21_m09d02y2025_h16m25s01','EMP_Sac_22_m09d03y2025_h12m11s04',
         demographics_run_list = [False,
-                                 'EMP_Sac_10_m08d26y2025_h17m19s09',
-                                 'EMP_Sac_15_m09d02y2025_h11m45s35',
-                                 'EMP_Sac_18_m09d02y2025_h13m52s20',
-                                 'EMP_Sac_19_m09d02y2025_h13m52s24'
+                                 'EMP_Sac_23_m09d03y2025_h12m11s05',
+                                 'EMP_Sac_24_m09d03y2025_h12m11s08',
+                                 'EMP_Sac_25_m09d03y2025_h12m11s10',
+                                 'EMP_Sac_25_and_10'
                                  ]
 
         truth_run_list = ['saccharum.ks.tsv' for f in demographics_run_list ]
