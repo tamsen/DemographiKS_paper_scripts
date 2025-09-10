@@ -239,11 +239,14 @@ class DGKS_and_Empirical_Data_Test(unittest.TestCase):
         #'EMP_Sac_21_m09d02y2025_h16m25s01','EMP_Sac_22_m09d03y2025_h12m11s04',
         # 'EMP_Sac_23_m09d03y2025_h12m11s05',
         #                         'EMP_Sac_24_m09d03y2025_h12m11s08',
+        #'EMP_Sac_27_m09d05y2025_h11m33s51',
+        #'EMP_Sac_28_m09d05y2025_h11m33s58',
         demographics_run_list = [False,
-                                 'EMP_Sac_27_m09d05y2025_h11m33s51',
-                                 'EMP_Sac_28_m09d05y2025_h11m33s58',
+
                                  'EMP_Sac_29_m09d05y2025_h14m23s56',
-                                 'EMP_Sac_30_m09d05y2025_h14m22s56'
+                                 'EMP_Sac_30_m09d05y2025_h14m22s56',
+                                 'EMP_Sac_31_m09d09y2025_h12m25s33',
+                                 'EMP_Sac_32_m09d09y2025_h12m25s36'
                                  ]
         'EMP_Sac_25_m09d03y2025_h12m11s10',
         'EMP_Sac_25_and_10',

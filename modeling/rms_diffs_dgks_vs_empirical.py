@@ -1,6 +1,8 @@
 import math
 import os
 import unittest
+import random
+from xml.etree.ElementInclude import include
 
 import numpy as np
 from matplotlib.patches import Rectangle
@@ -50,7 +52,7 @@ class Final_DGKS_vs_Empirical(unittest.TestCase):
         # linux
         demographiKS_out_path = '/home/tamsen/Data/DemographiKS_output_from_mesx/EmpiricalDataTesting_2/Poplar'
         truth_out_path = '/home/tamsen/Data/DemographiKS_output_from_mesx/EmpiricalDataTesting_2/Poplar/Truth'
-
+        include_selection = True
         species_for_plot_title = 'EMP_Pop_07_and_half_11'
         out_png = os.path.join(demographiKS_out_path, species_for_plot_title + '_final_poplar.png')
         real_full_path = os.path.join(truth_out_path, 'poplar.ks.tsv')
@@ -60,6 +62,9 @@ class Final_DGKS_vs_Empirical(unittest.TestCase):
                                      species_for_plot_title,
                                      'allotetraploid_bottleneck.csv')
         demographiKS_ks_results = read_Ks_csv(sim_full_path, False)
+        if include_selection:
+            demographiKS_ks_results = add_selection(demographiKS_ks_results)
+
         bin_size = 0.01
         max_Ks = 0.4
         bins = np.arange(bin_size, max_Ks + 0.1, bin_size)
@@ -73,7 +78,8 @@ class Final_DGKS_vs_Empirical(unittest.TestCase):
         hist_ys_2 = [hist_ys_sim, bins_sim]
         list_of_hist_data = [hist_ys_1, hist_ys_2]
 
-        overlay_differences_in_curves(species_for_plot_title, list_of_hist_data, out_png)
+        overlay_differences_in_curves(species_for_plot_title, list_of_hist_data,
+                                      include_selection, out_png)
 
         self.assertEqual(True, True)  # add assertion here
 
@@ -81,7 +87,7 @@ class Final_DGKS_vs_Empirical(unittest.TestCase):
         # linux
         demographiKS_out_path = '/home/tamsen/Data/DemographiKS_output_from_mesx/EmpiricalDataTesting_2/Maize'
         truth_out_path = '/home/tamsen/Data/DemographiKS_output_from_mesx/EmpiricalDataTesting_2/Maize/Truth'
-
+        include_selection = True
 
         species_for_plot_title = 'EMP_Mays_26_29_combined'
         out_png = os.path.join(demographiKS_out_path, species_for_plot_title+ '_final_mays.png')
@@ -92,6 +98,9 @@ class Final_DGKS_vs_Empirical(unittest.TestCase):
                                      species_for_plot_title,
                                      'allotetraploid_bottleneck.csv')
         demographiKS_ks_results = read_Ks_csv(sim_full_path, False)
+        if include_selection:
+            demographiKS_ks_results = add_selection(demographiKS_ks_results)
+
         bin_size = 0.01
         max_Ks = 0.4
         bins = np.arange(bin_size, max_Ks + 0.1, bin_size)
@@ -105,7 +114,8 @@ class Final_DGKS_vs_Empirical(unittest.TestCase):
         hist_ys_2 = [hist_ys_sim, bins_sim]
         list_of_hist_data = [hist_ys_1, hist_ys_2]
 
-        overlay_differences_in_curves(species_for_plot_title, list_of_hist_data, out_png)
+        overlay_differences_in_curves(species_for_plot_title, list_of_hist_data,
+                                      include_selection, out_png)
 
         self.assertEqual(True, True)  # add assertion here
 
@@ -114,11 +124,12 @@ class Final_DGKS_vs_Empirical(unittest.TestCase):
 
         demographiKS_out_path = '/home/tamsen/Data/DemographiKS_output_from_mesx/EmpiricalDataTesting_2/Coffee'
         truth_out_path = '/home/tamsen/Data/DemographiKS_output_from_mesx/EmpiricalDataTesting_2/Coffee/Truth'
-
+        include_selection=True
 
 
         #species_for_plot_title = 'EMP_Coff_36_m07d09y2025_h12m22s40'
         species_for_plot_title = 'EMP_Coff_35_m07d01y2025_h08m58s51'
+
         out_png = os.path.join(demographiKS_out_path,species_for_plot_title + '_final_coffee.png')
         real_full_path = os.path.join(truth_out_path, 'coffea.ks.tsv')
         real_ks_results = ks_parsers.parse_external_ksfile(real_full_path)
@@ -127,6 +138,10 @@ class Final_DGKS_vs_Empirical(unittest.TestCase):
                                      species_for_plot_title,
                                      'allotetraploid_bottleneck.csv')
         demographiKS_ks_results = read_Ks_csv(sim_full_path, False)
+
+        if include_selection:
+            demographiKS_ks_results = add_selection(demographiKS_ks_results)
+
         bin_size = 0.005
         max_Ks = 0.2
         bins = np.arange(bin_size, max_Ks + 0.1, bin_size)
@@ -140,16 +155,19 @@ class Final_DGKS_vs_Empirical(unittest.TestCase):
         hist_ys_2 = [hist_ys_sim, bins_sim]
         list_of_hist_data = [hist_ys_1, hist_ys_2]
 
-        overlay_differences_in_curves(species_for_plot_title, list_of_hist_data, out_png)
+
+        overlay_differences_in_curves(species_for_plot_title, list_of_hist_data, include_selection, out_png)
 
         self.assertEqual(True, True)  # add assertion here
 
-
-def overlay_differences_in_curves(species_for_plot_title, list_of_hist_data, out_png):
+def overlay_differences_in_curves(species_for_plot_title, list_of_hist_data,
+                                  include_selection,
+                                  out_png):
 
     colors = ['green','blue','brown']
     labels = ['truth','model fit']
-
+    if include_selection:
+        out_png = out_png.replace(".png","_with_selection.png")
 
     fig, ax = plt.subplots(1, 1, figsize=(5, 5))
 
@@ -190,7 +208,22 @@ def overlay_differences_in_curves(species_for_plot_title, list_of_hist_data, out
 
     return n, bins
 
+def get_maintained_gene_Ks_values(num_Ks_values_needed):
+    start_range = 0.0;
+    end_range = 4.0
+    random_decimal_list = [random.uniform(start_range, end_range) for x in range(0, num_Ks_values_needed)]
+    return random_decimal_list
 
+def add_selection(demographiKS_ks_results):
+    # add pairs maintained by selection
+    # pick 10% of the genome from a random distribution between Ks= 0 to 4
+    fraction_genes_maintained=3.0
+    random.seed(42)
+    num_Ks_values_needed = int(fraction_genes_maintained*len(demographiKS_ks_results))
+    maintained_gene_Ks_values = get_maintained_gene_Ks_values(num_Ks_values_needed)
+    demographiKS_plus_selection_results = demographiKS_ks_results + maintained_gene_Ks_values
+    demographiKS_ks_results = demographiKS_plus_selection_results
+    return demographiKS_ks_results
 
 if __name__ == '__main__':
     unittest.main()
