@@ -237,15 +237,17 @@ class DGKS_and_Empirical_Data_Test(unittest.TestCase):
         #'EMP_Sac_19_m09d02y2025_h13m52s24',
         #'EMP_Sac_20_m09d02y2025_h16m24s58',
         #'EMP_Sac_21_m09d02y2025_h16m25s01','EMP_Sac_22_m09d03y2025_h12m11s04',
+        # 'EMP_Sac_23_m09d03y2025_h12m11s05',
+        #                         'EMP_Sac_24_m09d03y2025_h12m11s08',
         demographics_run_list = [False,
-                                 'EMP_Sac_23_m09d03y2025_h12m11s05',
-                                 'EMP_Sac_24_m09d03y2025_h12m11s08',
-                                 'EMP_Sac_25_m09d03y2025_h12m11s10',
-                                 'EMP_Sac_25_and_10'
+                                 'EMP_Sac_27_m09d05y2025_h11m33s51',
+                                 'EMP_Sac_28_m09d05y2025_h11m33s58',
+                                 'EMP_Sac_29_m09d05y2025_h14m23s56',
+                                 'EMP_Sac_30_m09d05y2025_h14m22s56'
                                  ]
-
-        truth_run_list = ['saccharum.ks.tsv' for f in demographics_run_list ]
-
+        'EMP_Sac_25_m09d03y2025_h12m11s10',
+        'EMP_Sac_25_and_10',
+        truth_run_list = ['saccharum.ks.tsv' for f in demographics_run_list]
 
         xmax_Ks = [1.0 for f in demographics_run_list ]
         bin_sizes_Ks = [xmax_KS_i/50 for xmax_KS_i in xmax_Ks]
