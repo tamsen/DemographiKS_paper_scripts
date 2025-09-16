@@ -160,6 +160,57 @@ class Final_DGKS_vs_Empirical(unittest.TestCase):
 
         self.assertEqual(True, True)  # add assertion here
 
+    def test_sugar_final_plots(self):
+
+        demographiKS_out_path = '/home/tamsen/Data/DemographiKS_output_from_mesx/EmpiricalDataTesting_2/Sugarcane'
+        truth_out_path = '/home/tamsen/Data/DemographiKS_output_from_mesx/EmpiricalDataTesting_2/Sugarcane/Truth'
+        include_selection=True
+        proportion_retained_genes=10
+        seed = 20
+        max_Ks = 0.5
+        bin_size = 0.010
+        species_for_plot_title =  ['EMP_Sac_36_m09d12y2025_h10m11s47',
+                                   'EMP_Sac_37_m09d12y2025_h10m11s50']
+        #    'EMP_Sac_37_m09d12y2025_h10m11s50'
+
+        species_for_plot_title_string="_".join(species_for_plot_title)
+        out_png = os.path.join(demographiKS_out_path,species_for_plot_title_string + '_final_sugar.png')
+        real_full_path = os.path.join(truth_out_path, 'saccharum.ks.tsv')
+        real_ks_results = ks_parsers.parse_external_ksfile(real_full_path)
+
+
+
+        demographiKS_ks_results=[]
+        for sim_run in species_for_plot_title:
+            sim_full_path = os.path.join(demographiKS_out_path,
+                                         sim_run,
+                                         'allotetraploid_bottleneck.csv')
+            sim_run_ks_results = read_Ks_csv(sim_full_path, False)
+            demographiKS_ks_results = demographiKS_ks_results + sim_run_ks_results
+
+        if include_selection:
+            demographiKS_ks_results = add_selection(demographiKS_ks_results,
+                                                    proportion_retained_genes,
+                                                    4.0,
+                                                    seed)
+
+        bins = np.arange(bin_size, max_Ks, bin_size)
+        hist_ys_real, bins_real, patches = plt.hist(real_ks_results, bins=bins, facecolor='b', alpha=0.25,
+                                                    density=True)
+
+        hist_ys_sim, bins_sim, patches = plt.hist(demographiKS_ks_results, bins=bins, facecolor='b', alpha=0.25,
+                                                  density=True)
+
+        hist_ys_1 = [hist_ys_real, bins_real]
+        hist_ys_2 = [hist_ys_sim, bins_sim]
+        list_of_hist_data = [hist_ys_1, hist_ys_2]
+
+
+        overlay_differences_in_curves(species_for_plot_title, list_of_hist_data, include_selection, out_png)
+
+        self.assertEqual(True, True)  # add assertion here
+
+
 def overlay_differences_in_curves(species_for_plot_title, list_of_hist_data,
                                   include_selection,
                                   out_png):
@@ -208,22 +259,24 @@ def overlay_differences_in_curves(species_for_plot_title, list_of_hist_data,
 
     return n, bins
 
-def get_maintained_gene_Ks_values(num_Ks_values_needed):
-    start_range = 0.0;
-    end_range = 4.0
+def get_maintained_gene_Ks_values(num_Ks_values_needed, max_Ks):
+    start_range = 0.0
+    end_range = max_Ks
     random_decimal_list = [random.uniform(start_range, end_range) for x in range(0, num_Ks_values_needed)]
     return random_decimal_list
 
-def add_selection(demographiKS_ks_results):
+def add_selection(demographiKS_ks_results,fraction_genes_maintained,max_Ks, seed):
     # add pairs maintained by selection
-    # pick 10% of the genome from a random distribution between Ks= 0 to 4
-    fraction_genes_maintained=3.0
-    random.seed(42)
+    # pick some % of the genome to be maintained,
+    # from a random distribution between Ks= 0 to 4
+
+    random.seed(seed)
     num_Ks_values_needed = int(fraction_genes_maintained*len(demographiKS_ks_results))
-    maintained_gene_Ks_values = get_maintained_gene_Ks_values(num_Ks_values_needed)
+    maintained_gene_Ks_values = get_maintained_gene_Ks_values(num_Ks_values_needed,max_Ks)
     demographiKS_plus_selection_results = demographiKS_ks_results + maintained_gene_Ks_values
-    demographiKS_ks_results = demographiKS_plus_selection_results
-    return demographiKS_ks_results
+
+    #return maintained_gene_Ks_values
+    return demographiKS_plus_selection_results
 
 if __name__ == '__main__':
     unittest.main()
