@@ -124,18 +124,19 @@ class Final_DGKS_vs_Empirical(unittest.TestCase):
 
         demographiKS_out_path = '/home/tamsen/Data/DemographiKS_output_from_mesx/EmpiricalDataTesting_2/Coffee'
         truth_out_path = '/home/tamsen/Data/DemographiKS_output_from_mesx/EmpiricalDataTesting_2/Coffee/Truth'
-        include_selection=True
+        include_selection=False
 
 
         #species_for_plot_title = 'EMP_Coff_36_m07d09y2025_h12m22s40'
-        species_for_plot_title = 'EMP_Coff_35_m07d01y2025_h08m58s51'
+        #species_for_plot_title = 'EMP_Coff_35_m07d01y2025_h08m58s51'
+        species_for_plot_title =['EMP_Coff_40_m09d16y2025_h16m27s17']
 
-        out_png = os.path.join(demographiKS_out_path,species_for_plot_title + '_final_coffee.png')
+        out_png = os.path.join(demographiKS_out_path,species_for_plot_title[0] + '_final_coffee.png')
         real_full_path = os.path.join(truth_out_path, 'coffea.ks.tsv')
         real_ks_results = ks_parsers.parse_external_ksfile(real_full_path)
 
         sim_full_path = os.path.join(demographiKS_out_path,
-                                     species_for_plot_title,
+                                     species_for_plot_title[0],
                                      'allotetraploid_bottleneck.csv')
         demographiKS_ks_results = read_Ks_csv(sim_full_path, False)
 
@@ -265,7 +266,7 @@ def get_maintained_gene_Ks_values(num_Ks_values_needed, max_Ks):
     random_decimal_list = [random.uniform(start_range, end_range) for x in range(0, num_Ks_values_needed)]
     return random_decimal_list
 
-# 
+# Approximation of stochastic birth-death-mutation processes with the Kramers-Moyal expansion
 # derive exponential decay from birth death process equation with escape from decay
 # This is a standard first-order linear differential equation. With an initial population size of \(N_{0}=M(0)\),
 # the solution is:\(M(t)=N_{0}e^{-kt}=N_{0}e^{-(\mu +\nu -\lambda )t}\)

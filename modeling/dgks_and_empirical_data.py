@@ -226,21 +226,7 @@ class DGKS_and_Empirical_Data_Test(unittest.TestCase):
         # mac
         # demographiKS_out_path = '/Users/tamsen/Data/DemographiKS_output_from_mesx/EmpiricalDataTesting_2/Rice'
         # truth_out_path = '/Users/tamsen/Data/DemographiKS_output_from_mesx/EmpiricalDataTesting_2/Rice/Truth'
-        #'EMP_Sac_11_m08d27y2025_h11m55s59',
-        #'EMP_Sac_12_m08d27y2025_h11m56s01',
-        # 'EMP_Sac_16_m09d02y2025_h11m45s38',
-        #'EMP_Sac_17_m09d02y2025_h11m45s41',
-        #'EMP_Sac_14_m08d27y2025_h14m04s46',
-        # #'EMP_Sac_10_m08d26y2025_h17m19s09',
-        #'EMP_Sac_15_m09d02y2025_h11m45s35',
-        #'EMP_Sac_18_m09d02y2025_h13m52s20',
-        #'EMP_Sac_19_m09d02y2025_h13m52s24',
-        #'EMP_Sac_20_m09d02y2025_h16m24s58',
-        #'EMP_Sac_21_m09d02y2025_h16m25s01','EMP_Sac_22_m09d03y2025_h12m11s04',
-        # 'EMP_Sac_23_m09d03y2025_h12m11s05',
-        #                         'EMP_Sac_24_m09d03y2025_h12m11s08',
-        #'EMP_Sac_27_m09d05y2025_h11m33s51',
-        #'EMP_Sac_28_m09d05y2025_h11m33s58',
+
         # 'EMP_Sac_30_m09d05y2025_h14m22s56',
         #'EMP_Sac_31_m09d09y2025_h12m25s33',
         #'EMP_Sac_32_m09d09y2025_h12m25s36'
@@ -248,11 +234,14 @@ class DGKS_and_Empirical_Data_Test(unittest.TestCase):
         #                         'EMP_Sac_33_m09d10y2025_h11m35s02',     'EMP_Sac_32_m09d09y2025_h12m25s36',
         #                                  'EMP_Sac_35_m09d10y2025_h11m35s08',
         #                         'EMP_Sac_34_m09d10y2025_h11m35s06',
+        #'EMP_Sac_36_m09d12y2025_h10m11s47',
+        #'EMP_Sac_37_m09d12y2025_h10m11s50',
+        #'EMP_Sac_38_m09d12y2025_h10m11s52',
         demographics_run_list = [False,
-
-                                 'EMP_Sac_36_m09d12y2025_h10m11s47',
-                                 'EMP_Sac_37_m09d12y2025_h10m11s50',
-                                 'EMP_Sac_38_m09d12y2025_h10m11s52'
+                                 'EMP_Sac_39_m09d16y2025_h12m50s07',
+                                 'EMP_Sac_40_m09d16y2025_h12m50s04',
+                                 'EMP_Sac_41_m09d16y2025_h12m51s00',
+                                 'EMP_Sac_42_m09d16y2025_h12m50s58'
                                  ]
         'EMP_Sac_25_m09d03y2025_h12m11s10',
         'EMP_Sac_25_and_10',
