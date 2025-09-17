@@ -265,6 +265,11 @@ def get_maintained_gene_Ks_values(num_Ks_values_needed, max_Ks):
     random_decimal_list = [random.uniform(start_range, end_range) for x in range(0, num_Ks_values_needed)]
     return random_decimal_list
 
+# 
+# derive exponential decay from birth death process equation with escape from decay
+# This is a standard first-order linear differential equation. With an initial population size of \(N_{0}=M(0)\),
+# the solution is:\(M(t)=N_{0}e^{-kt}=N_{0}e^{-(\mu +\nu -\lambda )t}\)
+# Birth/birth-death processes and their computable transition probabilities with biological applications
 def add_selection(demographiKS_ks_results,fraction_genes_maintained,max_Ks, seed):
     # add pairs maintained by selection
     # pick some % of the genome to be maintained,
