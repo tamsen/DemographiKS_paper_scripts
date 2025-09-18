@@ -1,6 +1,7 @@
 import math
 import numpy as np
 import unittest
+import random
 import scipy.stats as st
 from matplotlib import pyplot as plt
 
@@ -9,76 +10,53 @@ from matplotlib import pyplot as plt
 
 
 #https://scicomp.stackexchange.com/questions/1658/define-custom-probability-density-function-in-python
-class my_toy_pdf(st.rv_continuous):
-    def _pdf(self,x):
-        return 3*x**2  # Normalized over its range, in this case [0,1]
 
-class my_birth_death_pdf(st.rv_continuous):
-    def _pdf(self,x):
-        gene_birth_death_rate=0.001359
-        escape_rate=0.16#(0.00194-0.00162)/0.00194
-        #return 100*math.exp(-1*(gene_birth_death_rate*x))
-        #return 100 * math.exp(-1 * (0.2 * x))
-        return max(0,0.1-(0.01*x))
-
-def simple_fxn(x):
-        return max(0,0.1-(0.01*x))
 
 #mean_gene_birth_rate = 0.001359 #Ya-Long Guo reference
 #The distributions of λ and μ have means of 0.00162 and 0.00194, (Tilet 2016)
 # which were estimated from land plant genomes based on a model of gene copy number evolution
 class MyTestCase(unittest.TestCase):
-    def test_something(self):
-
-        #my_cv = my_toy_pdf(a=0, b=100, name='my_pdf') #a & b = upper and lower bd of support
-        my_cv = my_birth_death_pdf(a=0, b=10, name='my_pdf')
-
-        print(my_cv)
-        random_values = my_cv.rvs(size=100)
-        random_values = [min(10,r)  for r in random_values]
-        print(random_values)
-        #bins = bins
-        hist_ys_real, bins, patches = plt.hist(random_values, bins=40, facecolor='b', alpha=0.25,
-                                                    density=True)
-
-
-
-        width2=(bins[2]-bins[1])
-
-        width=(bins[2]-bins[1])/2
-        bar_plot_xs = [b + width for b in bins[0:len(bins) - 1]]  # to match bar-plot axes
-        expected_pdf_ys = [simple_fxn(x) for x in (bins + [bins[39]+width2])]
-        #plt.plot(bar_plot_xs,hist_ys_real, label="observed pdf")
-        #plt.plot(bar_plot_xs,expected_pdf_ys, label="expected pdf")
-        #plt.plot(bar_plot_xs,expected_pdf_ys, label="expected pdf")
-        plt.plot(bins, expected_pdf_ys, label="expected pdf", color='k')
-
-
-        out_png= "/home/tamsen/Data/DemographiKS_output_from_mesx/bd_process.png"
-        plt.savefig(out_png)
-
-        self.assertEqual(True, False)  # add assertion here
-
 
     def test_exp_something(self):
-        xs = np.arange(0, 4, 0.01)
+        step_size=0.01
+        xs = np.arange(0, 4, step_size)
         print(xs)
         out_png= "/home/tamsen/Data/DemographiKS_output_from_mesx/bd_exp_process.png"
         decay_constant=3
         rate_escape=0.1
+        arctan_ys = [(2/math.pi)*math.atan(4*math.pi*x) for x in xs]
+        tanh_ys = [math.tanh(2*x) for x in xs]
         exp_decay_ys=[math.exp(-1*decay_constant*x) for x in xs]
         ys_that_have_died=[1.0-math.exp(-1*decay_constant*x) for x in xs]
         ys_that_escape=[y*rate_escape for y in ys_that_have_died]
         ys_remaining=[exp_decay_ys[idx]+ys_that_escape[idx] for idx in range(0,len(exp_decay_ys))]
-        plt.plot(xs, exp_decay_ys, label="SSDs not dead yet", color='k')
+        plt.plot(xs, exp_decay_ys, label="SSDs not yet decayed", color='k')
         plt.plot(xs, ys_that_have_died, label="SSDs should be dead", color='b')
         plt.plot(xs, ys_that_escape, label="SSDs that escape", color='c')
         plt.plot(xs, ys_remaining, label="ys_remaining", color='r')
-
+        #plt.plot(xs, arctan_ys, label="arctan_ys", color='r')
+        #plt.plot(xs, tanh_ys, label="tanh_ys", color='k')
         #https://stackoverflow.com/questions/4265988/generate-random-numbers-with-a-given-numerical-distribution
-        cdf=
 
+        CDF=[step_size*sum(ys_remaining[0:i]) for i in range(0,len(xs))]
+        print(CDF)
+        print("last CDF=" + str(CDF[-1]))
+        plt.plot(xs, CDF, label="ys_remaining CDF", color='pink')
+        num_SSD_genes_remaining=step_size*sum(ys_remaining)
+        print("num_SSD_genes_remaining=" + str(num_SSD_genes_remaining))
         plt.legend()
         plt.savefig(out_png)
+        plt.close()
+        normalization_factor=1.0/num_SSD_genes_remaining
+        normalized_pdf=[normalization_factor*y for y in ys_remaining]
+        population = xs
+        probabilities = normalized_pdf
+        multiple_choices = random.choices(population, weights=probabilities, k=500)
 
+        plt.plot(xs, ys_remaining, label="prediction", color='r')
+        hist_ys_real, bins, patches = plt.hist(multiple_choices, bins=40, facecolor='b', alpha=0.25,
+                                                    density=True, label="observation")
+        out_hist_png = "/home/tamsen/Data/DemographiKS_output_from_mesx/bd_exp_hist.png"
+        plt.savefig(out_hist_png)
+        plt.close()
         self.assertEqual(True, False)  # add assertion here
