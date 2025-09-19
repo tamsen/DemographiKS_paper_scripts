@@ -2,11 +2,9 @@ import math
 import numpy as np
 import unittest
 import random
-import scipy.stats as st
 from matplotlib import pyplot as plt
+from modeling import birth_and_death_with_escape
 
-#random_numbers_array = np.random.exponential(scale=2.5, size=5)
-#print(random_numbers_array)
 
 
 #https://scicomp.stackexchange.com/questions/1658/define-custom-probability-density-function-in-python
@@ -17,46 +15,51 @@ from matplotlib import pyplot as plt
 # which were estimated from land plant genomes based on a model of gene copy number evolution
 class MyTestCase(unittest.TestCase):
 
-    def test_exp_something(self):
-        step_size=0.01
-        xs = np.arange(0, 4, step_size)
-        print(xs)
-        out_png= "/home/tamsen/Data/DemographiKS_output_from_mesx/bd_exp_process.png"
-        decay_constant=3
-        rate_escape=0.1
-        arctan_ys = [(2/math.pi)*math.atan(4*math.pi*x) for x in xs]
-        tanh_ys = [math.tanh(2*x) for x in xs]
-        exp_decay_ys=[math.exp(-1*decay_constant*x) for x in xs]
-        ys_that_have_died=[1.0-math.exp(-1*decay_constant*x) for x in xs]
-        ys_that_escape=[y*rate_escape for y in ys_that_have_died]
-        ys_remaining=[exp_decay_ys[idx]+ys_that_escape[idx] for idx in range(0,len(exp_decay_ys))]
-        plt.plot(xs, exp_decay_ys, label="SSDs not yet decayed", color='k')
-        plt.plot(xs, ys_that_have_died, label="SSDs should be dead", color='b')
-        plt.plot(xs, ys_that_escape, label="SSDs that escape", color='c')
-        plt.plot(xs, ys_remaining, label="ys_remaining", color='r')
-        #plt.plot(xs, arctan_ys, label="arctan_ys", color='r')
-        #plt.plot(xs, tanh_ys, label="tanh_ys", color='k')
-        #https://stackoverflow.com/questions/4265988/generate-random-numbers-with-a-given-numerical-distribution
 
-        CDF=[step_size*sum(ys_remaining[0:i]) for i in range(0,len(xs))]
-        print(CDF)
-        print("last CDF=" + str(CDF[-1]))
-        plt.plot(xs, CDF, label="ys_remaining CDF", color='pink')
-        num_SSD_genes_remaining=step_size*sum(ys_remaining)
-        print("num_SSD_genes_remaining=" + str(num_SSD_genes_remaining))
-        plt.legend()
-        plt.savefig(out_png)
-        plt.close()
-        normalization_factor=1.0/num_SSD_genes_remaining
-        normalized_pdf=[normalization_factor*y for y in ys_remaining]
-        population = xs
-        probabilities = normalized_pdf
-        multiple_choices = random.choices(population, weights=probabilities, k=500)
+    def test_birth_death_model(self):
 
-        plt.plot(xs, ys_remaining, label="prediction", color='r')
-        hist_ys_real, bins, patches = plt.hist(multiple_choices, bins=40, facecolor='b', alpha=0.25,
-                                                    density=True, label="observation")
-        out_hist_png = "/home/tamsen/Data/DemographiKS_output_from_mesx/bd_exp_hist.png"
-        plt.savefig(out_hist_png)
-        plt.close()
-        self.assertEqual(True, False)  # add assertion here
+        step_size = 0.01
+        decay_constant=3  # =(1/mean life expectancy of SSD gene)
+        rate_escape=0.1   # % of SSD are maintained
+
+        include_debugging_plots=True
+        my_pdf, xs =birth_and_death_with_escape.gene_birth_death_with_escape_pdf(
+            step_size,decay_constant,rate_escape, include_debugging_plots)
+        print(my_pdf)
+        self.assertEqual(True, True)  # ad
+
+        num_genes_needed = 500
+        SSD_ks = birth_and_death_with_escape.draw_SSDs_from_pdf(my_pdf, xs,
+                                                       num_genes_needed, include_debugging_plots)
+
+        print(SSD_ks)
+        self.assertEqual(True, True)  # ad
+
+    def test_gene_birth_death_corn(self):
+        step_size = 0.01
+        
+        #(Ferris and Whitt, 1977; Nadeau and Sankoff, 1997; Lynch and Conery, 2000;
+        # #Blanc and Wolfe, 2004b; Soltis et al.,2016; Cheng et al., 2018).
+
+        # if a SSD lasts a few million years (say 3x10^6)
+        # In Ks space, that depends mutation rate.
+        # if Mutation rate is 10^-8, then
+        # SSD lasts a few million years (say 3x10^-2 ) in KS
+        # so, decay constant is 1/(3x10^-2)
+        decay_constant = 33  # =(1/mean life expectancy of SSD gene)
+        
+        #  0.3, 0.4  human and mouse https://pmc.ncbi.nlm.nih.gov/articles/PMC1413713/
+        rate_escape = 0.3  # % of SSD are maintained
+
+        include_debugging_plots = True
+        my_pdf, xs = birth_and_death_with_escape.gene_birth_death_with_escape_pdf(
+            step_size, decay_constant, rate_escape, include_debugging_plots)
+        print(my_pdf)
+        self.assertEqual(True, True)  # ad
+
+        num_genes_needed = 500
+        SSD_ks = birth_and_death_with_escape.draw_SSDs_from_pdf(my_pdf, xs,
+                                                                num_genes_needed, include_debugging_plots)
+
+        print(SSD_ks)
+        self.assertEqual(True, True)  # ad

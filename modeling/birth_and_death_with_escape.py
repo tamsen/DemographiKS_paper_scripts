@@ -1,20 +1,51 @@
 import math
+import random
 
 import numpy as np
+from matplotlib import pyplot as plt
 
-
-def gene_birth_death_with_escape_pdf():
+def gene_birth_death_with_escape_pdf(
+        step_size,
+        decay_constant,
+        escape_rate,
+        seed,
+        include_debugging_plots):
     
-    step_size = 0.01
-    decay_constant=3  # =(1/mean life expectancy of SSD gene)
-    rate_escape=0.1   # % of SSD are maintained
     xs = np.arange(0, 4, step_size)
 
     exp_decay_ys=[math.exp(-1*decay_constant*x) for x in xs]
     ys_that_have_died=[1.0-math.exp(-1*decay_constant*x) for x in xs]
-    ys_that_escape=[y*rate_escape for y in ys_that_have_died]
+    ys_that_escape=[y*escape_rate for y in ys_that_have_died]
     ys_remaining=[exp_decay_ys[idx]+ys_that_escape[idx] for idx in range(0,len(exp_decay_ys))]
 
     normalization_factor=1.0/(step_size*sum(ys_remaining))
     normalized_pdf=[normalization_factor*y for y in ys_remaining]
-    return normalized_pdf
+    
+    if include_debugging_plots:
+        plt.close()
+        plt.plot(xs, exp_decay_ys, label="SSDs not yet decayed", color='k')
+        plt.plot(xs, ys_that_have_died, label="SSDs should be dead", color='b')
+        plt.plot(xs, ys_that_escape, label="SSDs that escape", color='c')
+        plt.plot(xs, ys_remaining, label="ys_remaining", color='r')
+        plt.legend()
+        out_png = "/home/tamsen/Data/DemographiKS_output_from_mesx/birth_death_model.png"
+        plt.savefig(out_png)
+        plt.close()
+        
+    return normalized_pdf, xs
+
+
+def draw_SSDs_from_pdf(normalized_pdf, xs, num_genes_needed, seed, include_debugging_plots):
+
+        population = xs
+        probabilities = normalized_pdf
+        random_draws = random.choices(population, weights=probabilities, k= num_genes_needed)
+
+        if include_debugging_plots:
+            hist_ys_real, bins, patches = plt.hist(random_draws, bins=40, facecolor='b', alpha=0.25,
+                                                    density=True, label="observation")
+            out_hist_png = "/home/tamsen/Data/DemographiKS_output_from_mesx/bd_exp_hist.png"
+            plt.savefig(out_hist_png)
+            plt.close()
+
+        return random_draws

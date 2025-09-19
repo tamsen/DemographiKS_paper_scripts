@@ -70,14 +70,15 @@ class DGKS_and_Empirical_Data_Test(unittest.TestCase):
         # mac
         # demographiKS_out_path = '/Users/tamsen/Data/DemographiKS_output_from_mesx/EmpiricalDataTesting_2/Coffee'
         # truth_out_path = '/Users/tamsen/Data/DemographiKS_output_from_mesx/EmpiricalDataTesting_2/Coffee/Truth'
-
+        #'EMP_Coff_33_m07d01y2025_h08m59s09',
+        #'EMP_Coff_34_m07d01y2025_h08m58s56',
         demographics_run_list = [False,
-                                 'EMP_Coff_33_m07d01y2025_h08m59s09',
-                                 'EMP_Coff_34_m07d01y2025_h08m58s56',
+
                                  'EMP_Coff_35_m07d01y2025_h08m58s51',
                                  'EMP_Coff_36_m07d09y2025_h12m22s40',
-                                 'EMP_Coff_37_m07d16y2025_h11m12s14'
-                                  ]#     'EMP_Coff_36_m07d09y2025_h12m22s40',
+                                 'EMP_Coff_37_m07d16y2025_h11m12s14',
+                                 'EMP_Coff_41_m09d17y2025_h14m00s14']
+        #                          ]#     'EMP_Coff_36_m07d09y2025_h12m22s40',
         #                        'EMP_Coff_35_m06d30y2025_h17m25s25',
         #                                         'EMP_Coff_30_m06d26y2025_h17m18s32',
         # 'EMP_Coff_29_m06d26y2025_h12m21s24','EMP_Coff_10_m06d12y2025_h17m06s38',  'EMP_Coff_28_m06d26y2025_h12m21s27',
@@ -227,24 +228,14 @@ class DGKS_and_Empirical_Data_Test(unittest.TestCase):
         # demographiKS_out_path = '/Users/tamsen/Data/DemographiKS_output_from_mesx/EmpiricalDataTesting_2/Rice'
         # truth_out_path = '/Users/tamsen/Data/DemographiKS_output_from_mesx/EmpiricalDataTesting_2/Rice/Truth'
 
-        # 'EMP_Sac_30_m09d05y2025_h14m22s56',
-        #'EMP_Sac_31_m09d09y2025_h12m25s33',
-        #'EMP_Sac_32_m09d09y2025_h12m25s36'
-        #'EMP_Sac_38_m09d12y2025_h10m11s52'
-        #                         'EMP_Sac_33_m09d10y2025_h11m35s02',     'EMP_Sac_32_m09d09y2025_h12m25s36',
-        #                                  'EMP_Sac_35_m09d10y2025_h11m35s08',
-        #                         'EMP_Sac_34_m09d10y2025_h11m35s06',
-        #'EMP_Sac_36_m09d12y2025_h10m11s47',
-        #'EMP_Sac_37_m09d12y2025_h10m11s50',
-        #'EMP_Sac_38_m09d12y2025_h10m11s52',
         demographics_run_list = [False,
-                                 'EMP_Sac_39_m09d16y2025_h12m50s07',
-                                 'EMP_Sac_40_m09d16y2025_h12m50s04',
-                                 'EMP_Sac_41_m09d16y2025_h12m51s00',
-                                 'EMP_Sac_42_m09d16y2025_h12m50s58'
-                                 ]
-        'EMP_Sac_25_m09d03y2025_h12m11s10',
-        'EMP_Sac_25_and_10',
+                                 'EMP_Sac_43_m09d17y2025_h14m18s37',
+                                 'EMP_Sac_44_m09d17y2025_h14m18s39',
+                                 'EMP_Sac_45_m09d19y2025_h10m27s28',
+                                 'EMP_Sac_46_m09d19y2025_h10m31s55']
+
+        #'EMP_Sac_25_m09d03y2025_h12m11s10',
+        #'EMP_Sac_25_and_10',
         truth_run_list = ['saccharum.ks.tsv' for f in demographics_run_list]
 
         xmax_Ks = [0.5 for f in demographics_run_list ]
