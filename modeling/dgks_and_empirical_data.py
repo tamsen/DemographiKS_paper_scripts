@@ -22,12 +22,16 @@ class DGKS_and_Empirical_Data_Test(unittest.TestCase):
         # mac
         # demographiKS_out_path = '/Users/tamsen/Data/DemographiKS_output_from_mesx/EmpiricalDataTesting_2/Maize'
         # truth_out_path = '/Users/tamsen/Data/DemographiKS_output_from_mesx/EmpiricalDataTesting_2/Maize/Truth'
-
+        #'EMP_Mays_26_m07d09y2025_h11m39s07',
+        #'EMP_Mays_28_m07d14y2025_h17m09s16',                                 'EMP_Mays_29_m07d14y2025_h17m35s58',
+        #'EMP_Mays_26_29_combined', 'EMP_Mays_30_m09d19y2025_h14m47s56_31_combined',
         demographics_run_list = [False,
-                                 'EMP_Mays_26_m07d09y2025_h11m39s07',
-                                 'EMP_Mays_28_m07d14y2025_h17m09s16',
-                                 'EMP_Mays_29_m07d14y2025_h17m35s58',
-                                 'EMP_Mays_26_29_combined'
+                                 'EMP_Mays_30_m09d19y2025_h14m47s56',
+                                 'EMP_Mays_31_m09d19y2025_h14m40s02',
+
+                                 'EMP_Mays_32_m09d23y2025_h12m54s25',
+                                 'EMP_Mays_33_m09d23y2025_h12m47s42',
+                                 'EMP_Mays_34_m09d23y2025_h12m54s47'
                                  ]
 
         truth_run_list = ['mays.ks.tsv' for f in demographics_run_list ]
@@ -77,17 +81,11 @@ class DGKS_and_Empirical_Data_Test(unittest.TestCase):
                                  'EMP_Coff_35_m07d01y2025_h08m58s51',
                                  'EMP_Coff_36_m07d09y2025_h12m22s40',
                                  'EMP_Coff_37_m07d16y2025_h11m12s14',
-                                 'EMP_Coff_41_m09d17y2025_h14m00s14']
-        #                          ]#     'EMP_Coff_36_m07d09y2025_h12m22s40',
-        #                        'EMP_Coff_35_m06d30y2025_h17m25s25',
-        #                                         'EMP_Coff_30_m06d26y2025_h17m18s32',
-        # 'EMP_Coff_29_m06d26y2025_h12m21s24','EMP_Coff_10_m06d12y2025_h17m06s38',  'EMP_Coff_28_m06d26y2025_h12m21s27',
-        # 'EMP_Coff_24_m06d24y2025_h13m57s43', 'EMP_Coff_25_m06d25y2025_h09m29s18',                                 'EMP_Coff_26_m06d25y2025_h14m39s51',
-        #                                  'EMP_Coff_27_m06d25y2025_h14m45s12',
-        # 'EMP_Coff_17_m06d18y2025_h12m12s04','EMP_Coff_20_m06d23y2025_h12m33s54','EMP_Coff_21_m06d23y2025_h12m42s58',
-        #'EMP_Coff_16_m06d18y2025_h09m03s22','EMP_Coff_18_m06d19y2025_h17m06s11', 'EMP_Coff_19_m06d20y2025_h10m02s34',
-        truth_run_list = ['coffea.ks.tsv' for f in demographics_run_list ]
+                                 'EMP_Coff_40_m09d16y2025_h16m27s17',
+                                 'EMP_Coff_42_m09d19y2025_h11m47s34'
+                                 ]
 
+        truth_run_list = ['coffea.ks.tsv' for f in demographics_run_list ]
 
         xmax_Ks = [0.2 for f in demographics_run_list ]
         bin_sizes_Ks = [xmax_KS_i/50for xmax_KS_i in xmax_Ks]
@@ -127,13 +125,16 @@ class DGKS_and_Empirical_Data_Test(unittest.TestCase):
         # mac
         # demographiKS_out_path = '/Users/tamsen/Data/DemographiKS_output_from_mesx/EmpiricalDataTesting_2/Poplar'
         # truth_out_path = '/Users/tamsen/Data/DemographiKS_output_from_mesx/EmpiricalDataTesting_2/Poplar/Truth'
-
+        #'EMP_Pop_09_m07d18y2025_h11m06s20',
+        #'EMP_Pop_11_m07d18y2025_h13m55s45',
         demographics_run_list = [False,
                                  'EMP_Pop_07_m07d17y2025_h16m44s40',
-                                 'EMP_Pop_09_m07d18y2025_h11m06s20',
-                                 'EMP_Pop_11_m07d18y2025_h13m55s45',
+
                                  'EMP_Pop_07_and_half_11',
-                                 'EMP_Pop_13_m07d22y2025_h13m24s05']
+                                 'EMP_Pop_13_m07d22y2025_h13m24s05',
+                                 'EMP_Pop_14_m09d23y2025_h13m27s11',
+                                 'EMP_Pop_15_m09d23y2025_h13m39s44'
+                                 ]
         #'EMP_Pop_02_m07d14y2025_h11m32s24','EMP_Pop_06_m07d17y2025_h11m35s43',
         #'EMP_Pop_04_m07d14y2025_h17m21s10','EMP_Pop_10_m07d18y2025_h11m40s57',
 

@@ -20,18 +20,43 @@ class Final_DGKS_vs_Empirical(unittest.TestCase):
         # linux
         demographiKS_out_path = '/home/tamsen/Data/DemographiKS_output_from_mesx/EmpiricalDataTesting_2/Poplar'
         truth_out_path = '/home/tamsen/Data/DemographiKS_output_from_mesx/EmpiricalDataTesting_2/Poplar/Truth'
-        include_selection = True
-        species_for_plot_title = 'EMP_Pop_07_and_half_11'
-        out_png = os.path.join(demographiKS_out_path, species_for_plot_title + '_final_poplar.png')
+
+        include_selection = False
+        include_homEx = False
+        #'EMP_Pop_07_m07d17y2025_h16m44s40',
+        #'EMP_Pop_11_m07d18y2025_h13m55s45'
+        full_results = [
+            'EMP_Pop_15_m09d23y2025_h13m39s44',
+            'EMP_Pop_14_m09d23y2025_h13m27s11'
+        ]
+
+        if include_homEx:
+            species_for_plot_title = full_results
+        else:
+            species_for_plot_title = [full_results[0]]
+
+        species_for_plot_title_str = "_".join(species_for_plot_title)
+        #species_for_plot_title = 'EMP_Pop_07_and_half_11'
+        out_png = os.path.join(demographiKS_out_path, species_for_plot_title_str + '_final_poplar.png')
         real_full_path = os.path.join(truth_out_path, 'poplar.ks.tsv')
         real_ks_results = ks_parsers.parse_external_ksfile(real_full_path)
 
-        sim_full_path = os.path.join(demographiKS_out_path,
-                                     species_for_plot_title,
+
+        demographiKS_ks_results=[]
+        for sim_run in species_for_plot_title:
+            sim_full_path = os.path.join(demographiKS_out_path,
+                                     sim_run,
                                      'allotetraploid_bottleneck.csv')
-        demographiKS_ks_results = read_Ks_csv(sim_full_path, False)
+            run_results = read_Ks_csv(sim_full_path, False)
+            demographiKS_ks_results=demographiKS_ks_results+run_results
+
+
         if include_selection:
-            demographiKS_ks_results = add_selection(demographiKS_ks_results)
+            seed=42
+            max_ks=4,
+            fraction_needed=5
+            demographiKS_ks_results = add_selection(demographiKS_ks_results,
+                                                    fraction_needed, seed)
 
         bin_size = 0.01
         max_Ks = 0.4
@@ -47,7 +72,7 @@ class Final_DGKS_vs_Empirical(unittest.TestCase):
         list_of_hist_data = [hist_ys_1, hist_ys_2]
 
         overlay_differences_in_curves(species_for_plot_title, list_of_hist_data,
-                                      include_selection, out_png)
+                                      include_selection, include_homEx, out_png)
 
         self.assertEqual(True, True)  # add assertion here
 
@@ -56,11 +81,20 @@ class Final_DGKS_vs_Empirical(unittest.TestCase):
         demographiKS_out_path = '/home/tamsen/Data/DemographiKS_output_from_mesx/EmpiricalDataTesting_2/Maize'
         truth_out_path = '/home/tamsen/Data/DemographiKS_output_from_mesx/EmpiricalDataTesting_2/Maize/Truth'
         include_selection = True
-        include_homEx = True
+        include_homEx =  True
 
         full_results = [
-            'EMP_Mays_26_m07d09y2025_h11m39s07',
-            'EMP_Mays_29_m07d14y2025_h17m35s58']
+            'EMP_Mays_30_m09d19y2025_h14m47s56',
+            'EMP_Mays_31_m09d19y2025_h14m40s02'
+                    ]
+        full_results = [
+            'EMP_Mays_32_m09d23y2025_h12m54s25',
+            'EMP_Mays_33_m09d23y2025_h12m47s42']
+
+        full_results = [
+            'EMP_Mays_30_m09d19y2025_h14m47s56',
+            'EMP_Mays_33_m09d23y2025_h12m47s42']
+
 
         if include_homEx:
             species_for_plot_title = full_results
@@ -88,7 +122,7 @@ class Final_DGKS_vs_Empirical(unittest.TestCase):
             max_ks=4,
             fraction_needed=5
             demographiKS_ks_results = add_selection(demographiKS_ks_results,
-                                                    fraction_needed,max_ks, seed)
+                                                    fraction_needed, seed)
 
         bin_size = 0.01
         max_Ks = 0.4
@@ -113,12 +147,12 @@ class Final_DGKS_vs_Empirical(unittest.TestCase):
 
         demographiKS_out_path = '/home/tamsen/Data/DemographiKS_output_from_mesx/EmpiricalDataTesting_2/Coffee'
         truth_out_path = '/home/tamsen/Data/DemographiKS_output_from_mesx/EmpiricalDataTesting_2/Coffee/Truth'
-        include_selection=False
-
+        include_selection=True
+        include_homEx=False
 
         #species_for_plot_title = 'EMP_Coff_36_m07d09y2025_h12m22s40'
         #species_for_plot_title = 'EMP_Coff_35_m07d01y2025_h08m58s51'
-        species_for_plot_title =['EMP_Coff_40_m09d16y2025_h16m27s17']
+        species_for_plot_title =['EMP_Coff_42_m09d19y2025_h11m47s34']
 
         out_png = os.path.join(demographiKS_out_path,species_for_plot_title[0] + '_final_coffee.png')
         real_full_path = os.path.join(truth_out_path, 'coffea.ks.tsv')
@@ -130,7 +164,11 @@ class Final_DGKS_vs_Empirical(unittest.TestCase):
         demographiKS_ks_results = read_Ks_csv(sim_full_path, False)
 
         if include_selection:
-            demographiKS_ks_results = add_selection(demographiKS_ks_results)
+            seed=42
+            max_ks=4.0
+            fraction_genes_maintained=3.5
+            demographiKS_ks_results = add_selection(demographiKS_ks_results,
+                                                    fraction_genes_maintained, max_ks, seed)
 
         bin_size = 0.005
         max_Ks = 0.2
@@ -146,7 +184,8 @@ class Final_DGKS_vs_Empirical(unittest.TestCase):
         list_of_hist_data = [hist_ys_1, hist_ys_2]
 
 
-        overlay_differences_in_curves(species_for_plot_title, list_of_hist_data, include_selection, out_png)
+        overlay_differences_in_curves(species_for_plot_title, list_of_hist_data,
+                                      include_selection, include_homEx,out_png)
 
         self.assertEqual(True, True)  # add assertion here
 
@@ -154,12 +193,12 @@ class Final_DGKS_vs_Empirical(unittest.TestCase):
 
         demographiKS_out_path = '/home/tamsen/Data/DemographiKS_output_from_mesx/EmpiricalDataTesting_2/Sugarcane'
         truth_out_path = '/home/tamsen/Data/DemographiKS_output_from_mesx/EmpiricalDataTesting_2/Sugarcane/Truth'
-        include_homEx=False
-        include_selection=False
+        include_homEx=True
+        include_selection=True
         proportion_retained_genes=10
         seed = 20
         max_Ks = 1.0
-        bin_size = 0.01
+        bin_size = 0.02
         full_results =  [ 'EMP_Sac_45_m09d19y2025_h10m27s28',
                                  'EMP_Sac_46_m09d19y2025_h10m31s55']
 
@@ -264,22 +303,32 @@ def get_maintained_gene_Ks_values(num_Ks_values_needed, max_Ks):
     random_decimal_list = [random.uniform(start_range, end_range) for x in range(0, num_Ks_values_needed)]
     return random_decimal_list
 
-# Approximation of stochastic birth-death-mutation processes with the Kramers-Moyal expansion
-# derive exponential decay from birth death process equation with escape from decay
-# This is a standard first-order linear differential equation. With an initial population size of \(N_{0}=M(0)\),
-# the solution is:\(M(t)=N_{0}e^{-kt}=N_{0}e^{-(\mu +\nu -\lambda )t}\)
-# Birth/birth-death processes and their computable transition probabilities with biological applications
-def add_selection(demographiKS_ks_results,fraction_genes_maintained,max_Ks, seed):
+
+def add_selection(demographiKS_ks_results,fraction_genes_maintained,seed):
 
     step_size = 0.001
-    decay_constant = 33  # =(1/mean life expectancy of SSD gene)
+    decay_constant = 33  # =(1/mean life expectancy of SSD gene), in Ks space
     rate_escape = 0.3  # % of SSD are maintained
+
+    # where decay constant comes from:
+    #
+    #    #(Ferris and Whitt, 1977; Nadeau and Sankoff, 1997; Lynch and Conery, 2000;
+    #    # #Blanc and Wolfe, 2004b; Soltis et al.,2016; Cheng et al., 2018).
+    #    # if a SSD lasts a few million years (say 3x10^6)
+    #    # In Ks space, that depends mutation rate.
+    #    # if Mutation rate is 10^-8, then
+    #    # SSD lasts a few million years (say 3x10^-2 ) in KS
+    #    # so, decay constant is 1/(3x10^-2)
+
+    # where rate escape comes from
+    #  between 0.3, 0.4  human and mouse https://pmc.ncbi.nlm.nih.gov/articles/PMC1413713/
+    #  Not the same as plants, but at least we are sure those numbers not confounded w/ WGD
 
     include_debugging_plots = True
     my_pdf, xs = birth_and_death_with_escape.gene_birth_death_with_escape_pdf(
         step_size, decay_constant, rate_escape, seed, include_debugging_plots)
 
-    num_genes_needed = fraction_genes_maintained*len(demographiKS_ks_results)
+    num_genes_needed = int(fraction_genes_maintained*len(demographiKS_ks_results))
     SSD_ks = birth_and_death_with_escape.draw_SSDs_from_pdf(my_pdf, xs,
                                                             num_genes_needed,
                                                             seed, include_debugging_plots)
@@ -287,7 +336,6 @@ def add_selection(demographiKS_ks_results,fraction_genes_maintained,max_Ks, seed
 
     demographiKS_plus_selection_results = demographiKS_ks_results + SSD_ks
 
-    #return maintained_gene_Ks_values
     return demographiKS_plus_selection_results
 
 if __name__ == '__main__':

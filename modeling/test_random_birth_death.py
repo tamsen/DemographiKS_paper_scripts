@@ -21,16 +21,16 @@ class MyTestCase(unittest.TestCase):
         step_size = 0.01
         decay_constant=3  # =(1/mean life expectancy of SSD gene)
         rate_escape=0.1   # % of SSD are maintained
-
+        seed=42
         include_debugging_plots=True
         my_pdf, xs =birth_and_death_with_escape.gene_birth_death_with_escape_pdf(
-            step_size,decay_constant,rate_escape, include_debugging_plots)
+            step_size,decay_constant,rate_escape, seed, include_debugging_plots)
         print(my_pdf)
         self.assertEqual(True, True)  # ad
 
         num_genes_needed = 500
         SSD_ks = birth_and_death_with_escape.draw_SSDs_from_pdf(my_pdf, xs,
-                                                       num_genes_needed, include_debugging_plots)
+                                                       num_genes_needed, seed,include_debugging_plots)
 
         print(SSD_ks)
         self.assertEqual(True, True)  # ad

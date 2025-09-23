@@ -10,8 +10,12 @@ def gene_birth_death_with_escape_pdf(
         escape_rate,
         seed,
         include_debugging_plots):
-    
-    xs = np.arange(0, 4, step_size)
+
+    random.seed=seed
+
+    #this is the range to normalize the pdf
+    max_ks = 4.0
+    xs = np.arange(0, max_ks, step_size)
 
     exp_decay_ys=[math.exp(-1*decay_constant*x) for x in xs]
     ys_that_have_died=[1.0-math.exp(-1*decay_constant*x) for x in xs]
@@ -26,7 +30,7 @@ def gene_birth_death_with_escape_pdf(
         plt.plot(xs, exp_decay_ys, label="SSDs not yet decayed", color='k')
         plt.plot(xs, ys_that_have_died, label="SSDs should be dead", color='b')
         plt.plot(xs, ys_that_escape, label="SSDs that escape", color='c')
-        plt.plot(xs, ys_remaining, label="ys_remaining", color='r')
+        plt.plot(xs, ys_remaining, label="SSDs_remaining_over_time", color='r')
         plt.legend()
         out_png = "/home/tamsen/Data/DemographiKS_output_from_mesx/birth_death_model.png"
         plt.savefig(out_png)
