@@ -321,8 +321,19 @@ def add_selection(demographiKS_ks_results,fraction_genes_maintained,seed):
     #    # so, decay constant is 1/(3x10^-2)
 
     # where rate escape comes from
+    #  Proportion of retained duplicates (what portion of the overall genome is retained duplicates):
     #  between 0.3, 0.4  human and mouse https://pmc.ncbi.nlm.nih.gov/articles/PMC1413713/
     #  Not the same as plants, but at least we are sure those numbers not confounded w/ WGD
+    
+    # Retention of duplicated genes in evolution (20-40% of the whole genome)
+    # so, a genome of size 100 has 20-40 retained duplcatate SSDs
+    # if they were born randomly over 574 MY (~KS=4), that's 0.035-0.070 gene retained per MY
+    # from a starting genome of size 100 genes.
+    # So, thats (0.035 - 0.07)/100, so 0.00035 to 0.0007 dup retained per gene million year.
+    # Gene birth rate is ~0.00162 per g per million years (Tiley)
+    # If 0.00162 are born, and 0.00035 to 0.0007 survive, then
+    # ~0.21-0.43 survive. Wow. more than I expected.
+    # refs ()
 
     include_debugging_plots = True
     my_pdf, xs = birth_and_death_with_escape.gene_birth_death_with_escape_pdf(
