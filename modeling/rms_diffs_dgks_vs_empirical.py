@@ -21,14 +21,12 @@ class Final_DGKS_vs_Empirical(unittest.TestCase):
         demographiKS_out_path = '/home/tamsen/Data/DemographiKS_output_from_mesx/EmpiricalDataTesting_2/Poplar'
         truth_out_path = '/home/tamsen/Data/DemographiKS_output_from_mesx/EmpiricalDataTesting_2/Poplar/Truth'
 
-        include_selection = False
-        include_homEx = False
-        #'EMP_Pop_07_m07d17y2025_h16m44s40',
-        #'EMP_Pop_11_m07d18y2025_h13m55s45'
+        include_selection = True
+        include_homEx = True
+
         full_results = [
-            'EMP_Pop_15_m09d23y2025_h13m39s44',
-            'EMP_Pop_14_m09d23y2025_h13m27s11'
-        ]
+            'EMP_Pop_19_m10d01y2025_h17m31s43','EMP_Pop_18_m10d01y2025_h17m29s53',
+            ]
 
         if include_homEx:
             species_for_plot_title = full_results
@@ -50,14 +48,14 @@ class Final_DGKS_vs_Empirical(unittest.TestCase):
             run_results = read_Ks_csv(sim_full_path, False)
             demographiKS_ks_results=demographiKS_ks_results+run_results
 
-
+        print("Num genes w/out maintained SSEs: " + str(len(demographiKS_ks_results)))
         if include_selection:
             seed=42
-            max_ks=4,
-            fraction_needed=5
+            fraction_needed=3.0
             demographiKS_ks_results = add_selection(demographiKS_ks_results,
                                                     fraction_needed, seed)
 
+        print("Num paralogs in final genome: " + str(len(demographiKS_ks_results)))
         bin_size = 0.01
         max_Ks = 0.4
         bins = np.arange(bin_size, max_Ks + 0.1, bin_size)
@@ -95,6 +93,9 @@ class Final_DGKS_vs_Empirical(unittest.TestCase):
             'EMP_Mays_30_m09d19y2025_h14m47s56',
             'EMP_Mays_33_m09d23y2025_h12m47s42']
 
+        full_results = [
+            'EMP_Mays_35_m09d23y2025_h14m59s18',
+            'EMP_Mays_36_m09d23y2025_h14m59s21']
 
         if include_homEx:
             species_for_plot_title = full_results
@@ -118,12 +119,13 @@ class Final_DGKS_vs_Empirical(unittest.TestCase):
 
 
         if include_selection:
-            seed=42
-            max_ks=4,
-            fraction_needed=5
+            seed=24
+            max_ks=2,
+            fraction_needed=8
             demographiKS_ks_results = add_selection(demographiKS_ks_results,
                                                     fraction_needed, seed)
 
+        print("Num paralogs in final genome: " + str(len(demographiKS_ks_results)))
         bin_size = 0.01
         max_Ks = 0.4
         bins = np.arange(bin_size, max_Ks + 0.1, bin_size)
@@ -148,7 +150,7 @@ class Final_DGKS_vs_Empirical(unittest.TestCase):
         demographiKS_out_path = '/home/tamsen/Data/DemographiKS_output_from_mesx/EmpiricalDataTesting_2/Coffee'
         truth_out_path = '/home/tamsen/Data/DemographiKS_output_from_mesx/EmpiricalDataTesting_2/Coffee/Truth'
         include_selection=True
-        include_homEx=False
+        include_homEx=True
 
         #species_for_plot_title = 'EMP_Coff_36_m07d09y2025_h12m22s40'
         #species_for_plot_title = 'EMP_Coff_35_m07d01y2025_h08m58s51'
@@ -163,13 +165,15 @@ class Final_DGKS_vs_Empirical(unittest.TestCase):
                                      'allotetraploid_bottleneck.csv')
         demographiKS_ks_results = read_Ks_csv(sim_full_path, False)
 
+
         if include_selection:
             seed=42
-            max_ks=4.0
             fraction_genes_maintained=3.5
             demographiKS_ks_results = add_selection(demographiKS_ks_results,
-                                                    fraction_genes_maintained, max_ks, seed)
+                                                    fraction_genes_maintained, seed)
 
+
+        print("Num paralogs in final genome: " + str(len(demographiKS_ks_results)))
         bin_size = 0.005
         max_Ks = 0.2
         bins = np.arange(bin_size, max_Ks + 0.1, bin_size)
@@ -226,9 +230,9 @@ class Final_DGKS_vs_Empirical(unittest.TestCase):
         if include_selection:
             demographiKS_ks_results = add_selection(demographiKS_ks_results,
                                                     proportion_retained_genes,
-                                                    4.0,
                                                     seed)
 
+        print("Num paralogs in final genome: " + str(len(demographiKS_ks_results)))
         bins = np.arange(bin_size, max_Ks, bin_size)
         hist_ys_real, bins_real, patches = plt.hist(real_ks_results, bins=bins, facecolor='b', alpha=0.25,
                                                     density=True)
@@ -344,6 +348,7 @@ def add_selection(demographiKS_ks_results,fraction_genes_maintained,seed):
                                                             num_genes_needed,
                                                             seed, include_debugging_plots)
 
+    print("Num SSD genes simulated: " + str(len(SSD_ks)))
 
     demographiKS_plus_selection_results = demographiKS_ks_results + SSD_ks
 
