@@ -33,7 +33,7 @@ class TestKsByNe(unittest.TestCase):
         run_list_num = "DGKS_1000_gen_by_Ne_fast_mut_rate_Fig R-Ne1."
         ymax_Ks = [200 for f in demographics_TE_run_list ]
 
-        suptitle = "SLiM vs SpecKS, Tcoal and Ks"
+        suptitle = "DGKS vs SpecKS, Tcoal and Ks"
         show_KS_predictions=[False,False,False]
         include_annotation=False
         plot_title_lamda = lambda config: "Ks at Tnow\n"+ "Ne:" + str(config.ancestral_Ne)

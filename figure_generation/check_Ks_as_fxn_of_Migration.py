@@ -275,7 +275,7 @@ class TestKsByMig(unittest.TestCase):
         plt.savefig(os.path.join(demographiKS_out_path, png_out))
         plt.clf()
 
-    def test_Ks_diffs_for_gradual_speciation_try_again(self):
+    def test_Ks_diffs_for_gradual_speciation_nicer_plot(self):
         demographiKS_out_path = '/home/tamsen/Data/DemographiKS_output_from_mesx/KS_vs_Mg'
         data_file_0p1 = "Ks_for_gradual_speciation_ie_Mig_with_varying_duration_0p1percent.csv"
         data_file_1p0 = "Ks_for_gradual_speciation_ie_Mig_with_varying_duration_1percent.csv"
@@ -297,7 +297,7 @@ class TestKsByMig(unittest.TestCase):
         bin_floats = [float(b) for b in bins]
         xs = [0.5 * (bin_floats[i] + bin_floats[i + 1]) for i in range(0, len(bins) - 1)]
         ys_no_mig = [float(d) for d in no_mig_dat_splat[2].split(" ")]
-        fig, ax = plt.subplots(1, 2, figsize=(10, 4))
+        fig, ax = plt.subplots(1, 2, figsize=(10, 4), dpi=500)
         #rmses = []
         mig_rates = ["0.1%","1%","10%"]
         color_adjustment=[1.0,.8,.6]

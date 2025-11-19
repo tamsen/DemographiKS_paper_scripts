@@ -210,9 +210,9 @@ def plot_ks(i, this_ax, config_used, slim_ks_by_gene, spx_ks_by_gene,
 
     if len(slim_ks_by_gene) > 0:
         if include_annotations:
-            my_label='SLiM Ks by gene' + "(" + str(num_slim_genes) + " paralogs in genome)"
+            my_label='DGKS Ks by gene' + "(" + str(num_slim_genes) + " paralogs in genome)"
         else:
-            my_label='SLiM Ks by gene'
+            my_label='DGKS Ks by gene'
         dgx_hist_ys, bins, patches = this_ax.hist(slim_ks_by_gene, bins=bins, facecolor='b', alpha=0.25,
                      label=my_label,
                      density=False)

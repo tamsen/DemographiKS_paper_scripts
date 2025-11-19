@@ -50,15 +50,14 @@ class TestKsByNe(unittest.TestCase):
         run_list_name = "Ks_for_varying_varying_RC_At_like_Fig R-RC1"
         #  'KSvsRC10_At10K_m03d07y2025_h15m56s54',
         demographics_run_list = [False,
-                                 False,
                                  'KSvsRC9_At10K_m03d08y2025_h08m27s35',
                                  'KSvsRC8_At10K_m03d07y2025_h14m10s14',
                                  'KSvsRC7_At10K_m03d08y2025_h08m32s59',
                                  'KSvsRC6_At10K_m03d08y2025_h11m05s16'
-                                 ]
+                                 ]#'KSvsRC9_At10K_m03d08y2025_h08m27s35',
 
         specks_TE5_run_list = [False, 'SpecKS_KSvsRC0_at_m03d08y2025_h15m59s40',
-                               False, False,False,False]
+                               False, False,False]#,False]
 
         #bin_sizes_Tc = [200, 200, 200, 200, 200, 200, 200]
         #bin_sizes_Ks = [0.002, 0.002, 0.002,0.002, 0.002, 0.002, 0.002]
@@ -73,7 +72,8 @@ class TestKsByNe(unittest.TestCase):
         # since mutation rate is 1.0e-5
         # we multiply by 1/1.2 since thats syn / total mut rate
 
-        which_plot_panels_to_show_legend = [1, 2, 3,4,5,6]
+        #which_plot_panels_to_show_legend = [1, 2, 3,4,5,6]
+        which_plot_panels_to_show_legend = []
         show_KS_predictions = [False, False, False]
         show_Annotations = False
         suptitle = "DemographiKS and SpecKS Ks histograms\n"

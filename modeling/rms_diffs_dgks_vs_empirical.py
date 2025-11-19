@@ -21,8 +21,8 @@ class Final_DGKS_vs_Empirical(unittest.TestCase):
         demographiKS_out_path = '/home/tamsen/Data/DemographiKS_output_from_mesx/EmpiricalDataTesting_2/Poplar'
         truth_out_path = '/home/tamsen/Data/DemographiKS_output_from_mesx/EmpiricalDataTesting_2/Poplar/Truth'
 
-        include_selection = True
-        include_homEx = True
+        include_selection = False
+        include_homEx = False
 
         full_results = [
             'EMP_Pop_19_m10d01y2025_h17m31s43','EMP_Pop_18_m10d01y2025_h17m29s53',
@@ -78,8 +78,8 @@ class Final_DGKS_vs_Empirical(unittest.TestCase):
         # linux
         demographiKS_out_path = '/home/tamsen/Data/DemographiKS_output_from_mesx/EmpiricalDataTesting_2/Maize'
         truth_out_path = '/home/tamsen/Data/DemographiKS_output_from_mesx/EmpiricalDataTesting_2/Maize/Truth'
-        include_selection = True
-        include_homEx =  True
+        include_selection = False
+        include_homEx =  False
 
         full_results = [
             'EMP_Mays_30_m09d19y2025_h14m47s56',
@@ -149,8 +149,8 @@ class Final_DGKS_vs_Empirical(unittest.TestCase):
 
         demographiKS_out_path = '/home/tamsen/Data/DemographiKS_output_from_mesx/EmpiricalDataTesting_2/Coffee'
         truth_out_path = '/home/tamsen/Data/DemographiKS_output_from_mesx/EmpiricalDataTesting_2/Coffee/Truth'
-        include_selection=True
-        include_homEx=True
+        include_selection=False
+        include_homEx=False
 
         #species_for_plot_title = 'EMP_Coff_36_m07d09y2025_h12m22s40'
         #species_for_plot_title = 'EMP_Coff_35_m07d01y2025_h08m58s51'
@@ -197,8 +197,8 @@ class Final_DGKS_vs_Empirical(unittest.TestCase):
 
         demographiKS_out_path = '/home/tamsen/Data/DemographiKS_output_from_mesx/EmpiricalDataTesting_2/Sugarcane'
         truth_out_path = '/home/tamsen/Data/DemographiKS_output_from_mesx/EmpiricalDataTesting_2/Sugarcane/Truth'
-        include_homEx=True
-        include_selection=True
+        include_homEx=False
+        include_selection=False
         proportion_retained_genes=10
         seed = 20
         max_Ks = 1.0
@@ -290,10 +290,10 @@ def overlay_differences_in_curves(species_for_plot_title, list_of_hist_data,
             ax.add_patch(Rectangle((xs0[i], ys0[i]), width, diffs[i], color=colors[2],
                                 alpha=0.15))
 
-    plt.legend()
+    plt.legend(fontsize="15")
     plt.xlabel("Ks")
     ax.set(ylabel="Density")
-    plt.title(species_for_plot_title, style='italic')
+    #plt.title(species_for_plot_title, style='italic')
     plt.tight_layout()
     plt.savefig(out_png)
     plt.clf()
