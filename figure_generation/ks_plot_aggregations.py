@@ -89,7 +89,7 @@ def make_Tc_Ks_fig_with_subplots(bin_sizes_Ks, bin_sizes_Tc,
             spx_run_duration_in_m,spx_version = get_run_time_in_minutes(spx_run_path)
             specks_csv_file = os.path.join(spx_run_path, "variations_in_div_time.txt")
             loci, specks_mrcas_by_gene = read_data_csv(specks_csv_file)
-
+            print(spx_run_path)
             glob_results=glob.glob(spx_run_path + '/*.used.xml')
             input_xml_file = glob_results[0]
             #specks_config_used = config.DemographiKS_config(input_xml_file)

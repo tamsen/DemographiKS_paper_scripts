@@ -7,16 +7,15 @@ class MyDGXDataFetcher(unittest.TestCase):
 
     def test_fetch_demographiKS_data(self):
         #/usr/scratch2/userdata2/tdunn/DemographiKS_Output
-        run_list = [
-            'EMP_Mays_35_m09d23y2025_h14m59s18',
-            'EMP_Mays_36_m09d23y2025_h14m59s21']
+        run_list = [ 'DGKS_Ne1000_Fig1row1_v2_m03d18y2026_h11m52s03'
+           ]
 
 #    'EMP_Pop_18_m10d01y2025_h17m29s53','EMP_Pop_18_m10d02y2025_h01m20s56',
 
         run_collection_name = "EMP"
         me_at_remote_URL = 'tdunn@mesx_cluster'
         output_root_folder = os.path.join("/usr/scratch2/userdata2/tdunn/DemographiKS_Output")
-        if False:
+        if True:
             output_root_folder = os.path.join("/usr/scratch2/userdata2/tdunn/DemographiKS_Output")
         else:
             output_root_folder=os.path.join("/usr/scratch2/userdata2/tdunn/DemographiKS_output",

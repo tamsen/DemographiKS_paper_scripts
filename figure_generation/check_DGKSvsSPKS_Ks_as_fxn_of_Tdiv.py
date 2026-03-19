@@ -7,26 +7,43 @@ class TestGeneLossRates(unittest.TestCase):
 
     def test_Ks_for_varying_varying_Tdiv_times(self):
 
-        demographiKS_out_path = '/home/tamsen/Data/DemographiKS_output_from_mesx/SPKS_vs_DGKS_Tdiv'
+        demographiKS_out_path = '/home/tamsen/Data/DemographiKS_output_from_mesx/SPKS_vs_DGKS_Tdiv_v2'
         #specks_out_path = '/home/tamsen/Data/Specks_output_from_mesx'
-        specks_out_path = '/home/tamsen/Data/DemographiKS_output_from_mesx/SPKS_vs_DGKS_Tdiv'
+        specks_out_path = '/home/tamsen/Data/DemographiKS_output_from_mesx/SPKS_vs_DGKS_Tdiv_v2'
         demographics_TE5_run_list=[False,
-          'TE05fix__m01d06y2025_h11m17s15','TE07_fix__m01d08y2025_h15m09s22',
-           'TE08_fix_m01d14y2025_h09m17s20','TE09_fix_m01d13y2025_h14m13s12']
+                                   'DGKS_Tdiv10_Fig1row2_v6_m03d17y2026_h13m57s08',
+                                   'DGKS_Tdiv100_Fig1row2_v6_m03d17y2026_h13m57s07',
+                                   'DGKS_Tdiv1000_Fig1row2_v6_m03d17y2026_h11m21s21',
+                                   'DGKS_Tdiv10000_Fig1row2_v6_m03d17y2026_h11m21s32']
+
 
         specks_TE5_run_list=[False,
-                             "specks_TE05_m01d14y2025_h09m50s16" ,
-        "specks_TE07_m01d14y2025_h09m50s16",
-        "specks_TE08_m01d14y2025_h09m50s16" ,
-        "specks_TE09_m01d14y2025_h09m50s16" ]
+                             'specks_Tdiv10_v4_m03d18y2026_h17m11s41',
+                             'specks_Tdiv100_v4_m03d18y2026_h17m13s07',
+                             'specks_Tdiv1000_v4_m03d18y2026_h17m15s39',
+                             False]
+                             #specks_Tdiv10000_v4_m03d18y2026_h17m15s39
+        #                     False,False,False,False,False]
+        #                     'specks_Tdiv1000_v3_m03d13y2026_h16m37s15',
+        #                'specks_Tdiv10000_v3_m03d13y2026_h15m55s55',
+        ##                'specks_Tdiv100000_v3_m03d13y2026_h15m55s57',
+        #                ]
 
 
-        bin_sizes_Tc = [200,200, 200, 200,200]
-        bin_sizes_Ks = [0.0002, 0.0002, 0.0002, 0.0002, 0.0002]
-        xmax_Ks = [0.025,0.025,0.025,0.025,0.025] #0.001  # max(demographiKS_ks_results)
-        xmax_Tc = [False,False,False,False,False]
+
+        bin_sizes_Ks = [0.001 for f in demographics_TE5_run_list]
+        #bin_sizes_Ks = [0.0004,0.0002,0.001,0.002,0.01,0.08]
+        xmax_Ks = [0.015 for f in demographics_TE5_run_list]
+        #xmax_Ks = [0.01,0.01,0.03,0.05,0.1,1.0,1.0]
+        #xmax_Ks = [0.01, 0.03, 0.05, 0.1, 1.0, 1.0]
+        bin_sizes_Ks = [f/25 for f in xmax_Ks]
+        bin_sizes_Ks = [f /25 for f in xmax_Ks]
+        #xmax_Ks = [0.025,0.025,0.025,0.025,0.025] #0.001  # max(demographiKS_ks_results)
+        xmax_Tc = [500 for f in demographics_TE5_run_list]
+        bin_sizes_Tc = [f/25 for f in xmax_Tc]
         run_list_name="Ks_for_varying_varying_Tdiv_FigR-Tdiv1"
-        ymax_KS = [800,800,800,800,800]
+        ymax_KS = [3000 for f in demographics_TE5_run_list]
+        #ymax_KS = [800,800,400,400,200,200]
         ymax_Tc = [False for f in demographics_TE5_run_list]
         show_KS_predictions=[False,False,False]
         suptitle = "SLiM and SpecKS Ks histograms"

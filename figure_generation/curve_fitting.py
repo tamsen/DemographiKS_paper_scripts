@@ -118,6 +118,8 @@ def fit_curve_to_xs_and_ys(xs_for_wgd, ys_for_wgd, fit_fxn,p0=False):
     RMSE_to_sum = [(fit_curve_ys[i] - ys_for_wgd[i]) * (fit_curve_ys[i] - ys_for_wgd[i]) for i in
                    range(0, len(xs_for_wgd))]
     RMSE = math.sqrt(sum(RMSE_to_sum) / len(RMSE_to_sum))
+    ss_res= sum(RMSE_to_sum)
+    ss_tot=sum
 
     # rms2 = mean_squared_error(ys_for_wgd, fit_curve_ys, squared=False)
     # chi2 = do_chi2(fit_curve_ys, ys_for_wgd)

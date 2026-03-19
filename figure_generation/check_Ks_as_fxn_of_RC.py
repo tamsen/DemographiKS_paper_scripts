@@ -5,6 +5,55 @@ from figure_generation.ks_plot_aggregations import make_Tc_Ks_fig_with_subplots
 
 class TestKsByNe(unittest.TestCase):
 
+    def test_Ks_for_varying_RC_v2(self):
+        demographiKS_out_path = '/home/tamsen/Data/DemographiKS_output_from_mesx/Ks_vs_RC_v2'
+        specks_out_path = '/home/tamsen/Data/DemographiKS_output_from_mesx/KS_vs_RC/save_Ne_10K'
+
+        run_list_name = "Ks_for_varying_varying_RC_At_like_Fig R-RC1"
+        #  'KSvsRC10_At10K_m03d07y2025_h15m56s54',
+        demographics_run_list = [False,
+                                 'DGKS_RC10_Fig1row3_v3_m03d17y2026_h12m54s30',
+                                 'DGKS_RC9_Fig1row3_v3_m03d17y2026_h12m54s30',
+                                 'DGKS_RC8_Fig1row3_v3_m03d17y2026_h12m54s30',
+                                'DGKS_RC7_Fig1row3_v3_m03d17y2026_h12m54s30']
+        #'KSvsRC9_At10K_m03d08y2025_h08m27s35',
+
+        specks_TE5_run_list = [False, 'SpecKS_KSvsRC0_at_m03d08y2025_h15m59s40',
+                               False, False,False, False]#,False]
+
+        #bin_sizes_Tc = [200, 200, 200, 200, 200, 200, 200]
+        #bin_sizes_Ks = [0.002, 0.002, 0.002,0.002, 0.002, 0.002, 0.002]
+        xmax_Ks = [0.01 for f in demographics_run_list] #[0.025, 0.025, 0.025, 0.025, 0.025]  # 0.001  # max(demographiKS_ks_results)
+        bin_sizes_Ks = [xmax_Ks_i / 25 for xmax_Ks_i in xmax_Ks]
+        xmax_Tc = [80000 for f in demographics_run_list]
+        #ymax_KS = [160 for f in demographics_run_list]
+        ymax_KS = [250 for f in demographics_run_list]
+        #ymax_Tc = [100 for f in demographics_run_list]
+        ymax_Tc = [100 for f in demographics_run_list]
+        bin_sizes_Tc = [xmax_Tc_i / 40.0 for xmax_Tc_i in xmax_Tc]
+        # since mutation rate is 1.0e-5
+        # we multiply by 1/1.2 since thats syn / total mut rate
+
+        #which_plot_panels_to_show_legend = [1, 2, 3,4,5,6]
+        which_plot_panels_to_show_legend = []
+        show_KS_predictions = [False, False, False]
+        show_Annotations = False
+        suptitle = "DemographiKS and SpecKS Ks histograms\n"
+        plot_title_lamda = lambda config: "Ks at Tnow\n" + "RC rate:" + str(config.recombination_rate)
+
+        make_Tc_Ks_fig_with_subplots(bin_sizes_Ks, bin_sizes_Tc,
+                                     demographiKS_out_path, demographics_run_list, run_list_name,
+                                     specks_TE5_run_list, specks_out_path,
+                                     xmax_Ks, xmax_Tc, ymax_KS, ymax_Tc,
+                                     suptitle, show_KS_predictions,
+                                     show_Annotations,which_plot_panels_to_show_legend,
+                                     plot_title_lamda)
+
+        self.assertEqual(True, True)  # add assertion here
+
+
+
+
     def test_Ks_for_varying_RC_1KNe_At_like(self):
         demographiKS_out_path = '/home/tamsen/Data/DemographiKS_output_from_mesx/KS_vs_RC/save_Ne_1K'
         specks_out_path = '/home/tamsen/Data/DemographiKS_output_from_mesx/KS_vs_RC/save_Ne_1K'
