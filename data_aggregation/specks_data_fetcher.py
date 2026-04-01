@@ -12,8 +12,7 @@ class MySPXDataFetcher(unittest.TestCase):
         #/ usr / scratch2 / userdata2 / tdunn / DemographiKS_output / SP / SP1MY_m12d24y2024_h09m00s34
         #TE5_run_list = ["SpecKS_KSvsRC0_at_m03d08y2025_h15m59s40/SpecKS_KSvsRC0_at"]
         #/usr/scratch2/userdata2/tdunn/SpecKS_Output/TE/specks_TE10_m03d14y2025_h13m33s57
-        TE5_run_list = [   'specks_Tdiv1000_v4_m03d18y2026_h17m13s07',
-                            'specks_Tdiv100_v4_m03d18y2026_h17m11s41']
+        TE5_run_list = [   'specks_Tdiv5000_v4_m03d27y2026_h17m16s26']
 
         run_list=TE5_run_list
         run_collection_name="TE"
