@@ -4,11 +4,15 @@ import process_wrapper
 
 
 class MyDGXDataFetcher(unittest.TestCase):
+   # 'DGKS_10p0Mig500KY_fig2_row1.v1_m04d02y2026_h18m08s27',
 
     def test_fetch_demographiKS_data(self):
-        #/usr/scratch2/userdata2/tdunn/DemographiKS_Output
+        #'Auto_100KNa_500Nb_500Twgd_v2_m04d03y2026_h17m49s56',
+        # 'Auto_100KNa_5000Nb_500Twgd_v2_m04d03y2026_h17m49s56',
+        # 'Auto_100KNa_50000Nb_500Twgd_v2_m04d03y2026_h17m49s56'
+        # 'Auto_100KNa_1000Nb_500Twgd_v2_m04d03y2026_h17m49s56',
         run_list = [
-            'DGKS_Ne1000_Fig1row1_v5_m04d01y2026_h14m06s03',
+            'Auto_100KNa_1000Nb_500Twgd_v4_m04d03y2026_h18m51s23',
         ]
 
 #    'EMP_Pop_18_m10d01y2025_h17m29s53','EMP_Pop_18_m10d02y2025_h01m20s56',

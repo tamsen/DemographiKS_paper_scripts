@@ -26,7 +26,7 @@ def make_Tc_Ks_fig_with_subplots(bin_sizes_Ks, bin_sizes_Tc,
 
     num_runs = len(demographics_run_list)
     png_out = os.path.join(demographiKS_out_path, run_list_name)
-    csv_out = png_out+"csv"
+    csv_out = png_out+".csv"
     par_dir = Path(__file__).parent.parent
     image_folder = os.path.join(par_dir, "images")
     png_Tnow = os.path.join(image_folder, 'Ks_now_time_slice.jpg')
