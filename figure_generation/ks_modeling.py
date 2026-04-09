@@ -35,7 +35,8 @@ class Ks_modeling_predictions:
         # theoretical autopolyploid prediction based on Nb
         K = config.mean_Ks_from_Nb ** -1
         bin_size = bins[1] - bins[0]
-        popt = [config.num_genes * bin_size, 0.0000001, config.Ks_per_YR, K]
+        #popt = [config.num_genes * bin_size, 0.0000001, config.Ks_per_YR, K]
+        popt = [config.num_genes * bin_size, 0.0, config.Ks_per_YR, K]
         self.autopolyploid_ys = [curve_fitting.wgd_travelling_exponential(x, *popt) for x in bins]
 
 class Ks_modeling_fits:

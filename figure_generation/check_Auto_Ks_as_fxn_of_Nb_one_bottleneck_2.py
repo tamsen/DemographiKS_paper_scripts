@@ -5,86 +5,49 @@ from figure_generation.ks_plot_aggregations_auto_vs_allo import make_Tc_Ks_Allo_
 
 class TestKsForAuto(unittest.TestCase):
 
-    def test_Ks_for_varying_Nb_one_bottleneck_Auto_Na_fixed_at_100(self):
-
-        demographiKS_allo_out_path = '/home/tamsen/Data/DemographiKS_output_from_mesx/Auto/Auto_vs_Nb/Na100'
-        demographics_auto_out_path = '/home/tamsen/Data/DemographiKS_output_from_mesx/Auto/Auto_vs_Nb/Na100'
-
-        demographics_allo_run_list = [False,
-         'KSvs100Na_100Nb_m01d27y2025_h16m51s00', 'KSvs100Na_500Nb_m01d27y2025_h16m51s10',
-         'KSvs100Na_1KNb_m01d27y2025_h16m52s55', 'KSvs100Na_5KNb_m01d27y2025_h16m52s44']
-
-        demographics_auto_run_list   = [False,
-                                      'Auto100Na_100Nb_m01d29y2025_h18m22s20',
-                                      'Auto_100Na_500Nb_m01d29y2025_h18m22s20',
-                                      'Auto_100Na_1KNb_m01d29y2025_h18m22s20',
-                                      'Auto_100Na_5KNb_m01d29y2025_h18m22s20'
-                                      ]
 
 
-        xmax_Ks = [0.10 for f in demographics_auto_run_list ]
-        bin_sizes_Ks = [xmax_KS_i/50 for xmax_KS_i in xmax_Ks]
-
-        xmax_Tc = [3000 for f in demographics_auto_run_list]
-        bin_sizes_Tc = [xmax_Tc_i / 50 for xmax_Tc_i in xmax_Tc]
-
-        ymax_KS = [200 for f in demographics_auto_run_list]
-        ymax_Tc = [300 for f in demographics_auto_run_list]
-        run_list_name = "Ks_for_Allo_and_Auto_varying_varying_Nb_100Na_Fig_R-NaNb5"
-
-
-        show_KS_predictions = [False, False, False]
-        suptitle = "Auto and Allo Ks histograms\n"
-        include_annotation = False
-        num_plot_rows = 2
-
-        bin_sizes_Ks_array=[bin_sizes_Ks,bin_sizes_Ks]
-        xmax_Ks_array=[xmax_Ks,xmax_Ks]
-        ymax_Ks_array=[ymax_KS,ymax_KS]
-
-        plot_title_lamda = lambda config: "Polyploid pop size:" + str(config.bottleneck_Ne)
-        make_Tc_Ks_Allo_vs_Auto_fig_with_subplots(num_plot_rows,bin_sizes_Ks_array, bin_sizes_Tc,
-                                     demographiKS_allo_out_path, demographics_allo_run_list, run_list_name,
-                                     demographics_auto_run_list, demographics_auto_out_path ,
-                                     xmax_Ks_array, xmax_Tc, ymax_Ks_array, ymax_Tc,
-                                     suptitle, show_KS_predictions,include_annotation,
-                                                  plot_title_lamda  )
-
-        self.assertEqual(True, True)  # add assertion here
-
-
-    def test_Ks_for_varying_Nb_one_bottleneck_Na_fixed_at_10K(self):
+    #the new row 3
+    def test_Ks_for_varying_Nb_one_bottleneck_Na_fixed_at_10K_v2(self):
 
         #full, w/Ne 10K
-        demographiKS_allo_out_path = '/home/tamsen/Data/DemographiKS_output_from_mesx/Auto/Auto_vs_Nb/Na10K'
-        demographics_auto_out_path = '/home/tamsen/Data/DemographiKS_output_from_mesx/Auto/Auto_vs_Nb/Na10K'
+        demographiKS_allo_out_path = '/home/tamsen/Data/DemographiKS_output_from_mesx/Auto_v2/NbVaries/NaFixedAt10K_Q10'
+        demographics_auto_out_path = '/home/tamsen/Data/DemographiKS_output_from_mesx/Auto_v2/NbVaries/NaFixedAt10K_Q10'
 
         demographics_allo_run_list = [
             False,
-               'KSvs10KNa_100Nb_m01d27y2025_h16m40s00', 'KSvs10KNa_500Nb_m01d27y2025_h16m40s00',
-            'KSvs10KNa_1KNb_m01d27y2025_h16m40s00','KSvs10KNa_5KNb_m01d27y2025_h16m41s35']
+            'Allo_10KNa_10Nb_v4_m04d08y2026_h12m26s56',
+            'Allo_10KNa_50Nb_v4_m04d08y2026_h12m26s56',
+            'Allo_10KNa_100Nb_v4_m04d08y2026_h12m26s56',
+            'Allo_10KNa_500Nb_v4_m04d08y2026_h12m26s58',
+            'Allo_10KNa_500Nb_old_v4_m04d08y2026_h16m17s04']
 
         demographics_auto_run_list = [
             False,
-            'Auto10KNa_100Nb_m02d20y2025_h17m32s04',
-            'Auto_10KNa_500Nb_m02d20y2025_h17m32s04',
-            'Auto_10KNa_1KNb_m02d20y2025_h17m32s04',
-            'Auto_10KNa_5KNb_m02d20y2025_h17m32s04']
+            'Auto_10KNa_10Nb_v4_m04d08y2026_h12m29s29',
+            'Auto_10KNa_50Nb_v4_m04d08y2026_h12m29s29',
+            'Auto_10KNa_100Nb_v4_m04d08y2026_h12m29s29',
+            'Auto_10KNa_500Nb_v4_m04d08y2026_h12m29s29',
+            'Auto_10KNa_500Nb_old_v4_m04d08y2026_h16m16s59']
+            #'Auto_10KNa_500Nb_v4_m04d08y2026_h12m18s44']
+            #'Auto_10KNa_500Nb_v4_m04d08y2026_h12m29s29' ]
 
+        #'Auto_10KNa_20KNb_v1_m04d07y2026_h10m47s14', 'Auto_10KNa_10KNb_v1_m04d07y2026_h10m47s14',
         #xmax_Ks = [0.8  for f in demographics_auto_run_list ]
         #xmax_Ks_array = [[0.05, 0.05,0.05,0.05,0.05 ],[0.4, 0.4,0.5,0.6,0.8 ]]
-        xmax_Ks_array = [[0.05, 0.2,0.8,0.8,0.8 ],[0.4, 0.4,0.5,0.6,0.8 ]]
-        bin_sizes_Ks_array  = [[xmax_KS_i/50 for xmax_KS_i in xmax_Ks_array[0]],
-                        [xmax_KS_i / 50 for xmax_KS_i in xmax_Ks_array[1]]]
+        xmax_Ks_array = [[0.02 for f in demographics_auto_run_list],
+                         [0.02 for f in demographics_auto_run_list]]
+        bin_sizes_Ks_array  = [[xmax_KS_i/25 for xmax_KS_i in xmax_Ks_array[0]],
+                        [xmax_KS_i / 25 for xmax_KS_i in xmax_Ks_array[1]]]
 
-        xmax_Tc = [80000 for f in demographics_auto_run_list]
-        bin_sizes_Tc = [xmax_Tc_i / 50 for xmax_Tc_i in xmax_Tc]
+        xmax_Tc = [1000 for f in demographics_auto_run_list]
+        bin_sizes_Tc = [xmax_Tc_i / 25 for xmax_Tc_i in xmax_Tc]
 
         ymax_Ks_array = [[200 for f in demographics_auto_run_list],
                    [100 for f in demographics_auto_run_list]]
 
         ymax_Tc = [False for f in demographics_auto_run_list]
-        run_list_name = "Ks_for_Allo_and_Auto_varying_varying_Nb_10K_Na_Fig_R-NaNb6"
+        run_list_name = "Ks_for_Allo_and_Auto_varying_varying_Nb_10K_Na_Fig_R-NaNb6_v2"
 
         show_KS_predictions = [False, False, False]
         suptitle = "Auto and Allo Ks histograms\n"
@@ -111,27 +74,25 @@ class TestKsForAuto(unittest.TestCase):
 
         demographics_allo_run_list = [
            False,False,False,False,False]
-
+        #'Auto_100KNa_50Nb_500Twgd_v7_m04d06y2026_h10m39s56','Auto_100KNa_100Nb_500Twgd_v7_m04d06y2026_h10m39s51',
         demographics_auto_run_list = [
             False,
-            'Auto_100KNa_500Nb_500Twgd_v4_m04d03y2026_h18m51s11',
-            'Auto_100KNa_1000Nb_500Twgd_v4_m04d03y2026_h18m51s23',
-            'Auto_100KNa_10000Nb_500Twgd_v2_m04d03y2026_h17m49s56',
-            'Auto_100KNa_50000Nb_500Twgd_v2_m04d03y2026_h17m49s56',
-          ]
-        #skip this one: 'Auto_100KNa_500Nb_500Twgd_v2_m04d03y2026_h17m49s56',
-        #, 'Auto_100KNa_500Nb_500Twgd_v2_m04d03y2026_h14m15s54',
-        #    'Auto10KNa_50Nb_5kTdiv_m03d11y2025_h09m32s08' 'Auto_100KNa_5000Nb_500Twgd_v2_m04d03y2026_h14m15s54',
+            'Auto_100KNa_500Nb_500Twgd_v7_m04d06y2026_h10m35s11',
+            'Auto_100KNa_1000Nb_500Twgd_v7_m04d06y2026_h10m35s03',
+            'Auto_100KNa_5000Nb_500Twgd_v7_m04d06y2026_h10m34s57',
+            'Auto_100KNa_10000Nb_500Twgd_v7_m04d06y2026_h12m21s28'
+
+        ]
         #xmax_Ks = [0.8  for f in demographics_auto_run_list ]
-        xmax_Ks_array = [[0.005 for f in demographics_auto_run_list ],[0.4, 0.4,0.5,0.6,0.8 ]]
-        bin_sizes_Ks_array  = [[xmax_KS_i/20 for xmax_KS_i in xmax_Ks_array[0]],
-                        [xmax_KS_i /20 for xmax_KS_i in xmax_Ks_array[1]]]
+        xmax_Ks_array = [[0.015 for f in demographics_auto_run_list ],[0.4, 0.4,0.5,0.6,0.8 ]]
+        bin_sizes_Ks_array  = [[xmax_KS_i/25 for xmax_KS_i in xmax_Ks_array[0]],
+                        [xmax_KS_i /25 for xmax_KS_i in xmax_Ks_array[1]]]
 
         xmax_Tc = [80000 for f in demographics_auto_run_list]
         bin_sizes_Tc = [xmax_Tc_i / 10 for xmax_Tc_i in xmax_Tc]
 
-        ymax_Ks_array = [[1000 for f in demographics_auto_run_list],
-                   [1000 for f in demographics_auto_run_list]]
+        ymax_Ks_array = [[2000 for f in demographics_auto_run_list],
+                   [2000 for f in demographics_auto_run_list]]
 
         ymax_Tc = [False for f in demographics_auto_run_list]
         run_list_name = "Ks_for_Allo_and_Auto_varying_varying_Nb_10K_Na_after_5000_years_Fig R-HomEx-Nb v2"

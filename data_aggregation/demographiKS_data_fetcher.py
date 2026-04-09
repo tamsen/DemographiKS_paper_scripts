@@ -4,18 +4,16 @@ import process_wrapper
 
 
 class MyDGXDataFetcher(unittest.TestCase):
-   # 'DGKS_10p0Mig500KY_fig2_row1.v1_m04d02y2026_h18m08s27',
-
+    #'
+    #'Allo_10KNb_500Na_v4_m04d09y2026_h10m44s19', 'Allo_10KNb_10Na_v5_m04d09y2026_h12m04s09',
+    # 'Allo_10KNb_1000Na_v4_m04d09y2026_h10m44s04', 'Allo_10KNb_500Na_v5_m04d09y2026_h12m01s33',
+    # Allo_10KNb_50Na_v5_m04d09y2026_h12m01s33,'Auto_10KNa_100Nb_v5_m04d09y2026_h12m09s56',
+    #Auto_10KNb_1000Na_v5_m04d09y2026_h12m13s02 'Allo_10KNb_100Na_v5_m04d09y2026_h12m01s33',
+    # 'Auto_10KNa_10Nb_v5_m04d09y2026_h12m10s10','Auto_10KNa_50Nb_v5_m04d09y2026_h12m10s07',
     def test_fetch_demographiKS_data(self):
-        #'Auto_100KNa_500Nb_500Twgd_v2_m04d03y2026_h17m49s56',
-        # 'Auto_100KNa_5000Nb_500Twgd_v2_m04d03y2026_h17m49s56',
-        # 'Auto_100KNa_50000Nb_500Twgd_v2_m04d03y2026_h17m49s56'
-        # 'Auto_100KNa_1000Nb_500Twgd_v2_m04d03y2026_h17m49s56',
         run_list = [
-            'Auto_100KNa_1000Nb_500Twgd_v4_m04d03y2026_h18m51s23',
+            'Allo_10KNb_100Na_v5_m04d09y2026_h12m01s33'
         ]
-
-#    'EMP_Pop_18_m10d01y2025_h17m29s53','EMP_Pop_18_m10d02y2025_h01m20s56',
 
         run_collection_name = "EMP"
         me_at_remote_URL = 'tdunn@mesx_cluster'

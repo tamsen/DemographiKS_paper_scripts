@@ -66,7 +66,7 @@ def wgd_travelling_exponential(x, amp, loc_of_maximum, ks_for_one_generation,K):
     # but the difference should be negligible.
 
     if x <= loc_of_maximum:
-        return 0
+        return amp * K #0
     else:
         result= amp * K * math.e ** (-K * ((x - loc_of_maximum - ks_for_one_generation)))
         return result
