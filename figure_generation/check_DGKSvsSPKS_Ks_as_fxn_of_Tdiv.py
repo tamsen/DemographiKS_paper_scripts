@@ -6,11 +6,8 @@ from figure_generation.ks_plot_aggregations import make_Tc_Ks_fig_with_subplots
 class TestGeneLossRates(unittest.TestCase):
 
     def test_Ks_for_varying_varying_Tdiv_times(self):
-        #'DGKS_Tdiv1000_Fig1row2_v7q10_m03d26y2026_h18m43s49',
-        #'DGKS_Tdiv100_Fig1row2_v7q10_m03d26y2026_h18m43s46',
-        #'DGKS_Tdiv10_Fig1row2_v7q10_m03d26y2026_h18m43s43',
+
         demographiKS_out_path = '/home/tamsen/Data/DemographiKS_output_from_mesx/SPKS_vs_DGKS_Tdiv_v2'
-        #specks_out_path = '/home/tamsen/Data/Specks_output_from_mesx'
         specks_out_path = '/home/tamsen/Data/DemographiKS_output_from_mesx/SPKS_vs_DGKS_Tdiv_v2'
 
 
@@ -21,11 +18,6 @@ class TestGeneLossRates(unittest.TestCase):
                                    'DGKS_Tdiv10000_Fig1row2_v6_m03d17y2026_h11m21s32',
                                    'DGKS_Tdiv100000_Fig1row2_v6_m03d19y2026_h09m37s47']
 
-#'specks_Tdiv1000_v4_m03d18y2026_h17m15s39'
-        #uses SPKS_Div10000_fig1_row2.v4.used.xml <DIV_time_MYA>0.001</DIV_time_MYA>
-#'specks_Tdiv10000_v4_m03d18y2026_h18m59s33'
-        #uses SPKS_Div10000_fig1_row2.v4.used.xml <WGD_time_MYA>0.01</WGD_time_MYA>
-        #...so specks 5000 should be at 0.005. which it was not, which is the error
         specks_TE5_run_list=[False,
                              'specks_Tdiv100_v4_m03d18y2026_h17m13s07',
                              'specks_Tdiv1000_v4_m03d18y2026_h17m15s39',

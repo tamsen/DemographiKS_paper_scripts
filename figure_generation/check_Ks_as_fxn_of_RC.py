@@ -8,13 +8,10 @@ class TestKsByNe(unittest.TestCase):
     def test_Ks_for_varying_RC_v2(self):
         demographiKS_out_path = '/home/tamsen/Data/DemographiKS_output_from_mesx/Ks_vs_RC_v2'
         specks_out_path  = '/home/tamsen/Data/DemographiKS_output_from_mesx/Ks_vs_RC_v2'
-
-        #specks_out_path = '/home/tamsen/Data/DemographiKS_output_from_mesx/KS_vs_RC/save_Ne_10K'
-
         run_list_name = "Ks_for_varying_varying_RC_At_like_Fig R-RC1"
-        #  'KSvsRC10_At10K_m03d07y2025_h15m56s54',
+        #'DGKS_RC10_Fig1row3_v9_m03d27y2026_h15m49s06',
         demographics_run_list = [False,
-                                 'DGKS_RC10_Fig1row3_v9_m03d27y2026_h15m49s06',
+                                 'DGKS_RC10_Fig1row3_v6_m03d26y2026_h14m37s59',
                                  'DGKS_RC9_Fig1row3_v6_m03d26y2026_h14m37s59',
                                  'DGKS_RC8_Fig1row3_v6_m03d26y2026_h14m37s59',
                                  'DGKS_RC7_Fig1row3_v6_m03d26y2026_h14m37s59',
@@ -22,7 +19,7 @@ class TestKsByNe(unittest.TestCase):
 
         specks_TE5_run_list = [False, 'SpecKS_KSvsRC0_v1_m03d26y2026_h15m05s31',
                                False, False,False, False]#,False]
-#'SpecKS_KSvsRC0_at_m03d08y2025_h15m59s40',
+
         #bin_sizes_Tc = [200, 200, 200, 200, 200, 200, 200]
         #bin_sizes_Ks = [0.002, 0.002, 0.002,0.002, 0.002, 0.002, 0.002]
         xmax_Ks = [0.05 for f in demographics_run_list] #[0.025, 0.025, 0.025, 0.025, 0.025]  # 0.001  # max(demographiKS_ks_results)
