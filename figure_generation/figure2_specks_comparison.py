@@ -1,14 +1,20 @@
+import os
 import unittest
-from figure_generation.multi_row_Ks_aggregation_plots import make_multi_row_Ks_fig_with_subplots
+from figure_generation.multi_row_Ks_aggregation_plots import make_multi_row_Ks_fig_with_subplots, MulitPlotData
 
 
 class MyTestCase(unittest.TestCase):
 
     def test_fig2_DGKS_vs_SPECKSKs(self):
-        demographiKS_out_path = '/home/tamsen/Data/DemographiKS_output_from_mesx/SPKS_vs_DGKS_Ne_v2'
-        specks_out_path = '/home/tamsen/Data/DemographiKS_output_from_mesx/SPKS_vs_DGKS_Ne_v2'
 
-        r1_demographics_TE_run_list = [
+
+
+        output_png_path='/home/tamsen/Data/DemographiKS_output_from_mesx/fig1_Ne_Tdiv_RC.png'
+
+        r1_demographiKS_data_path = '/home/tamsen/Data/DemographiKS_output_from_mesx/SPKS_vs_DGKS_Ne_v2'
+        r1_specks_data_path = '/home/tamsen/Data/DemographiKS_output_from_mesx/SPKS_vs_DGKS_Ne_v2'
+
+        r1_demographics_run_list = [
                                     'DGKS_Ne10_Fig1row1_v2_m03d16y2026_h17m56s18',
                                     'DGKS_Ne50_Fig1row1_v2_m03d27y2026_h10m28s27',
                                     'DGKS_Ne100_Fig1row1_v2_m03d16y2026_h17m56s20',
@@ -16,7 +22,7 @@ class MyTestCase(unittest.TestCase):
                                     'DGKS_Ne1000_Fig1row1_v5_m04d01y2026_h14m06s03']
 
 
-        r1_specks_TE_run_list = [
+        r1_specks_run_list = [
         'specks_TE10_m03d09y2026_h12m56s47','specks_TE50_m03d27y2026_h12m41s14',
                               'specks_TE100_m03d09y2026_h13m28s52',
                               'specks_TE500_m03d09y2026_h14m00s55',
@@ -24,29 +30,57 @@ class MyTestCase(unittest.TestCase):
                               'specks_TE5000_m03d09y2026_h14m00s57']
 
 
-        xmax_Ks = [0.05 for f in r1_demographics_TE_run_list]
-        #xmax_Ks = [0.10 for f in demographics_TE_run_list]
+        r1_xmax_Ks = [0.05 for f in r1_demographics_run_list]
+        r1_ymax_Ks = [200 for f in r1_demographics_run_list ]
+        r1_bins = [xmax_Ks_i / 50 for xmax_Ks_i in r1_xmax_Ks]
 
-        bin_sizes_Ks = [xmax_Ks_i / 50 for xmax_Ks_i in xmax_Ks]
-        xmax_Tc = [1000,1000,2000,2000,10000,20000,40000, 80000]
-        bin_sizes_Tc =[xmax_Tc_i / 50 for xmax_Tc_i in xmax_Tc]
-        ymax_Tc = [False for f in r1_demographics_TE_run_list]
-        run_list_num = "DGKS_1000_gen_by_Ne_fast_mut_rate_Fig R-Ne1.multirow."
-        ymax_Ks = [200 for f in r1_demographics_TE_run_list ]
-        #ymax_Ks = [600 for f in demographics_TE_run_list]
+        r1_suptitle = "DGKS vs SpecKS, Tcoal and Ks"
+        r1_show_KS_predictions=[False,False,False]
+        r1_include_annotation=False
+        r1_plot_title_lamda = lambda config: "Ks at Tnow\n"+ "Ne:" + str(config.ancestral_Ne)
+        r1_which_plot_panels_to_show_legend = []
 
-        suptitle = "DGKS vs SpecKS, Tcoal and Ks"
-        show_KS_predictions=[False,False,False]
-        include_annotation=False
-        plot_title_lamda = lambda config: "Ks at Tnow\n"+ "Ne:" + str(config.ancestral_Ne)
-        #which_plot_panels_to_show_legend = [1,2,3,4]
-        which_plot_panels_to_show_legend = []
-        make_multi_row_Ks_fig_with_subplots(bin_sizes_Ks, bin_sizes_Tc,
-                                     demographiKS_out_path, r1_demographics_TE_run_list, run_list_num,
-                                     r1_specks_TE_run_list, specks_out_path,
-                                     xmax_Ks, xmax_Tc, ymax_Ks, ymax_Tc,
-                                      suptitle, show_KS_predictions,
-                                     include_annotation,which_plot_panels_to_show_legend,plot_title_lamda)
+        row1_data = MulitPlotData(r1_demographiKS_data_path, r1_demographics_run_list,
+                         r1_specks_data_path, r1_specks_run_list,
+                                  r1_bins, r1_xmax_Ks, r1_ymax_Ks,
+                                  r1_suptitle, r1_show_KS_predictions,
+                                  r1_include_annotation, r1_which_plot_panels_to_show_legend, r1_plot_title_lamda)
+
+
+        r2_demographiKS_data_path = '/home/tamsen/Data/DemographiKS_output_from_mesx/SPKS_vs_DGKS_Tdiv_v2'
+        r2_specks_data_path = '/home/tamsen/Data/DemographiKS_output_from_mesx/SPKS_vs_DGKS_Tdiv_v2'
+
+        r2_demographics_run_list=[False,
+                                   'DGKS_Tdiv100_Fig1row2_v6_m03d17y2026_h13m57s07',
+                                   'DGKS_Tdiv1000_Fig1row2_v6_m03d17y2026_h11m21s21',
+                                   'DGKS_Tdiv5000_Fig1row2_v6_m03d27y2026_h10m10s50',
+                                   'DGKS_Tdiv10000_Fig1row2_v6_m03d17y2026_h11m21s32',
+                                   'DGKS_Tdiv100000_Fig1row2_v6_m03d19y2026_h09m37s47']
+
+        r2_specks_run_list=[False,
+                             'specks_Tdiv100_v4_m03d18y2026_h17m13s07',
+                             'specks_Tdiv1000_v4_m03d18y2026_h17m15s39',
+                             'specks_Tdiv5000_v4_m03d27y2026_h17m16s26',
+                             'specks_Tdiv10000_v4_m03d18y2026_h18m59s33',
+                             'specks_Tdiv100000_v4_m03d19y2026_h09m33s06']
+
+        r2_bins = [0.001 for f in r2_demographics_run_list]
+        r2_xmax_Ks = [0.02,0.02,0.02,0.02,0.04,0.4,0.4,0.4]
+        r2_ymax_Ks = [10000 for f in r2_demographics_run_list]
+        r2_show_Ks_predictions=[False,False,False]
+        r2_suptitle = "SLiM and SpecKS Ks histograms"
+        r2_include_annotation=False
+        r2_plot_title_lamda = lambda config: "Ks at Tnow\n"+ "Tdiv:" + str(config.DIV_time_Ge)
+        r2_which_plot_panels_to_show_legend = []#1, 2, 3, 4,5]
+
+        row2_data = MulitPlotData(r2_demographiKS_data_path, r2_demographics_run_list,
+                         r2_specks_data_path, r2_specks_run_list,
+                                  r2_bins, r2_xmax_Ks, r2_ymax_Ks,
+                                  r2_suptitle, r2_show_Ks_predictions,
+                                  r2_include_annotation, r2_which_plot_panels_to_show_legend, r2_plot_title_lamda)
+
+
+        make_multi_row_Ks_fig_with_subplots([row1_data,row2_data],output_png_path)
 
         self.assertEqual(True, True)  # add assertion here
 

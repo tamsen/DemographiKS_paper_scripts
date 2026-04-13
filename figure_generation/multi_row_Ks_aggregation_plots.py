@@ -2,51 +2,53 @@ import glob
 import math
 import os
 import unittest
-from pathlib import Path
 import numpy as np
-from PyQt5.uic.Compiler.qtproxies import i18n_func
-from fontTools.subset import subset
 from matplotlib import pyplot as plt
-import matplotlib.image as mpimg
 
 import config
 from figure_generation import ks_modeling, curve_fitting
-from figure_generation.coalescent_plot_aggregation import get_run_time_in_minutes, read_data_csv, plot_mrca, \
-    add_mrca_annotations
-from figure_generation.curve_fitting import wgd_lognorm2
+from figure_generation.coalescent_plot_aggregation import get_run_time_in_minutes, read_data_csv
 from figure_generation.histogram_plotter import read_Ks_csv
 
-def make_multi_row_Ks_fig_with_subplots(bin_sizes_Ks, bin_sizes_Tc,
-                                 demographiKS_out_path, demographics_run_list, run_list_name,
-                                 specks_run_list, specks_out_path,
-                                 xmax_Ks, xmax_Tc, ymax_Ks, ymax_Tc,
-                                 suptitle, show_KS_predictions, include_annotation,
-                                 plots_to_show_legend,
-                                 plot_title_lamda):
+class MulitPlotData:
+        def __init__(self, demographiKS_out_path, demographics_run_list,
+                     specks_out_path,specks_run_list,
+                     bin_sizes_Ks,
+                     xmax_Ks, ymax_Ks,
+                     suptitle, show_KS_predictions,
+                     include_annotation, which_plot_panels_to_show_legend, plot_title_lamda):
+            self.demographiKS_out_path = demographiKS_out_path
+            self.demographics_run_list = demographics_run_list
+            self.specks_out_path = specks_out_path
+            self.specks_run_list = specks_run_list
+            self.bin_sizes_Ks = bin_sizes_Ks
+            self.xmax_Ks=xmax_Ks
+            self.ymax_Ks=ymax_Ks
+            self.suptitle= suptitle
+            self.show_KS_predictions=show_KS_predictions
+            self.include_annotation=include_annotation
+            self.which_plot_panels_to_show_legend=which_plot_panels_to_show_legend
+            self.plot_title_lamda=plot_title_lamda
 
-    num_runs = len(demographics_run_list)
-    png_out = os.path.join(demographiKS_out_path, run_list_name)
-    csv_out = png_out+".csv"
+def make_multi_row_Ks_fig_with_subplots(plotdatalist, output_png_path):
 
+    first_plot = plotdatalist[0]
+    num_rows=len(plotdatalist)
+    num_runs = len(first_plot.demographics_run_list)
 
-    num_rows=2
-    if include_annotation:
-        fig, ax = plt.subplots(num_rows, num_runs, figsize=(40, 20))
-        dpi_req = 350
-    else:
-        fig, ax = plt.subplots(num_rows, num_runs, figsize=(20, 8))
-        dpi_req = 100
+    fig, ax = plt.subplots(num_rows, num_runs, figsize=(20, 8))
+    dpi_req = 100
 
-    fig.suptitle(suptitle)
+    fig.suptitle(first_plot.suptitle)
 
-    num_rows=2
     for r in range(0, num_rows):
+        this_plot_data = plotdatalist[r]
         for i in range(r, num_runs):
-            dgx_run_name = demographics_run_list[i]
+            dgx_run_name = this_plot_data.demographics_run_list[i]
 
             if dgx_run_name:
 
-                dgx_run_path = os.path.join(demographiKS_out_path, dgx_run_name)
+                dgx_run_path = os.path.join(this_plot_data.demographiKS_out_path, dgx_run_name)
                 print("dgx_run_path: " +dgx_run_path )
                 glob_results=glob.glob(dgx_run_path + '/*.used.xml')
                 input_xml_file = glob_results[0]
@@ -57,7 +59,7 @@ def make_multi_row_Ks_fig_with_subplots(bin_sizes_Ks, bin_sizes_Tc,
                 demographiKS_ks_results = read_Ks_csv(ks_file, False)
                 dgx_run_duration_in_m, dgx_version = get_run_time_in_minutes(dgx_run_path)
 
-                if include_annotation:
+                if this_plot_data.include_annotation:
                     plot_title = "Ks at Tnow\n" + \
                              "burnin time=" + str(config_used.burnin_time) + " gen, " \
                          + "Na=" + str(config_used.ancestral_Ne)  + ", Nb=" + str(config_used.bottleneck_Ne) +\
@@ -68,7 +70,7 @@ def make_multi_row_Ks_fig_with_subplots(bin_sizes_Ks, bin_sizes_Tc,
                     else:
                         plot_title = plot_title + ", MigRate=0"
                 else:
-                    plot_title = str(plot_title_lamda(config_used))
+                    plot_title = str(this_plot_data.plot_title_lamda(config_used))
 
             else:
                 config_used = False
@@ -77,10 +79,10 @@ def make_multi_row_Ks_fig_with_subplots(bin_sizes_Ks, bin_sizes_Tc,
                 plot_title = "Ks at Tnow"
                 dgx_version = "NA"
 
-            spx_run_name = specks_run_list[i]
+            spx_run_name = this_plot_data.specks_run_list[i]
             if spx_run_name:
                 spx_run_nickname = spx_run_name.split('_')[1]
-                spx_run_path = os.path.join(specks_out_path, spx_run_name)
+                spx_run_path = os.path.join(this_plot_data.specks_out_path, spx_run_name)
                 csv_file_name = 'Allo_' + spx_run_nickname + '_ML_rep0_Ks_by_GeneTree.csv'
                 spx_ks_results = read_Ks_csv(os.path.join(spx_run_path,csv_file_name), True)
                 spx_run_duration_in_m,spx_version = get_run_time_in_minutes(spx_run_path)
@@ -94,21 +96,21 @@ def make_multi_row_Ks_fig_with_subplots(bin_sizes_Ks, bin_sizes_Tc,
                     config_used = config.DemographiKS_config(input_xml_file)
 
                 if not dgx_run_name:
-                    if include_annotation:
+                    if this_plot_data.include_annotation:
                         plot_title = "Ks at Tnow\n"
                     else:
-                        plot_title = str(plot_title_lamda(config_used))
+                        plot_title = str(this_plot_data.plot_title_lamda(config_used))
 
             else:
                 spx_ks_results = []
-                spx_run_duration_in_m = 0
-                spx_version= "NA"
-                specks_mrcas_by_gene = False
 
 
-            dgx_hist_ys, bins=plot_ks(i,ax[r, i], config_used, demographiKS_ks_results, spx_ks_results,
-                    plot_title, bin_sizes_Ks[i], xmax_Ks[i], ymax_Ks[i],
-                    show_KS_predictions, include_annotation,plots_to_show_legend)
+
+            plot_ks(i,ax[r, i], config_used, demographiKS_ks_results, spx_ks_results,
+                    plot_title, this_plot_data.bin_sizes_Ks[i], this_plot_data.xmax_Ks[i],
+                    this_plot_data.ymax_Ks[i],
+                    this_plot_data.show_KS_predictions, this_plot_data.include_annotation,
+                    this_plot_data.which_plot_panels_to_show_legend)
 
 
     ax[0, 1].set(ylabel="# paralog pairs in bin")
@@ -116,10 +118,10 @@ def make_multi_row_Ks_fig_with_subplots(bin_sizes_Ks, bin_sizes_Tc,
     if num_rows > 1:
         ax[1, 1].set(ylabel="# genes in bin")
     plt.tight_layout()
-    if include_annotation:
-        plt.savefig(png_out +"_annotated.png", dpi=dpi_req)
+    if this_plot_data.include_annotation:
+        plt.savefig(output_png_path +"_annotated.png", dpi=dpi_req)
     else:
-        plt.savefig(png_out, dpi=dpi_req)
+        plt.savefig(output_png_path, dpi=dpi_req)
     plt.clf()
     plt.close()
 
