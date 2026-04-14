@@ -11,7 +11,7 @@ from figure_generation.coalescent_plot_aggregation import get_run_time_in_minute
 from figure_generation.histogram_plotter import read_Ks_csv
 
 class MulitPlotData:
-        def __init__(self, demographiKS_out_path, demographics_run_list,
+        def __init__(self, demographiKS_out_path, demographics_run_list,demographics_run_list_name,
                      specks_out_path,specks_run_list,
                      bin_sizes_Ks,
                      xmax_Ks, ymax_Ks,
@@ -19,6 +19,7 @@ class MulitPlotData:
                      include_annotation, which_plot_panels_to_show_legend, plot_title_lamda):
             self.demographiKS_out_path = demographiKS_out_path
             self.demographics_run_list = demographics_run_list
+            self.demographics_run_list_name = demographics_run_list_name
             self.specks_out_path = specks_out_path
             self.specks_run_list = specks_run_list
             self.bin_sizes_Ks = bin_sizes_Ks
@@ -69,6 +70,7 @@ def make_multi_row_Ks_fig_with_subplots(plotdatalist, output_png_path):
                 else:
                     plot_title = str(this_plot_data.plot_title_lamda(config_used))
 
+
             else:
                 config_used = False
                 demographiKS_ks_results = []
@@ -103,12 +105,22 @@ def make_multi_row_Ks_fig_with_subplots(plotdatalist, output_png_path):
 
 
 
-            plot_ks(i,ax[r, i], config_used, demographiKS_ks_results, spx_ks_results,
+            dgx_hist_ys, bins = plot_ks(i,ax[r, i], config_used, demographiKS_ks_results, spx_ks_results,
                     plot_title, this_plot_data.bin_sizes_Ks[i], this_plot_data.xmax_Ks[i],
                     this_plot_data.ymax_Ks[i],
                     this_plot_data.show_KS_predictions, this_plot_data.include_annotation,
                     this_plot_data.which_plot_panels_to_show_legend)
 
+            #if dgx_hist_ys:
+            csv_out = os.path.join(this_plot_data.demographiKS_out_path,
+                                   this_plot_data.demographics_run_list_name +"_out.csv")
+            with open(csv_out, 'a') as f:
+
+                    run_name = this_plot_data.plot_title_lamda(config_used).replace("Ks at Tnow\n", "")
+                    dgx_hist_ys_string = " ".join([str(d) for d in dgx_hist_ys])
+                    bins_string = " ".join([str(b) for b in bins])
+                    data = [run_name, bins_string, dgx_hist_ys_string]
+                    f.writelines(",".join(data) + "\n")
 
     ax[r,0].set(ylabel="# paralog pairs in bin")
 
@@ -219,9 +231,9 @@ def plot_ks(i, this_ax, config_used, slim_ks_by_gene, spx_ks_by_gene,
                 this_ax.plot(bin_centers, fit_curve_ys_ln2, color='g', label="Ks lognorm fit")
                 fit_curve_ys_ln2 = True
                 dgx_hist_ys = True
-    else:
-        fit_curve_ys_ln2 = False
-        dgx_hist_ys = False
+    #else:
+    #    #fit_curve_ys_ln2 = False
+    #    #dgx_hist_ys = False
 
 
 

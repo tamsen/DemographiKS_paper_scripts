@@ -5,7 +5,7 @@ import unittest
 from matplotlib import pyplot as plt
 
 from figure_generation.colors_for_figures import lighten_color
-from figure_generation.ks_plot_aggregations import make_Tc_Ks_fig_with_subplots
+from figure_generation.ks_with_Tc_plot_aggregations import make_Tc_Ks_fig_with_subplots
 import sklearn.metrics
 
 class TestKsByMig2(unittest.TestCase):
