@@ -4,7 +4,7 @@ import math
 import sklearn
 from matplotlib import pyplot as plt
 
-from figure_generation.multi_row_Ks_aggregation_plots import make_multi_row_Ks_fig_with_subplots, MulitPlotData
+from figure_generation.multi_row_Ks_aggregation_plots import make_multi_row_Ks_fig_with_subplots, SPKSvsDGKSPlotData
 
 
 class MyTestCase(unittest.TestCase):
@@ -33,11 +33,11 @@ class MyTestCase(unittest.TestCase):
                                           "Mig duration:" + \
                                           str(qvalues_by_row[1]*(config.mig_stop - config.mig_start)) + " gen"
 
-        row1_data = MulitPlotData(r1_demographiKS_data_path, r1_demographics_run_list,r1_run_list_name,
-                                  r1_demographiKS_data_path, r1_specks_run_list,
-                                  r1_bins, r1_xmax_Ks, r1_ymax_Ks,
-                                  r1_show_Ks_predictions,
-                                  r1_include_annotation, r1_which_plot_panels_to_show_legend, r1_plot_title_lamda)
+        row1_data = SPKSvsDGKSPlotData(r1_demographiKS_data_path, r1_demographics_run_list, r1_run_list_name,
+                                       r1_demographiKS_data_path, r1_specks_run_list,
+                                       r1_bins, r1_xmax_Ks, r1_ymax_Ks,
+                                       r1_show_Ks_predictions,
+                                       r1_include_annotation, r1_which_plot_panels_to_show_legend, r1_plot_title_lamda)
 
         r2_demographiKS_data_path = '/home/tamsen/Data/DemographiKS_output_from_mesx/Ks_vs_Mg2/0p10percent'
         r2_run_list_name = "Ks_for_gradual_speciation_ie_Mig_with_varying_duration_0p1percent.v2."
@@ -50,11 +50,11 @@ class MyTestCase(unittest.TestCase):
                                           "Mig duration:" + \
                                           str(qvalues_by_row[2]*(config.mig_stop - config.mig_start)) + " gen"
 
-        row2_data = MulitPlotData(r2_demographiKS_data_path, r2_demographics_run_list,r2_run_list_name,
-                                  r1_demographiKS_data_path, r1_specks_run_list,
-                                  r1_bins, r1_xmax_Ks, r1_ymax_Ks,
-                                  r1_show_Ks_predictions,
-                                  r1_include_annotation, r1_which_plot_panels_to_show_legend, r2_plot_title_lamda )
+        row2_data = SPKSvsDGKSPlotData(r2_demographiKS_data_path, r2_demographics_run_list, r2_run_list_name,
+                                       r1_demographiKS_data_path, r1_specks_run_list,
+                                       r1_bins, r1_xmax_Ks, r1_ymax_Ks,
+                                       r1_show_Ks_predictions,
+                                       r1_include_annotation, r1_which_plot_panels_to_show_legend, r2_plot_title_lamda)
 
         r3_demographiKS_data_path = '/home/tamsen/Data/DemographiKS_output_from_mesx/Ks_vs_Mg2/1p00percent'
         r3_run_list_name = "Ks_for_gradual_speciation_ie_Mig_with_varying_duration_1percent_v2."
@@ -69,11 +69,11 @@ class MyTestCase(unittest.TestCase):
                                           "Mig duration:" + \
                                           str(qvalues_by_row[3]*(config.mig_stop - config.mig_start)) + " gen"
 
-        row3_data = MulitPlotData(r3_demographiKS_data_path, r3_demographics_run_list,r3_run_list_name,
-                                  r1_demographiKS_data_path, r1_specks_run_list,
-                                  r1_bins, r1_xmax_Ks, r1_ymax_Ks,
-                                  r1_show_Ks_predictions,
-                                  r1_include_annotation, r1_which_plot_panels_to_show_legend,r3_plot_title_lamda)
+        row3_data = SPKSvsDGKSPlotData(r3_demographiKS_data_path, r3_demographics_run_list, r3_run_list_name,
+                                       r1_demographiKS_data_path, r1_specks_run_list,
+                                       r1_bins, r1_xmax_Ks, r1_ymax_Ks,
+                                       r1_show_Ks_predictions,
+                                       r1_include_annotation, r1_which_plot_panels_to_show_legend, r3_plot_title_lamda)
 
 
         r4_demographiKS_data_path = '/home/tamsen/Data/DemographiKS_output_from_mesx/Ks_vs_Mg2/10percent'
@@ -88,11 +88,11 @@ class MyTestCase(unittest.TestCase):
         r4_plot_title_lamda = lambda config: "Ks at Tnow\n" + \
                                           "Mig duration:" + \
                                           str(qvalues_by_row[4]*(config.mig_stop - config.mig_start)) + " gen"
-        row4_data = MulitPlotData(r4_demographiKS_data_path, r4_demographics_run_list,r4_run_list_name,
-                                  r1_demographiKS_data_path, r1_specks_run_list,
-                                  r1_bins, r1_xmax_Ks, r1_ymax_Ks,
-                                  r1_show_Ks_predictions,
-                                  r1_include_annotation, r1_which_plot_panels_to_show_legend, r4_plot_title_lamda)
+        row4_data = SPKSvsDGKSPlotData(r4_demographiKS_data_path, r4_demographics_run_list, r4_run_list_name,
+                                       r1_demographiKS_data_path, r1_specks_run_list,
+                                       r1_bins, r1_xmax_Ks, r1_ymax_Ks,
+                                       r1_show_Ks_predictions,
+                                       r1_include_annotation, r1_which_plot_panels_to_show_legend, r4_plot_title_lamda)
 
         make_multi_row_Ks_fig_with_subplots([row1_data,row2_data,row3_data,row4_data],
                                             output_png_path)

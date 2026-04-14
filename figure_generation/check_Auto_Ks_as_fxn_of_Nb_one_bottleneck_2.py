@@ -70,7 +70,8 @@ class TestKsForAuto(unittest.TestCase):
 
         #full, w/Ne 10K
         demographiKS_allo_out_path = '/home/tamsen/Data/DemographiKS_output_from_mesx/Auto/Auto_vs_Nb/Na10K'
-        demographics_auto_out_path = '/home/tamsen/Data/DemographiKS_output_from_mesx/Auto_v2/NbVaries/NaFixedAt100K'
+        #demographics_auto_out_path = '/home/tamsen/Data/DemographiKS_output_from_mesx/Auto_v2/NbVaries/NaFixedAt100K'
+        demographics_auto_out_path = '/home/tamsen/Data/DemographiKS_output_from_mesx/Auto_v2/Auto_Only_Na'
 
         demographics_allo_run_list = [
            False,False,False,False,False]

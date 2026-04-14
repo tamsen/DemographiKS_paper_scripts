@@ -1,6 +1,6 @@
 import os
 import unittest
-from figure_generation.multi_row_Ks_aggregation_plots import make_multi_row_Ks_fig_with_subplots, MulitPlotData
+from figure_generation.multi_row_Ks_aggregation_plots import make_multi_row_Ks_fig_with_subplots, SPKSvsDGKSPlotData
 
 
 class MyTestCase(unittest.TestCase):
@@ -39,11 +39,11 @@ class MyTestCase(unittest.TestCase):
         r1_plot_title_lamda = lambda config: "Ks at Tnow\n"+ "Ne:" + str(1000*config.ancestral_Ne)
         r1_which_plot_panels_to_show_legend = [4]
 
-        row1_data = MulitPlotData(r1_demographiKS_data_path, r1_demographics_run_list,
-                         r1_specks_data_path, r1_specks_run_list,
-                                  r1_bins, r1_xmax_Ks, r1_ymax_Ks,
-                                  r1_show_KS_predictions,
-                                  r1_include_annotation, r1_which_plot_panels_to_show_legend, r1_plot_title_lamda)
+        row1_data = SPKSvsDGKSPlotData(r1_demographiKS_data_path, r1_demographics_run_list,
+                                       r1_specks_data_path, r1_specks_run_list,
+                                       r1_bins, r1_xmax_Ks, r1_ymax_Ks,
+                                       r1_show_KS_predictions,
+                                       r1_include_annotation, r1_which_plot_panels_to_show_legend, r1_plot_title_lamda)
 
 
         r2_demographiKS_data_path = '/home/tamsen/Data/DemographiKS_output_from_mesx/SPKS_vs_DGKS_Tdiv_v2'
@@ -73,11 +73,11 @@ class MyTestCase(unittest.TestCase):
         r2_plot_title_lamda = lambda config: "Ks at Tnow\n"+ "Tdiv:" + str(100*config.DIV_time_Ge)
         r2_which_plot_panels_to_show_legend = [4]
 
-        row2_data = MulitPlotData(r2_demographiKS_data_path, r2_demographics_run_list,
-                         r2_specks_data_path, r2_specks_run_list,
-                                  r2_bins, r2_xmax_Ks, r2_ymax_Ks,
-                                  r2_show_Ks_predictions,
-                                  r2_include_annotation, r2_which_plot_panels_to_show_legend, r2_plot_title_lamda)
+        row2_data = SPKSvsDGKSPlotData(r2_demographiKS_data_path, r2_demographics_run_list,
+                                       r2_specks_data_path, r2_specks_run_list,
+                                       r2_bins, r2_xmax_Ks, r2_ymax_Ks,
+                                       r2_show_Ks_predictions,
+                                       r2_include_annotation, r2_which_plot_panels_to_show_legend, r2_plot_title_lamda)
 
 
         r3_demographiKS_data_path = '/home/tamsen/Data/DemographiKS_output_from_mesx/Ks_vs_RC_v2'
@@ -103,11 +103,11 @@ class MyTestCase(unittest.TestCase):
         #r3_plot_title_lamda = lambda config: "Ks at Tnow\n" + "RC rate:" + str(0.01*config.recombination_rate)
         r3_plot_title_lamda = lambda config: "Ks at Tnow\n" + "RC rate:"+ f"{0.01*config.recombination_rate:.1e}"
 
-        row3_data = MulitPlotData(r3_demographiKS_data_path, r3_demographics_run_list,
-                                  r3_specks_data_path, r3_specks_run_list,
-                                  r3_bins, r3_xmax_Ks, r3_ymax_Ks,
-                                  r3_show_Ks_predictions,
-                                  r3_include_annotation, r3_which_plot_panels_to_show_legend, r3_plot_title_lamda)
+        row3_data = SPKSvsDGKSPlotData(r3_demographiKS_data_path, r3_demographics_run_list,
+                                       r3_specks_data_path, r3_specks_run_list,
+                                       r3_bins, r3_xmax_Ks, r3_ymax_Ks,
+                                       r3_show_Ks_predictions,
+                                       r3_include_annotation, r3_which_plot_panels_to_show_legend, r3_plot_title_lamda)
 
         make_multi_row_Ks_fig_with_subplots([row1_data,row2_data, row3_data],
                                             output_png_path)
