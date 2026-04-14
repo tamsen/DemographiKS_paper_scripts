@@ -15,7 +15,7 @@ class MulitPlotData:
                      specks_out_path,specks_run_list,
                      bin_sizes_Ks,
                      xmax_Ks, ymax_Ks,
-                     suptitle, show_KS_predictions,
+                     show_KS_predictions,
                      include_annotation, which_plot_panels_to_show_legend, plot_title_lamda):
             self.demographiKS_out_path = demographiKS_out_path
             self.demographics_run_list = demographics_run_list
@@ -24,7 +24,6 @@ class MulitPlotData:
             self.bin_sizes_Ks = bin_sizes_Ks
             self.xmax_Ks=xmax_Ks
             self.ymax_Ks=ymax_Ks
-            self.suptitle= suptitle
             self.show_KS_predictions=show_KS_predictions
             self.include_annotation=include_annotation
             self.which_plot_panels_to_show_legend=which_plot_panels_to_show_legend
@@ -36,14 +35,12 @@ def make_multi_row_Ks_fig_with_subplots(plotdatalist, output_png_path):
     num_rows=len(plotdatalist)
     num_runs = len(first_plot.demographics_run_list)
 
-    fig, ax = plt.subplots(num_rows, num_runs, figsize=(20, 8))
+    fig, ax = plt.subplots(num_rows, num_runs, figsize=(20, 16))
     dpi_req = 100
-
-    fig.suptitle(first_plot.suptitle)
 
     for r in range(0, num_rows):
         this_plot_data = plotdatalist[r]
-        for i in range(r, num_runs):
+        for i in range(0, num_runs):
             dgx_run_name = this_plot_data.demographics_run_list[i]
 
             if dgx_run_name:
@@ -113,10 +110,8 @@ def make_multi_row_Ks_fig_with_subplots(plotdatalist, output_png_path):
                     this_plot_data.which_plot_panels_to_show_legend)
 
 
-    ax[0, 1].set(ylabel="# paralog pairs in bin")
+    ax[r,0].set(ylabel="# paralog pairs in bin")
 
-    if num_rows > 1:
-        ax[1, 1].set(ylabel="# genes in bin")
     plt.tight_layout()
     if this_plot_data.include_annotation:
         plt.savefig(output_png_path +"_annotated.png", dpi=dpi_req)
@@ -253,10 +248,12 @@ def plot_ks(i, this_ax, config_used, slim_ks_by_gene, spx_ks_by_gene,
 
 
     if i in plots_to_show_legend:
-        if include_RC_model:
-            this_ax.legend(loc='upper center', bbox_to_anchor=(0.5, 2.0), ncol=1)
-        else:
-            this_ax.legend()
+        this_ax.legend()
+
+    #    if include_RC_model:
+    #        this_ax.legend(loc='upper center', bbox_to_anchor=(0.5, 2.0), ncol=1)
+    #    else:
+    #        this_ax.legend()
 
     return dgx_hist_ys, bins
 
