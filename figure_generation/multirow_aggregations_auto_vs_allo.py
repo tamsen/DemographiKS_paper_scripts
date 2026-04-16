@@ -35,7 +35,8 @@ class AUTOvsALLOPlotData:
 
 def plot_allo_vs_auto_ks(this_ax, allo_config_used, allo_ks_by_gene,
                          auto_config_used, auto_ks_by_gene,
-                         title, bin_size, xmax, ymax, show_predictions,include_annotation):
+                         title, bin_size, xmax, ymax, show_predictions,
+                         include_annotation, show_legend):
 
     num_allo_genes = len(allo_ks_by_gene)
     num_auto_genes = len(auto_ks_by_gene)
@@ -89,50 +90,44 @@ def plot_allo_vs_auto_ks(this_ax, allo_config_used, allo_ks_by_gene,
     this_ax.set(xlim=[0, xmax])
     this_ax.set(xlabel="Ks")
     this_ax.set(title=title)
-    this_ax.legend()
+
+    if show_legend:
+        this_ax.legend()
 
 
 def make_multirow_Allo_vs_Auto_fig_with_subplots(mulitplotdatalist, png_out):
 
-    num_plot_rows=2
+    num_plot_rows=len(mulitplotdatalist)
     num_runs = len(mulitplotdatalist[0].auto_run_list)
     par_dir = Path(__file__).parent.parent
     image_folder = os.path.join(par_dir, "images")
-    png_Auto= os.path.join(image_folder, 'JustAutoNow.png')
     png_Tnow = os.path.join(image_folder, 'Auto_vs_Allo_now_crop_2.png')
-    #png_Tc = os.path.join(image_folder, 'Auto_vs_Allo_Tc_crop_2.png')
 
     if mulitplotdatalist[0].include_annotation:
-        fig, ax = plt.subplots(num_plot_rows, num_runs, figsize=(40, 20))
+        fig, ax = plt.subplots(num_plot_rows, num_runs, figsize=(40, 25))
         dpi_needed = 350
     else:
-        fig, ax = plt.subplots(num_plot_rows, num_runs, figsize=(20, 8))
+        fig, ax = plt.subplots(num_plot_rows, num_runs, figsize=(20,num_plot_rows*3))
         dpi_needed = 100
 
-    for d_idx in range(0,len(mulitplotdatalist)):
-
-        mulitplotdata = mulitplotdatalist[d_idx ]
-
-
-        fig.suptitle(mulitplotdata.auto_run_list_name)
-        captions=[
+    captions=[
             "polyploid Ks at T_now\nfor Autopolyploid",
             "polyploid Ks at T_now\nfor Allo and Autopolyploid",
             "ancestral Tc at T_div\nfor Allo and T_wgd for Auto"]
-        #lot_expository_allo_auto_image_list(ax, [png_Tnow], captions[1:3])
 
+    for plot_row_index in range(0,len(mulitplotdatalist)):
 
-        joint_allo_auto_plot_index = 0 +d_idx
-        Tc_plot_index = 1 +d_idx
-        plot_expository_allo_auto_image(ax, png_Tnow, captions[1],joint_allo_auto_plot_index)
-        #if num_plot_rows == 3:
-        #    joint_allo_auto_plot_index = 1
-        #    Tc_plot_index = 2
-        #    plot_expository_allo_auto_image_list(ax, [png_Auto, png_Tnow, png_Tc], captions)
+        mulitplotdata = mulitplotdatalist[plot_row_index]
+        fig.suptitle(mulitplotdata.auto_run_list_name)
 
-        for i in range(1, num_runs):
+        col_offset_for_cartoon=0
+        if not mulitplotdata.auto_run_list[0]:
+            plot_expository_allo_auto_image(ax, png_Tnow, captions[1],plot_row_index)
+            col_offset_for_cartoon = 1
+
+        for i in range(col_offset_for_cartoon, len(mulitplotdata.allo_run_list)):
+
             allo_run_name = mulitplotdata.allo_run_list[i]
-
             if allo_run_name:
 
                 allo_run_path = os.path.join(mulitplotdata.allo_out_path, allo_run_name)
@@ -183,21 +178,14 @@ def make_multirow_Allo_vs_Auto_fig_with_subplots(mulitplotdatalist, png_out):
                 spx_run_duration_in_m = 0
                 specks_mrcas_by_gene = False
 
-            if num_plot_rows == 3:
-                plot_allo_vs_auto_ks(ax[0, i], allo_config_used, [],
-                                 auto_config_used,auto_ks_results,
-                                 plot_title,
-                                 mulitplotdata.bin_sizes_Ks[0][i], mulitplotdata.xmax_Ks[0][i],
-                                 mulitplotdata.ymax_Ks[0][i], mulitplotdata.show_KS_predictions,
-                                 mulitplotdata.include_annotation)
-
-            plot_allo_vs_auto_ks(ax[joint_allo_auto_plot_index, i], allo_config_used, allo_ks_results,
+            show_legend = (i in mulitplotdata.which_plot_panels_to_show_legend)
+            plot_allo_vs_auto_ks(ax[plot_row_index, i], allo_config_used, allo_ks_results,
                                  auto_config_used, auto_ks_results,
                     plot_title, mulitplotdata.bin_sizes_Ks[i],
                                  mulitplotdata.xmax_Ks[i],
                                  mulitplotdata.ymax_Ks[i],
                                  mulitplotdata.show_KS_predictions,
-                                 mulitplotdata.include_annotation)
+                                 mulitplotdata.include_annotation,show_legend)
 
             if allo_run_name:
                 allo_Tc_csv_file = os.path.join(allo_run_path, "1_5_simulated_ancestral_gene_mrcas.csv")
@@ -228,13 +216,6 @@ def make_multirow_Allo_vs_Auto_fig_with_subplots(mulitplotdatalist, png_out):
                 ancestral_Ne = auto_config_used.ancestral_Ne
                 num_genes =  auto_config_used.num_genes
 
-
-            if mulitplotdata.include_annotation:
-                add_mrca_annotations_for_autos_and_allos(ax[Tc_plot_index, i],
-                    allo_config_used, 666,
-                                 allo_run_duration_in_m,
-                                 auto_run_duration_in_m,
-                                 allo_version, auto_version)
 
     ax[0, 1].set(ylabel="# paralog pairs in bin")
     ax[1, 1].set(ylabel="# genes in bin")
