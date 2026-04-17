@@ -34,19 +34,19 @@ def make_multi_row_Ks_fig_with_subplots(plotdatalist, output_png_path):
 
     first_plot = plotdatalist[0]
     num_rows=len(plotdatalist)
-    num_runs = len(first_plot.auto_run_list)
+    num_runs = len(first_plot.demographics_run_list)
 
-    fig, ax = plt.subplots(num_rows, num_runs, figsize=(20, 16))
+    fig, ax = plt.subplots(num_rows, num_runs, figsize=(20, 4*num_rows))
     dpi_req = 100
 
     for r in range(0, num_rows):
         this_plot_data = plotdatalist[r]
         for i in range(0, num_runs):
-            dgx_run_name = this_plot_data.auto_run_list[i]
+            dgx_run_name = this_plot_data.demographics_run_list[i]
 
             if dgx_run_name:
 
-                dgx_run_path = os.path.join(this_plot_data.auto_out_path, dgx_run_name)
+                dgx_run_path = os.path.join(this_plot_data.demographiKS_out_path, dgx_run_name)
                 print("dgx_run_path: " +dgx_run_path )
                 glob_results=glob.glob(dgx_run_path + '/*.used.xml')
                 input_xml_file = glob_results[0]
@@ -78,7 +78,7 @@ def make_multi_row_Ks_fig_with_subplots(plotdatalist, output_png_path):
                 plot_title = "Ks at Tnow"
                 dgx_version = "NA"
 
-            spx_run_name = this_plot_data.allo_run_list[i]
+            spx_run_name = this_plot_data.specks_run_list[i]
             if spx_run_name:
                 spx_run_nickname = spx_run_name.split('_')[1]
                 spx_run_path = os.path.join(this_plot_data.allo_out_path, spx_run_name)
@@ -112,8 +112,8 @@ def make_multi_row_Ks_fig_with_subplots(plotdatalist, output_png_path):
                     this_plot_data.which_plot_panels_to_show_legend)
 
             #if dgx_hist_ys:
-            csv_out = os.path.join(this_plot_data.auto_out_path,
-                                   this_plot_data.auto_run_list_name + "_out.csv")
+            csv_out = os.path.join(this_plot_data.demographiKS_out_path,
+                                   this_plot_data.demographiKS_out_path + "_out.csv")
             with open(csv_out, 'a') as f:
 
                     run_name = this_plot_data.plot_title_lamda(config_used).replace("Ks at Tnow\n", "")

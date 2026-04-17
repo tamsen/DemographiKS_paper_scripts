@@ -12,8 +12,8 @@ class MyDGXDataFetcher(unittest.TestCase):
     # 'Auto_10KNa_10Nb_v5_m04d09y2026_h12m10s10','Auto_10KNa_50Nb_v5_m04d09y2026_h12m10s07',
     def test_fetch_demographiKS_data(self):
         run_list = [
-            'Allo_10KNb_100Na_v5_m04d09y2026_h12m01s33'
-        ]
+            'DGKS_0p001Mig250KY_fig2_row1.v1_m04d16y2026_h17m04s27',
+           ]
 
         run_collection_name = "EMP"
         me_at_remote_URL = 'tdunn@mesx_cluster'

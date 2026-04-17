@@ -149,22 +149,30 @@ class Final_DGKS_vs_Empirical(unittest.TestCase):
 
         demographiKS_out_path = '/home/tamsen/Data/DemographiKS_output_from_mesx/EmpiricalDataTesting_2/Coffee'
         truth_out_path = '/home/tamsen/Data/DemographiKS_output_from_mesx/EmpiricalDataTesting_2/Coffee/Truth'
-        include_selection=False
-        include_homEx=False
+        include_selection=True
+        include_homEx=True
 
         #species_for_plot_title = 'EMP_Coff_36_m07d09y2025_h12m22s40'
         #species_for_plot_title = 'EMP_Coff_35_m07d01y2025_h08m58s51'
-        species_for_plot_title =['EMP_Coff_42_m09d19y2025_h11m47s34']
+        species_for_plot_title =['EMP_Coff_42_m09d19y2025_h11m47s34','EMP_Coff_43_m04d16y2026_h09m06s22']
 
-        out_png = os.path.join(demographiKS_out_path,species_for_plot_title[0] + '_final_coffee.png')
+        out_png = os.path.join(demographiKS_out_path,species_for_plot_title[0] + '_final_coffee_v2.png')
         real_full_path = os.path.join(truth_out_path, 'coffea.ks.tsv')
         real_ks_results = ks_parsers.parse_external_ksfile(real_full_path)
 
         sim_full_path = os.path.join(demographiKS_out_path,
                                      species_for_plot_title[0],
                                      'allotetraploid_bottleneck.csv')
-        demographiKS_ks_results = read_Ks_csv(sim_full_path, False)
+        #demographiKS_ks_results = read_Ks_csv(sim_full_path, False)
 
+
+        demographiKS_ks_results=[]
+        for sim_run in species_for_plot_title:
+            sim_full_path = os.path.join(demographiKS_out_path,
+                                     sim_run,
+                                     'allotetraploid_bottleneck.csv')
+            run_results = read_Ks_csv(sim_full_path, False)
+            demographiKS_ks_results=demographiKS_ks_results+run_results
 
         if include_selection:
             seed=42
