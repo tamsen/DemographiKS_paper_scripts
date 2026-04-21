@@ -4,17 +4,11 @@ import process_wrapper
 
 
 class MyDGXDataFetcher(unittest.TestCase):
-    #'
-    #'Allo_10KNb_500Na_v4_m04d09y2026_h10m44s19', 'Allo_10KNb_10Na_v5_m04d09y2026_h12m04s09',
-    # 'Allo_10KNb_1000Na_v4_m04d09y2026_h10m44s04', 'Allo_10KNb_500Na_v5_m04d09y2026_h12m01s33',
-    # Allo_10KNb_50Na_v5_m04d09y2026_h12m01s33,'Auto_10KNa_100Nb_v5_m04d09y2026_h12m09s56',
-    #Auto_10KNb_1000Na_v5_m04d09y2026_h12m13s02 'Allo_10KNb_100Na_v5_m04d09y2026_h12m01s33',
-    # 'Auto_10KNa_10Nb_v5_m04d09y2026_h12m10s10','Auto_10KNa_50Nb_v5_m04d09y2026_h12m10s07',
+
     def test_fetch_demographiKS_data(self):
         run_list = [
-            'DGKS_0p001Mig250KY_fig2_row1.v1_m04d16y2026_h17m04s27',
+            'DGKS_1p0Mig10KY_figS5_row1.v2_m04d20y2026_h17m51s37',
            ]
-
         run_collection_name = "EMP"
         me_at_remote_URL = 'tdunn@mesx_cluster'
         output_root_folder = os.path.join("/usr/scratch2/userdata2/tdunn/DemographiKS_Output")

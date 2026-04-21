@@ -81,7 +81,7 @@ def make_multi_row_Ks_fig_with_subplots(plotdatalist, output_png_path):
             spx_run_name = this_plot_data.specks_run_list[i]
             if spx_run_name:
                 spx_run_nickname = spx_run_name.split('_')[1]
-                spx_run_path = os.path.join(this_plot_data.allo_out_path, spx_run_name)
+                spx_run_path = os.path.join(this_plot_data.specks_out_path, spx_run_name)
                 csv_file_name = 'Allo_' + spx_run_nickname + '_ML_rep0_Ks_by_GeneTree.csv'
                 spx_ks_results = read_Ks_csv(os.path.join(spx_run_path,csv_file_name), True)
                 spx_run_duration_in_m,spx_version = get_run_time_in_minutes(spx_run_path)

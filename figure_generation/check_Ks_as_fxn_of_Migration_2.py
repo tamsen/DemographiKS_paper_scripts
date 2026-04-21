@@ -41,21 +41,22 @@ class TestKsByMig2(unittest.TestCase):
 
         self.assertEqual(True, True)  # add assertion here
 
-    def test_Ks_for_100_gen_of_Migration(self):
-        demographiKS_out_path = '/home/tamsen/Data/DemographiKS_output_from_mesx/KS_vs_Mg/100years'
+    def test_Ks_for_10K_gen_of_Migration(self):
+        demographiKS_out_path = '//home/tamsen/Data/DemographiKS_output_from_mesx/Ks_vs_Mg2_10KY'
 
-        run_list_name = "Ks_for_100yr_of_Mig_with_varying_ratesfig_Fig_R-M6."
+        run_list_name = "Ks_for_10Kyr_of_Mig_with_varying_ratesfig_Fig_R-M6v2."
         demographics_run_list = [False,
-                                 'Mig14v4_m02d14y2025_h09m46s25',
-                                'Mig13v4_m02d14y2025_h09m46s25',
-                                 'Mig12v4_m02d14y2025_h09m46s25',
-                                 'Mig11v4_m02d14y2025_h09m46s25']
+                                 'DGKS_0p0Mig0KY_fig2_row1.v1_m04d02y2026_h14m14s39',
+                                 'DGKS_0p01Mig10KY_figS5_row1.v1_m04d20y2026_h09m52s13',
+                                 'DGKS_0p1Mig10KY_figS5_row1.v1_m04d20y2026_h09m52s13',
+                                 'DGKS_1p0Mig10KY_figS5_row1.v1_m04d20y2026_h09m52s13',
+                                 'DGKS_10p0Mig10KY_figS5_row1.v1_m04d20y2026_h09m52s13']
         specks_TE5_run_list = [False, False, False, False, False, False, False]
 
 
         xmax_Ks = [0.02 for f in demographics_run_list]
         bin_sizes_Ks = [xmax_KS_i / 25 for xmax_KS_i in xmax_Ks]
-        xmax_Tc = [10000 for f in demographics_run_list]
+        xmax_Tc = [200000 for f in demographics_run_list]
         bin_sizes_Tc = [xmax_Tc_i / 25 for xmax_Tc_i in xmax_Tc]
         ymax_KS = [2000 for f in demographics_run_list]
         ymax_Tc = [2400 for f in demographics_run_list]
