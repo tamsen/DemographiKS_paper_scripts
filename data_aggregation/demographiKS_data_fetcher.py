@@ -7,8 +7,8 @@ class MyDGXDataFetcher(unittest.TestCase):
 
     def test_fetch_demographiKS_data(self):
         run_list = [
-            'DGKS_1p0Mig10KY_figS5_row1.v2_m04d20y2026_h17m51s37',
-           ]
+                   'DGKS_1p0Mig50Y_figS4_row1.v3_m04d22y2026_h09m53s05']
+
         run_collection_name = "EMP"
         me_at_remote_URL = 'tdunn@mesx_cluster'
         output_root_folder = os.path.join("/usr/scratch2/userdata2/tdunn/DemographiKS_Output")

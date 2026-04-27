@@ -10,25 +10,28 @@ import sklearn.metrics
 
 class TestKsByMig2(unittest.TestCase):
 
-    def test_Ks_for_5_gen_of_Migration2(self):
-        demographiKS_out_path = '/home/tamsen/Data/DemographiKS_output_from_mesx/KS_vs_Mg/5years'
+    def test_Ks_for_50_gen_of_Migration2(self):
+        demographiKS_out_path = '/home/tamsen/Data/DemographiKS_output_from_mesx/Ks_vs_Mg2_50Y'
 
-        run_list_name = "Ks_for_5yr_of_Mig_with_varying_rates_fig_Fig_R-M5."
+        run_list_name = "Ks_for_50yr_of_Mig_with_varying_rates_fig_Fig_R-M5_v2."
         demographics_run_list = [False,
-                                'Mig14v4_m02d14y2025_h09m46s25','Mig15v4_m02d15y2025_h17m50s44',
-                                 'Mig16v4_m02d15y2025_h17m50s37','Mig17v4_m02d15y2025_h17m50s41']
+                                 'DGKS_0p00Mig50Y_figS4_row1.v3_m04d22y2026_h09m51s43',
+                                 'DGKS_0p01Mig50Y_figS4_row1.v3_m04d22y2026_h09m53s05',
+                                 'DGKS_0p1Mig50Y_figS4_row1.v3_m04d22y2026_h09m53s05',
+                                 'DGKS_1p0Mig50Y_figS4_row1.v3_m04d22y2026_h09m53s05',
+                                 'DGKS_10p0Mig50Y_figS4_row1.v3_m04d22y2026_h09m53s06',]
 
         specks_TE5_run_list = [False, False, False, False, False,False,False]
         xmax_Ks = [0.02 for f in demographics_run_list]
         bin_sizes_Ks = [xmax_KS_i/25 for xmax_KS_i in xmax_Ks]
         xmax_Tc = [10000 for f in demographics_run_list ]
         bin_sizes_Tc = [xmax_Tc_i/25 for xmax_Tc_i in xmax_Tc]
-        ymax_KS = [2000 for f in demographics_run_list]
+        ymax_KS = [400 for f in demographics_run_list]
         ymax_Tc = [2400 for f in demographics_run_list]
 
         show_KS_predictions = [False, False, False]
         suptitle = "DemographiKS Ks histograms\n"
-        include_annotation=False
+        include_annotation=True
         plot_title_lamda = lambda config: "Ks at Tnow\n"+ "Mig rate:" + str(config.mig_rate)
         plots_to_show_legend=[1,2,3,4,5]
         make_Tc_Ks_fig_with_subplots(bin_sizes_Ks, bin_sizes_Tc,
@@ -46,24 +49,25 @@ class TestKsByMig2(unittest.TestCase):
 
         run_list_name = "Ks_for_10Kyr_of_Mig_with_varying_ratesfig_Fig_R-M6v2."
         demographics_run_list = [False,
-                                 'DGKS_0p0Mig0KY_fig2_row1.v1_m04d02y2026_h14m14s39',
-                                 'DGKS_0p01Mig10KY_figS5_row1.v1_m04d20y2026_h09m52s13',
-                                 'DGKS_0p1Mig10KY_figS5_row1.v1_m04d20y2026_h09m52s13',
-                                 'DGKS_1p0Mig10KY_figS5_row1.v1_m04d20y2026_h09m52s13',
-                                 'DGKS_10p0Mig10KY_figS5_row1.v1_m04d20y2026_h09m52s13']
+                                 'DGKS_0p00Mig10KY_figS5_row1.v3_m04d22y2026_h09m51s55',
+                                 'DGKS_0p01Mig10KY_figS5_row1.v3_m04d22y2026_h09m52s55',
+                                 'DGKS_0p1Mig10KY_figS5_row1.v3_m04d22y2026_h09m52s55',
+                                 'DGKS_1p0Mig10KY_figS5_row1.v3_m04d22y2026_h09m52s55',
+                                 'DGKS_10p0Mig10KY_figS5_row1.v3_m04d22y2026_h09m52s55',
+                                ]
         specks_TE5_run_list = [False, False, False, False, False, False, False]
 
 
         xmax_Ks = [0.02 for f in demographics_run_list]
         bin_sizes_Ks = [xmax_KS_i / 25 for xmax_KS_i in xmax_Ks]
-        xmax_Tc = [200000 for f in demographics_run_list]
+        xmax_Tc = [10000 for f in demographics_run_list]
         bin_sizes_Tc = [xmax_Tc_i / 25 for xmax_Tc_i in xmax_Tc]
-        ymax_KS = [2000 for f in demographics_run_list]
+        ymax_KS = [500 for f in demographics_run_list]
         ymax_Tc = [2400 for f in demographics_run_list]
 
         show_KS_predictions = [False, False, False]
         suptitle = "DemographiKS Ks histograms\n"
-        include_annotation=False
+        include_annotation=True
         plots_to_show_legend=[1,2,3,4,5]
         plot_title_lamda = lambda config: "Ks at Tnow\n"+ "Mig rate:" + str(config.mig_rate)
         make_Tc_Ks_fig_with_subplots(bin_sizes_Ks, bin_sizes_Tc,

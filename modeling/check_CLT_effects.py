@@ -6,7 +6,7 @@ import random
 import numpy as np
 from matplotlib import pyplot as plt
 
-from scipy.stats import expon
+from scipy.stats import expon, erlang
 
 from figure_generation import curve_fitting
 from figure_generation.colors_for_figures import lighten_color
@@ -15,6 +15,58 @@ from figure_generation.curve_fitting import  wgd_lognorm2
 
 class TestModelEffectsOfCLT(unittest.TestCase):
 
+
+    def test_erlang_function(self):
+
+        output_folder = "/home/tamsen/Data/DemographiKS_output_from_mesx/CLT_testing"
+        png_out = os.path.join(output_folder,
+                               "Erlang.png")
+        fig = plt.figure(figsize=(6, 6), dpi=100)
+        label = "Theoretical Ks Peak vs Simulated Ks Peak by RC"
+        shape_params=[1,2,5,10,100,200]
+        #shape_params = [100, 1000]
+        xs=[x*0.01 for x in range(0,400)]
+
+        #group velocity is different from phase velocity
+        #in a wave, crests move at "phase velocity"
+        #the group velocity (energy) moves more slowly. (half the speed))
+
+        #mean=(1/lambda?=r*scale
+        #mode=(k-1)/lambda
+        #variance=k/lambda squared
+
+        loc=0;scale=1;
+        for r in shape_params:
+            scale=1.0/r
+            ys=[erlang.pdf(x,r,loc,scale) for x in xs]
+            plt.plot(xs,ys, alpha=1, color='b')
+            expected_mean=r*scale+loc
+            plt.axvline(expected_mean, color='gray', linestyle='--')
+            expected_mode = (r -1 ) * scale + loc
+            plt.axvline(expected_mode, color='cyan', linestyle='--')
+
+        loc=2;scale=1;
+        for r in shape_params:
+            scale=1.0/r
+            ys=[erlang.pdf(x,r,loc,scale) for x in xs]
+            plt.plot(xs,ys, alpha=1, color='g')
+            expected_mean=r*scale+loc
+            plt.axvline(expected_mean, color='gray', linestyle='--')
+
+        #erlang as exponent
+        ys = [erlang.pdf(x, 1, 0, 1) for x in xs]
+        plt.plot(xs, ys, linestyle='--', color='k',label="erlang exp")
+        #normal exponent
+        ys = [math.exp(-1*x) for x in xs]
+        plt.plot(xs, ys, linestyle=':', color='r', label="e^-x")
+        plt.title(label)
+        plt.legend()
+        plt.tight_layout(pad=4.0)
+        plt.xlabel("DemographiKS Ks peak")
+        plt.ylabel("Theoretical Ks peak")
+        plt.savefig(png_out)
+        plt.clf()
+        plt.close()
 
     def test_fractional_RC(self):
         output_folder = "/home/tamsen/Data/DemographiKS_output_from_mesx/CLT_testing"
@@ -137,7 +189,7 @@ class TestModelEffectsOfCLT(unittest.TestCase):
 
         new_data = [d for d in list_of_expon_distributions[0]]
         png_out_i = os.path.join(output_folder, "CLT_0RC.png")
-        dgx_hist_ys, bins = plot_mrca_histogram(new_data, bins, png_out_i)
+        dgx_hist_ys, bins = plot_mrca_histogram(new_data, 0, bins, png_out_i)
         histograms_from_resampled_distributions_ys.append(dgx_hist_ys)
         data_labels.append("0 RC events simulated")
 
@@ -154,7 +206,7 @@ class TestModelEffectsOfCLT(unittest.TestCase):
                 new_data[k] = 0.5 * (Tc1 + Tc2)
 
             png_out_i = os.path.join(output_folder, "CLT_" + str(fraction) + "%RC.png")
-            dgx_hist_ys, bins = plot_mrca_histogram(new_data, bins, png_out_i)
+            dgx_hist_ys, bins = plot_mrca_histogram(new_data, fraction, bins, png_out_i)
             histograms_from_resampled_distributions_ys.append(dgx_hist_ys)
             data_labels.append(str(fraction) + " %RC events simulated")
 
@@ -172,10 +224,11 @@ class TestModelEffectsOfCLT(unittest.TestCase):
                  avg_Tc_for_Kth_gene= sum(Tcs_for_Kth_genes)/num_combined_distributions
                  new_data[k]=avg_Tc_for_Kth_gene#
             png_out_i = os.path.join(output_folder, "CLT_" + str(num_RC_events) +"RC.png")
-            dgx_hist_ys, bins_xs = plot_mrca_histogram(new_data, bins, png_out_i)
+            dgx_hist_ys, bins_xs = plot_mrca_histogram(new_data, num_RC_events, bins, png_out_i)
             histograms_from_resampled_distributions_ys.append(dgx_hist_ys)
 
             data_labels.append(str(num_RC_events) + " RC events simulated")
+
 
         data_colors.append("gray")
         new_colors=[lighten_color('red', amount=a) for a in red_lightening]
@@ -191,7 +244,7 @@ class TestModelEffectsOfCLT(unittest.TestCase):
         p2 = [amp,shape,loc,scale]
 
 
-        png_out = os.path.join(output_folder, "composite_CLT_RC_2_Fig R-RC3.png")
+        png_out = os.path.join(output_folder, "composite_CLT_RC_2_Fig R-RC3_v2.png")
         csv_out = os.path.join(output_folder, "fits_CLT_RC.csv")
         histograms_from_fit_distributions_ys = plot_composite_tc_2(
             histograms_from_resampled_distributions_ys,p2,two_Ne,num_genes,
@@ -206,7 +259,7 @@ class TestModelEffectsOfCLT(unittest.TestCase):
     def test_plot_predicitons_vs_expectations(self):
         output_folder = "/home/tamsen/Data/DemographiKS_output_from_mesx/KS_vs_RC"
         png_out = os.path.join(output_folder,
-               "Theoretical Ks Peak vs Simulated Ks Peak by RC_Fig R-RC4.png")
+               "Theoretical Ks Peak vs Simulated Ks Peak by RC_Fig R-RC4_v2.png")
         fig = plt.figure(figsize=(6, 6), dpi=100)
         label = "Theoretical Ks Peak vs Simulated Ks Peak by RC"
         theory=[0,0.0050,0.0109,0.0127,0.0129]
@@ -348,7 +401,7 @@ def write_some_data(csv_out, RCs, true_max,max_exp):
             data_as_str = [str(d) for d in data]
             f.write("\t".join(data_as_str)+ "\n")
 
-def plot_mrca_histogram(theoretical_mrcas_by_gene, bins, png_out):
+def plot_mrca_histogram(theoretical_mrcas_by_gene,num_RC_events, bins, png_out):
 
     fig = plt.figure(figsize=(10, 10), dpi=350)
     label = "Coalescent Times For Genes From Sampled Ohnologs"
