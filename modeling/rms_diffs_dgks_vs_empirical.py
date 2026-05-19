@@ -81,17 +81,6 @@ class Final_DGKS_vs_Empirical(unittest.TestCase):
         include_selection = False
         include_homEx =  False
 
-        full_results = [
-            'EMP_Mays_30_m09d19y2025_h14m47s56',
-            'EMP_Mays_31_m09d19y2025_h14m40s02'
-                    ]
-        full_results = [
-            'EMP_Mays_32_m09d23y2025_h12m54s25',
-            'EMP_Mays_33_m09d23y2025_h12m47s42']
-
-        full_results = [
-            'EMP_Mays_30_m09d19y2025_h14m47s56',
-            'EMP_Mays_33_m09d23y2025_h12m47s42']
 
         full_results = [
             'EMP_Mays_35_m09d23y2025_h14m59s18',
@@ -252,6 +241,60 @@ class Final_DGKS_vs_Empirical(unittest.TestCase):
         hist_ys_2 = [hist_ys_sim, bins_sim]
         list_of_hist_data = [hist_ys_1, hist_ys_2]
 
+
+        overlay_differences_in_curves(species_for_plot_title, list_of_hist_data,
+                                      include_selection, include_homEx, out_png)
+
+        self.assertEqual(True, True)  # add assertion here
+
+    def test_kiwi_final_plots(self):
+        demographiKS_out_path = '/home/tamsen/Data/DemographiKS_output_from_mesx/EmpiricalDataTesting_2/Kiwi'
+        truth_out_path = '/home/tamsen/Data/DemographiKS_output_from_mesx/EmpiricalDataTesting_2/Kiwi/Truth'
+        include_homEx =   True
+        include_selection =  True
+        proportion_retained_genes = 5
+        seed= 42
+        max_Ks = 0.5
+        num_bins=100
+
+        bin_size = max_Ks/num_bins
+        full_results = ['EMP_Act_19_m05d14y2026_h13m40s44',
+                        'EMP_Act_40_m05d15y2026_h17m18s41']
+
+        if include_homEx:
+            species_for_plot_title = full_results
+        else:
+            species_for_plot_title = [full_results[0]]
+
+        species_for_plot_title_string = "_".join(species_for_plot_title)
+        out_png = os.path.join(demographiKS_out_path, species_for_plot_title_string + '_final_kiwi.png')
+        real_full_path = os.path.join(truth_out_path, 'actinidia_AvB.ks.tsv')
+        real_ks_results = ks_parsers.parse_external_ksfile(real_full_path)
+
+        demographiKS_ks_results = []
+        for sim_run in species_for_plot_title:
+            sim_full_path = os.path.join(demographiKS_out_path,
+                                         sim_run,
+                                         'allotetraploid_bottleneck.csv')
+            sim_run_ks_results = read_Ks_csv(sim_full_path, False)
+            demographiKS_ks_results = demographiKS_ks_results + sim_run_ks_results
+
+        if include_selection:
+            demographiKS_ks_results = add_selection(demographiKS_ks_results,
+                                                    proportion_retained_genes,
+                                                    seed)
+
+        print("Num paralogs in final genome: " + str(len(demographiKS_ks_results)))
+        bins = np.arange(bin_size, max_Ks, bin_size)
+        hist_ys_real, bins_real, patches = plt.hist(real_ks_results, bins=bins, facecolor='b', alpha=0.25,
+                                                    density=True)
+
+        hist_ys_sim, bins_sim, patches = plt.hist(demographiKS_ks_results, bins=bins, facecolor='b', alpha=0.25,
+                                                  density=True)
+
+        hist_ys_1 = [hist_ys_real, bins_real]
+        hist_ys_2 = [hist_ys_sim, bins_sim]
+        list_of_hist_data = [hist_ys_1, hist_ys_2]
 
         overlay_differences_in_curves(species_for_plot_title, list_of_hist_data,
                                       include_selection, include_homEx, out_png)

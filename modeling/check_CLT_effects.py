@@ -16,58 +16,6 @@ from figure_generation.curve_fitting import  wgd_lognorm2
 class TestModelEffectsOfCLT(unittest.TestCase):
 
 
-    def test_erlang_function(self):
-
-        output_folder = "/home/tamsen/Data/DemographiKS_output_from_mesx/CLT_testing"
-        png_out = os.path.join(output_folder,
-                               "Erlang.png")
-        fig = plt.figure(figsize=(6, 6), dpi=100)
-        label = "Theoretical Ks Peak vs Simulated Ks Peak by RC"
-        shape_params=[1,2,5,10,100,200]
-        #shape_params = [100, 1000]
-        xs=[x*0.01 for x in range(0,400)]
-
-        #group velocity is different from phase velocity
-        #in a wave, crests move at "phase velocity"
-        #the group velocity (energy) moves more slowly. (half the speed))
-
-        #mean=(1/lambda?=r*scale
-        #mode=(k-1)/lambda
-        #variance=k/lambda squared
-
-        loc=0;scale=1;
-        for r in shape_params:
-            scale=1.0/r
-            ys=[erlang.pdf(x,r,loc,scale) for x in xs]
-            plt.plot(xs,ys, alpha=1, color='b')
-            expected_mean=r*scale+loc
-            plt.axvline(expected_mean, color='gray', linestyle='--')
-            expected_mode = (r -1 ) * scale + loc
-            plt.axvline(expected_mode, color='cyan', linestyle='--')
-
-        loc=2;scale=1;
-        for r in shape_params:
-            scale=1.0/r
-            ys=[erlang.pdf(x,r,loc,scale) for x in xs]
-            plt.plot(xs,ys, alpha=1, color='g')
-            expected_mean=r*scale+loc
-            plt.axvline(expected_mean, color='gray', linestyle='--')
-
-        #erlang as exponent
-        ys = [erlang.pdf(x, 1, 0, 1) for x in xs]
-        plt.plot(xs, ys, linestyle='--', color='k',label="erlang exp")
-        #normal exponent
-        ys = [math.exp(-1*x) for x in xs]
-        plt.plot(xs, ys, linestyle=':', color='r', label="e^-x")
-        plt.title(label)
-        plt.legend()
-        plt.tight_layout(pad=4.0)
-        plt.xlabel("DemographiKS Ks peak")
-        plt.ylabel("Theoretical Ks peak")
-        plt.savefig(png_out)
-        plt.clf()
-        plt.close()
-
     def test_fractional_RC(self):
         output_folder = "/home/tamsen/Data/DemographiKS_output_from_mesx/CLT_testing"
 
@@ -134,13 +82,7 @@ class TestModelEffectsOfCLT(unittest.TestCase):
         csv_out = os.path.join(output_folder, "af_hist_data.csv")
         write_histogram_distribution_data(csv_out, data_labels, bins_centers, histograms_from_resampled_distributions_ys)
 
-    # "A function that can be generalized to both a Gaussian (normal distribution) "
-    # "and an exponential distribution is the ")generalized normal distribution"
-    # (also known as the "exponential power distribution"); by adjusting a single parameter
-    # within this function, you can smoothly transition between the characteristics
-    # of a Gaussian and an exponential distribution depending on the parameter value"
-    # https://en.wikipedia.org/wiki/Generalized_normal_distribution
-    # https://en.wikipedia.org/wiki/Laplace_transform
+
     def test_effects_of_CLT(self):
 
         output_folder = "/home/tamsen/Data/DemographiKS_output_from_mesx/CLT_testing"
