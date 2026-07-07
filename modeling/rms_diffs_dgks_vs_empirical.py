@@ -138,14 +138,17 @@ class Final_DGKS_vs_Empirical(unittest.TestCase):
 
         demographiKS_out_path = '/home/tamsen/Data/DemographiKS_output_from_mesx/EmpiricalDataTesting_2/Coffee'
         truth_out_path = '/home/tamsen/Data/DemographiKS_output_from_mesx/EmpiricalDataTesting_2/Coffee/Truth'
-        include_selection=False
+        include_selection=True
         include_homEx=True
 
         #species_for_plot_title = 'EMP_Coff_36_m07d09y2025_h12m22s40'
         #species_for_plot_title = 'EMP_Coff_35_m07d01y2025_h08m58s51'
         species_for_plot_title =['EMP_Coff_42_m09d19y2025_h11m47s34','EMP_Coff_44_m04d17y2026_h14m15s23']
 
-        out_png = os.path.join(demographiKS_out_path,species_for_plot_title[0] + '_final_coffee_v44.png')
+
+
+        species_for_plot_title_str = "_".join(species_for_plot_title)
+        out_png = os.path.join(demographiKS_out_path,species_for_plot_title_str + '_final_coffee_vKSrates_fix.png')
         real_full_path = os.path.join(truth_out_path, 'coffea.ks.tsv')
         real_ks_results = ks_parsers.parse_external_ksfile(real_full_path)
 
@@ -267,7 +270,7 @@ class Final_DGKS_vs_Empirical(unittest.TestCase):
             species_for_plot_title = [full_results[0]]
 
         species_for_plot_title_string = "_".join(species_for_plot_title)
-        out_png = os.path.join(demographiKS_out_path, species_for_plot_title_string + '_final_kiwi.png')
+        out_png = os.path.join(demographiKS_out_path, species_for_plot_title_string + '_final_kiwi_v2.png')
         real_full_path = os.path.join(truth_out_path, 'actinidia_AvB.ks.tsv')
         real_ks_results = ks_parsers.parse_external_ksfile(real_full_path)
 

@@ -1,15 +1,26 @@
 import pandas as pd
 
+def parse_ks_rates(input_file):
+    divide_by_two=0.5
+    ks_df=pd.read_csv(input_file, sep='\t', header=0)
+    ks_array = ks_df.loc[:,"Ks"]
+    ks_list = [k*divide_by_two for k in ks_array.tolist() if k <= 3]
+    #print(ks_list[1:10])
+    return ks_list
 
 def parse_external_ksfile(ks_file):
 
+    #most external Ks files are round-trip, not just to LCA
+    divide_by_two = 0.5
     if ".fa" in ks_file: #1KP file
         olea_ks_df = pd.read_csv(ks_file, sep='\t', header=0)
         olea_ks_array = olea_ks_df.loc[:, "Node Ks"]
         ks_data = [k for k in olea_ks_array.tolist() if k <= 2]
     else:    #KS rates input file
         ks_data = parse_ks_rates(ks_file)
-    return ks_data
+
+    ks_list = [k * divide_by_two for k in ks_data]
+    return ks_list
 
 def parse_ks_rates(input_file):
     ks_df=pd.read_csv(input_file, sep='\t', header=0)
