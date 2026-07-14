@@ -5,14 +5,17 @@ import process_wrapper
 
 class MyDGXDataFetcher(unittest.TestCase):
 
+    #'EMP_Coff_56b_m07d10y2026_h11m14s27' 'EMP_Coff_63_m07d10y2026_h18m06s47',   ,'EMP_Act_66d_m07d10y2026_h11m40s19','EMP_Coff_54a_m07d10y2026_h12m39s27','EMP_Act_68wgd_m07d10y2026_h10m18s53',
+    #'EMP_Coff_72_m07d12y2026_h09m11s00', 'EMP_Coff_4_m07d12y2026_h09m14s21',
     def test_fetch_demographiKS_data(self):
         run_list = [
-                   'DGKS_1p0Mig50Y_figS4_row1.v3_m04d22y2026_h09m53s05']
+            'EMP_Mays_81_m07d13y2026_h13m30s31'
+        ]
 
         run_collection_name = "EMP"
         me_at_remote_URL = 'tdunn@mesx_cluster'
         output_root_folder = os.path.join("/usr/scratch2/userdata2/tdunn/DemographiKS_Output")
-        if True:
+        if False:
             output_root_folder = os.path.join("/usr/scratch2/userdata2/tdunn/DemographiKS_Output")
         else:
             output_root_folder=os.path.join("/usr/scratch2/userdata2/tdunn/DemographiKS_output",

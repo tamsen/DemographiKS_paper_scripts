@@ -17,16 +17,14 @@ class Final_DGKS_vs_Empirical(unittest.TestCase):
 
 
     def test_poplar_final_plots(self):
-        # linux
+
         demographiKS_out_path = '/home/tamsen/Data/DemographiKS_output_from_mesx/EmpiricalDataTesting_2/Poplar'
         truth_out_path = '/home/tamsen/Data/DemographiKS_output_from_mesx/EmpiricalDataTesting_2/Poplar/Truth'
+        leaf_to_leaf_Ks=2.0
+        include_selection = True
+        include_homEx = True
 
-        include_selection = False
-        include_homEx = False
-
-        full_results = [
-            'EMP_Pop_19_m10d01y2025_h17m31s43','EMP_Pop_18_m10d01y2025_h17m29s53',
-            ]
+        full_results = ['EMP_Pop_25_m07d08y2026_h11m17s37','EMP_Pop_26_m07d08y2026_h11m17s39']
 
         if include_homEx:
             species_for_plot_title = full_results
@@ -35,7 +33,7 @@ class Final_DGKS_vs_Empirical(unittest.TestCase):
 
         species_for_plot_title_str = "_".join(species_for_plot_title)
         #species_for_plot_title = 'EMP_Pop_07_and_half_11'
-        out_png = os.path.join(demographiKS_out_path, species_for_plot_title_str + '_final_poplar.png')
+        out_png = os.path.join(demographiKS_out_path, species_for_plot_title_str + '_final_poplar_after_fix.png')
         real_full_path = os.path.join(truth_out_path, 'poplar.ks.tsv')
         real_ks_results = ks_parsers.parse_external_ksfile(real_full_path)
 
@@ -46,18 +44,19 @@ class Final_DGKS_vs_Empirical(unittest.TestCase):
                                      sim_run,
                                      'allotetraploid_bottleneck.csv')
             run_results = read_Ks_csv(sim_full_path, False)
+            run_results = [k * leaf_to_leaf_Ks for k in run_results]
             demographiKS_ks_results=demographiKS_ks_results+run_results
 
         print("Num genes w/out maintained SSEs: " + str(len(demographiKS_ks_results)))
         if include_selection:
-            seed=42
-            fraction_needed=3.0
+            seed=44
+            fraction_needed=1.0
             demographiKS_ks_results = add_selection(demographiKS_ks_results,
                                                     fraction_needed, seed)
 
         print("Num paralogs in final genome: " + str(len(demographiKS_ks_results)))
         bin_size = 0.01
-        max_Ks = 0.4
+        max_Ks = 0.9
         bins = np.arange(bin_size, max_Ks + 0.1, bin_size)
         hist_ys_real, bins_real, patches = plt.hist(real_ks_results, bins=bins, facecolor='b', alpha=0.25,
                                                     density=True)
@@ -78,13 +77,12 @@ class Final_DGKS_vs_Empirical(unittest.TestCase):
         # linux
         demographiKS_out_path = '/home/tamsen/Data/DemographiKS_output_from_mesx/EmpiricalDataTesting_2/Maize'
         truth_out_path = '/home/tamsen/Data/DemographiKS_output_from_mesx/EmpiricalDataTesting_2/Maize/Truth'
-        include_selection = False
-        include_homEx =  False
-
-
-        full_results = [
-            'EMP_Mays_35_m09d23y2025_h14m59s18',
-            'EMP_Mays_36_m09d23y2025_h14m59s21']
+        include_selection = True
+        include_homEx =  True
+        leaf_to_leaf_Ks=2.0
+        fraction_needed = 4#'','EMP_Mays_38_m07d06y2026_h16m52s46'
+        full_results = ['EMP_Mays_80_m07d13y2026_h10m40s15',
+                        'EMP_Mays_79_m07d13y2026_h10m40s11']
 
         if include_homEx:
             species_for_plot_title = full_results
@@ -94,7 +92,7 @@ class Final_DGKS_vs_Empirical(unittest.TestCase):
         species_for_plot_title_str = "_".join(species_for_plot_title)
 
         #species_for_plot_title = 'EMP_Mays_26_29_combined'
-        out_png = os.path.join(demographiKS_out_path, species_for_plot_title_str + '_final_mays.png')
+        out_png = os.path.join(demographiKS_out_path, species_for_plot_title_str + '_final_mays_v2.png')
         real_full_path = os.path.join(truth_out_path, 'mays.ks.tsv')
         real_ks_results = ks_parsers.parse_external_ksfile(real_full_path)
 
@@ -104,13 +102,14 @@ class Final_DGKS_vs_Empirical(unittest.TestCase):
                                      sim_run,
                                      'allotetraploid_bottleneck.csv')
             run_results = read_Ks_csv(sim_full_path, False)
+            run_results = [k * leaf_to_leaf_Ks for k in run_results]
             demographiKS_ks_results=demographiKS_ks_results+run_results
 
 
         if include_selection:
-            seed=24
+            seed=42
             max_ks=2,
-            fraction_needed=8
+
             demographiKS_ks_results = add_selection(demographiKS_ks_results,
                                                     fraction_needed, seed)
 
@@ -140,15 +139,23 @@ class Final_DGKS_vs_Empirical(unittest.TestCase):
         truth_out_path = '/home/tamsen/Data/DemographiKS_output_from_mesx/EmpiricalDataTesting_2/Coffee/Truth'
         include_selection=True
         include_homEx=True
+        leaf_to_leaf_Ks=2.0
 
-        #species_for_plot_title = 'EMP_Coff_36_m07d09y2025_h12m22s40'
-        #species_for_plot_title = 'EMP_Coff_35_m07d01y2025_h08m58s51'
-        species_for_plot_title =['EMP_Coff_42_m09d19y2025_h11m47s34','EMP_Coff_44_m04d17y2026_h14m15s23']
+        #max_Ks = 0.4
+        #fraction_genes_maintained = 1.0
 
+        max_Ks = 0.2
+        fraction_genes_maintained = 2.5
+        rseed = 42
 
+        species_for_plot_title =[
+            'EMP_Coff_73_m07d12y2026_h09m13s58',
+            'EMP_Coff_74_m07d12y2026_h09m14s21']
 
         species_for_plot_title_str = "_".join(species_for_plot_title)
-        out_png = os.path.join(demographiKS_out_path,species_for_plot_title_str + '_final_coffee_vKSrates_fix.png')
+        out_png = os.path.join(demographiKS_out_path,species_for_plot_title_str
+        + "_fraction" + str(fraction_genes_maintained) + "_"
+                               + '_final_coffee_vKSrates_fix.png')
         real_full_path = os.path.join(truth_out_path, 'coffea.ks.tsv')
         real_ks_results = ks_parsers.parse_external_ksfile(real_full_path)
 
@@ -164,18 +171,18 @@ class Final_DGKS_vs_Empirical(unittest.TestCase):
                                      sim_run,
                                      'allotetraploid_bottleneck.csv')
             run_results = read_Ks_csv(sim_full_path, False)
+            run_results = [k * leaf_to_leaf_Ks for k in run_results]
             demographiKS_ks_results=demographiKS_ks_results+run_results
 
         if include_selection:
-            seed=42
-            fraction_genes_maintained=3.5
+
             demographiKS_ks_results = add_selection(demographiKS_ks_results,
-                                                    fraction_genes_maintained, seed)
+                                                    fraction_genes_maintained, rseed)
 
 
         print("Num paralogs in final genome: " + str(len(demographiKS_ks_results)))
         bin_size = 0.005
-        max_Ks = 0.2
+        #bin_size = 0.01 too smooth
         bins = np.arange(bin_size, max_Ks + 0.1, bin_size)
         hist_ys_real, bins_real, patches = plt.hist(real_ks_results, bins=bins, facecolor='b', alpha=0.25,
                                                     density=True)
@@ -193,76 +200,21 @@ class Final_DGKS_vs_Empirical(unittest.TestCase):
 
         self.assertEqual(True, True)  # add assertion here
 
-    def test_sugar_final_plots(self):
-
-        demographiKS_out_path = '/home/tamsen/Data/DemographiKS_output_from_mesx/EmpiricalDataTesting_2/Sugarcane'
-        truth_out_path = '/home/tamsen/Data/DemographiKS_output_from_mesx/EmpiricalDataTesting_2/Sugarcane/Truth'
-        include_homEx=False
-        include_selection=False
-        proportion_retained_genes=10
-        seed = 20
-        max_Ks = 1.0
-        bin_size = 0.02
-        full_results =  [ 'EMP_Sac_45_m09d19y2025_h10m27s28',
-                                 'EMP_Sac_46_m09d19y2025_h10m31s55']
-
-
-        if include_homEx:
-            species_for_plot_title = full_results
-        else:
-            species_for_plot_title= [full_results[0]]
-
-        species_for_plot_title_string="_".join(species_for_plot_title)
-        out_png = os.path.join(demographiKS_out_path,species_for_plot_title_string + '_final_sugar.png')
-        real_full_path = os.path.join(truth_out_path, 'saccharum.ks.tsv')
-        real_ks_results = ks_parsers.parse_external_ksfile(real_full_path)
-
-
-
-        demographiKS_ks_results=[]
-        for sim_run in species_for_plot_title:
-            sim_full_path = os.path.join(demographiKS_out_path,
-                                         sim_run,
-                                         'allotetraploid_bottleneck.csv')
-            sim_run_ks_results = read_Ks_csv(sim_full_path, False)
-            demographiKS_ks_results = demographiKS_ks_results + sim_run_ks_results
-
-        if include_selection:
-            demographiKS_ks_results = add_selection(demographiKS_ks_results,
-                                                    proportion_retained_genes,
-                                                    seed)
-
-        print("Num paralogs in final genome: " + str(len(demographiKS_ks_results)))
-        bins = np.arange(bin_size, max_Ks, bin_size)
-        hist_ys_real, bins_real, patches = plt.hist(real_ks_results, bins=bins, facecolor='b', alpha=0.25,
-                                                    density=True)
-
-        hist_ys_sim, bins_sim, patches = plt.hist(demographiKS_ks_results, bins=bins, facecolor='b', alpha=0.25,
-                                                  density=True)
-
-        hist_ys_1 = [hist_ys_real, bins_real]
-        hist_ys_2 = [hist_ys_sim, bins_sim]
-        list_of_hist_data = [hist_ys_1, hist_ys_2]
-
-
-        overlay_differences_in_curves(species_for_plot_title, list_of_hist_data,
-                                      include_selection, include_homEx, out_png)
-
-        self.assertEqual(True, True)  # add assertion here
-
     def test_kiwi_final_plots(self):
         demographiKS_out_path = '/home/tamsen/Data/DemographiKS_output_from_mesx/EmpiricalDataTesting_2/Kiwi'
         truth_out_path = '/home/tamsen/Data/DemographiKS_output_from_mesx/EmpiricalDataTesting_2/Kiwi/Truth'
         include_homEx =   True
         include_selection =  True
-        proportion_retained_genes = 5
+        proportion_retained_genes = 3.0
         seed= 42
-        max_Ks = 0.5
+        max_Ks = 0.5#0.5#1.0
         num_bins=100
+        leaf_to_leaf_Ks=2.0
+        bin_size = 0.01# max_Ks/num_bins
 
-        bin_size = max_Ks/num_bins
-        full_results = ['EMP_Act_19_m05d14y2026_h13m40s44',
-                        'EMP_Act_40_m05d15y2026_h17m18s41']
+        full_results = ['EMP_Act_56wgd_m07d09y2026_h15m27s28',
+                        'EMP_Act_74hx_m07d13y2026_h10m47s09',
+                        'EMP_Act_48_m07d09y2026_h08m50s20']
 
         if include_homEx:
             species_for_plot_title = full_results
@@ -270,7 +222,8 @@ class Final_DGKS_vs_Empirical(unittest.TestCase):
             species_for_plot_title = [full_results[0]]
 
         species_for_plot_title_string = "_".join(species_for_plot_title)
-        out_png = os.path.join(demographiKS_out_path, species_for_plot_title_string + '_final_kiwi_v2.png')
+        out_png = os.path.join(demographiKS_out_path, species_for_plot_title_string
+                               + "MaxKs" + str(max_Ks) +  '_final_kiwi_v2.png')
         real_full_path = os.path.join(truth_out_path, 'actinidia_AvB.ks.tsv')
         real_ks_results = ks_parsers.parse_external_ksfile(real_full_path)
 
@@ -279,8 +232,9 @@ class Final_DGKS_vs_Empirical(unittest.TestCase):
             sim_full_path = os.path.join(demographiKS_out_path,
                                          sim_run,
                                          'allotetraploid_bottleneck.csv')
-            sim_run_ks_results = read_Ks_csv(sim_full_path, False)
-            demographiKS_ks_results = demographiKS_ks_results + sim_run_ks_results
+            run_results = read_Ks_csv(sim_full_path, False)
+            run_results = [k * leaf_to_leaf_Ks for k in run_results]
+            demographiKS_ks_results = demographiKS_ks_results + run_results
 
         if include_selection:
             demographiKS_ks_results = add_selection(demographiKS_ks_results,
@@ -362,7 +316,7 @@ def get_maintained_gene_Ks_values(num_Ks_values_needed, max_Ks):
     return random_decimal_list
 
 
-def add_selection(demographiKS_ks_results,fraction_genes_maintained,seed):
+def add_selection(demographiKS_ks_results,fraction_genes_maintained,rseed):
 
     step_size = 0.001
     decay_constant = 33  # =(1/mean life expectancy of SSD gene), in Ks space
@@ -393,14 +347,15 @@ def add_selection(demographiKS_ks_results,fraction_genes_maintained,seed):
     # ~0.21-0.43 survive. Wow. more than I expected.
     # refs ()
 
+    random.seed(rseed)
     include_debugging_plots = True
     my_pdf, xs = birth_and_death_with_escape.gene_birth_death_with_escape_pdf(
-        step_size, decay_constant, rate_escape, seed, include_debugging_plots)
+        step_size, decay_constant, rate_escape, rseed, include_debugging_plots)
 
     num_genes_needed = int(fraction_genes_maintained*len(demographiKS_ks_results))
     SSD_ks = birth_and_death_with_escape.draw_SSDs_from_pdf(my_pdf, xs,
                                                             num_genes_needed,
-                                                            seed, include_debugging_plots)
+                                                            rseed, include_debugging_plots)
 
     print("Num SSD genes simulated: " + str(len(SSD_ks)))
 

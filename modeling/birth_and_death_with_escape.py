@@ -1,6 +1,7 @@
 import math
 import random
 
+import numpy
 import numpy as np
 from matplotlib import pyplot as plt
 
@@ -8,10 +9,8 @@ def gene_birth_death_with_escape_pdf(
         step_size,
         decay_constant,
         escape_rate,
-        seed,
+        rseed,
         include_debugging_plots):
-
-    random.seed=seed
 
     #this is the range to normalize the pdf
     max_ks = 4.0
@@ -39,11 +38,13 @@ def gene_birth_death_with_escape_pdf(
     return normalized_pdf, xs
 
 
-def draw_SSDs_from_pdf(normalized_pdf, xs, num_genes_needed, seed, include_debugging_plots):
+def draw_SSDs_from_pdf(normalized_pdf, xs, num_genes_needed, rseed, include_debugging_plots):
 
         population = xs
         probabilities = normalized_pdf
-        random_draws = random.choices(population, weights=probabilities, k= num_genes_needed)
+        #random.seed(rseed)
+        random_draws = random.choices(
+            population, weights=probabilities, k= num_genes_needed)
 
         if include_debugging_plots:
             hist_ys_real, bins, patches = plt.hist(random_draws, bins=40, facecolor='b', alpha=0.25,
