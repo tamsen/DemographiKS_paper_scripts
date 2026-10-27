@@ -230,15 +230,25 @@ def plot_ks(i, this_ax, config_used, slim_ks_by_gene, spx_ks_by_gene,
 
     half_bin_size=0.5*bin_size
     if config_used.t_div_as_ks:
-        this_ax.axvline(x=half_bin_size+config_used.t_div_as_ks, color='b', linestyle='-.',
+        this_ax.axvline(x=config_used.t_div_as_ks, color='b', linestyle='-.',
                         label="input Tdiv as Ks")
+        #this_ax.axvline(x=half_bin_size+config_used.t_div_as_ks, color='b', linestyle='-.',
+        #                label="input Tdiv as Ks")
 
     if not config_used.DIV_time_Ge: #this would be an autopolyploid
-        this_ax.axvline(x=half_bin_size + config_used.mean_Ks_from_Nb, color='g', linestyle='--',
+
+        if not config_used.dij_stop: # dont add the extra line in the dij case, bc it makes the plot too complex
+            #this_ax.axvline(x=half_bin_size + config_used.mean_Ks_from_Nb, color='g', linestyle='--',
+            #                label="Expected Ks mean (4Nb)")
+            this_ax.axvline(x=half_bin_size + config_used.mean_Ks_from_Nb, color='g', linestyle='--',
                         label="Expected Ks mean (4Nb)")
-    theoretical_ks_mean_now=config_used.mean_Ks_from_Tc+config_used.t_div_as_ks
-    this_ax.axvline(x=half_bin_size+theoretical_ks_mean_now, color='r', linestyle='--',
-                    label="Expected Ks mean (2Na)")
+
+    theoretical_ks_mean_now = config_used.mean_Ks_from_Tc + config_used.t_div_as_ks
+    if not config_used.dij_stop:  # dont add the extra line in the dij case, bc it makes the plot too complex
+        #this_ax.axvline(x=half_bin_size+theoretical_ks_mean_now, color='r', linestyle='--',
+        #               label="Expected Ks mean (2Na)")
+        this_ax.axvline(x=theoretical_ks_mean_now, color='r', linestyle='--',
+                        label="Expected Ks mean (2Na)")
 
     RC_rate_per_base_per_year=config_used.recombination_rate
     exp_num_RC_per_base_since_DIV=RC_rate_per_base_per_year*theoretical_ks_mean_now/config_used.Ks_per_YR
@@ -308,6 +318,22 @@ def plot_ks(i, this_ax, config_used, slim_ks_by_gene, spx_ks_by_gene,
         this_ax.axvline(x=mig_start_as_Ks, color='g', linestyle=':', label="Mig start", linewidth=3)
         this_ax.axvline(x=mig_stop_as_Ks, color='g', linestyle='--', label="Mig stop")
         this_ax.axvspan(mig_stop_as_Ks, mig_start_as_Ks, alpha=0.25, color='g')
+
+    if config_used.dij_stop:
+        dij_start_as_Ks=config_used.t_wgd_as_ks- (config_used.Ks_per_YR*config_used.dij_start)
+        this_ax.axvline(x=config_used.t_wgd_as_ks, color='r', linestyle='-.',
+                        label="input Twgd as Ks", linewidth=1)
+        this_ax.axvline(x=dij_start_as_Ks, color='gray', linestyle=':', label="tetrasomic start", linewidth=1)
+
+        if "," in str(config_used.dij_stop):
+            stop_list=config_used.dij_stop.split(",")
+            for stop in stop_list:
+                dij_stop_as_Ks=config_used.t_wgd_as_ks- (config_used.Ks_per_YR * int(stop))
+                this_ax.axvline(x=dij_stop_as_Ks, color='gray', linestyle='--', label="tetrasomic stop")
+        else:
+            dij_stop_as_Ks = config_used.t_wgd_as_ks - (config_used.Ks_per_YR * config_used.dij_stop)
+            this_ax.axvline(x=dij_stop_as_Ks, color='gray', linestyle='--', label="tetrasomic stop")
+        this_ax.axvspan(dij_stop_as_Ks, dij_start_as_Ks, alpha=0.25, color='gray')
 
     if len(slim_ks_by_gene) > 0:
         if include_annotations:

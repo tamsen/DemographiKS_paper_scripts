@@ -37,6 +37,8 @@ class DemographiKS_config:
     #Exchange rate between allopolyploid subgenomes after WGD,
     #as in "Demographic history inference and the polyploid continuum" by  Blischak et al 2023
     homoeologous_exchange_rate = 0
+    dij_start = False
+    dij_stop = False
 
     #mating
     assortative_mating_coefficient = False
@@ -120,8 +122,17 @@ class DemographiKS_config:
 
                         if (incoming_tag == "recombination_rate"):
                             self.recombination_rate = float(incoming_txt)
-                        if (incoming_tag == "homoeologous_exchange_rate"):
+                        if (incoming_tag == "homoeologous_exchange_rate") :
                             self.homoeologous_exchange_rate = float(incoming_txt)
+                        if (incoming_tag == "genetic_exchange_rate_parameter"):
+                            self.homoeologous_exchange_rate = float(incoming_txt)
+                        if (incoming_tag == "genetic_exchange_start"):
+                            self.dij_start = int(incoming_txt)
+                        if (incoming_tag == "genetic_exchange_stop"):
+                            if "," in incoming_txt:
+                                self.dij_stop = incoming_txt
+                            else:
+                                self.dij_stop = int(incoming_txt)
                         if (incoming_tag == "total_num_bases"):
                             self.total_num_bases = int(incoming_txt)
                         if (incoming_tag == "num_codons_in_a_gene"):
@@ -183,6 +194,7 @@ class DemographiKS_config:
         self.mean_Ks_from_Nb = 4.0 * self.bottleneck_Ne * self.Ks_per_YR
         self.num_genes = int(self.total_num_bases / self.gene_length_in_bases)
         self.t_div_as_ks = self.DIV_time_Ge * self.Ks_per_YR
+        self.t_wgd_as_ks = self.WGD_time_Ge * self.Ks_per_YR
         self.theoretical_ks_mean_now = self.mean_Ks_from_Tc + self.t_div_as_ks
 
 def parse_tuple_string(tuple_string):
