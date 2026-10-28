@@ -330,10 +330,12 @@ def plot_ks(i, this_ax, config_used, slim_ks_by_gene, spx_ks_by_gene,
             for stop in stop_list:
                 dij_stop_as_Ks=config_used.t_wgd_as_ks- (config_used.Ks_per_YR * int(stop))
                 this_ax.axvline(x=dij_stop_as_Ks, color='gray', linestyle='--', label="tetrasomic stop")
+                this_ax.axvspan(dij_stop_as_Ks, dij_start_as_Ks, alpha=0.25, color='gray')
+
         else:
             dij_stop_as_Ks = config_used.t_wgd_as_ks - (config_used.Ks_per_YR * config_used.dij_stop)
             this_ax.axvline(x=dij_stop_as_Ks, color='gray', linestyle='--', label="tetrasomic stop")
-        this_ax.axvspan(dij_stop_as_Ks, dij_start_as_Ks, alpha=0.25, color='gray')
+            this_ax.axvspan(dij_stop_as_Ks, dij_start_as_Ks, alpha=0.25, color='gray')
 
     if len(slim_ks_by_gene) > 0:
         if include_annotations:

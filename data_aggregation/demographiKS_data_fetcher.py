@@ -9,8 +9,9 @@ class MyDGXDataFetcher(unittest.TestCase):
     #'EMP_Coff_72_m07d12y2026_h09m11s00', 'EMP_Coff_4_m07d12y2026_h09m14s21',
     def test_fetch_demographiKS_data(self):
         run_list = [
-             'DGKS_delta0p5_figR1_stop10K.rand10_m10d22y2026_h17m08s31',
-                'DGKS_delta0p5_figR1_stop50K.rand10_m10d22y2026_h17m11s27',
+            'DGKS_0p0Mig50KY_figR1_v2.rand20_m10d28y2026_h10m14s11',
+            'DGKS_0p0Mig50KY_figR1_v2.rand30_m10d28y2026_h10m14s09',
+            'DGKS_0p0Mig50KY_figR1_v2.rand10_m10d28y2026_h10m14s14',
         ]
 
         run_collection_name = "EMP"
