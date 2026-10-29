@@ -4,8 +4,7 @@ import os
 import unittest
 from pathlib import Path
 import numpy as np
-from PyQt5.uic.Compiler.qtproxies import i18n_func
-from fontTools.subset import subset
+
 from matplotlib import pyplot as plt
 import matplotlib.image as mpimg
 
