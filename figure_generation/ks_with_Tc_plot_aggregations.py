@@ -230,25 +230,31 @@ def plot_ks(i, this_ax, config_used, slim_ks_by_gene, spx_ks_by_gene,
 
     half_bin_size=0.5*bin_size
     if config_used.t_div_as_ks:
-        this_ax.axvline(x=config_used.t_div_as_ks, color='b', linestyle='-.',
+        this_ax.axvline(x=config_used.t_div_as_ks, color='b', linestyle=':', linewidth=3,
                         label="input Tdiv as Ks")
         #this_ax.axvline(x=half_bin_size+config_used.t_div_as_ks, color='b', linestyle='-.',
         #                label="input Tdiv as Ks")
+
+    if config_used.t_wgd_as_ks:
+        this_ax.axvline(x=config_used.t_wgd_as_ks, color='r', linestyle='-.',
+                        label="input Twgd as Ks")
 
     if not config_used.DIV_time_Ge: #this would be an autopolyploid
 
         if not config_used.dij_stop: # dont add the extra line in the dij case, bc it makes the plot too complex
             #this_ax.axvline(x=half_bin_size + config_used.mean_Ks_from_Nb, color='g', linestyle='--',
             #                label="Expected Ks mean (4Nb)")
-            this_ax.axvline(x=half_bin_size + config_used.mean_Ks_from_Nb, color='g', linestyle='--',
+            this_ax.axvline(x=config_used.mean_Ks_from_Nb, color='g', linestyle='--',
                         label="Expected Ks mean (4Nb)")
 
     theoretical_ks_mean_now = config_used.mean_Ks_from_Tc + config_used.t_div_as_ks
-    if not config_used.dij_stop:  # dont add the extra line in the dij case, bc it makes the plot too complex
+    if (not config_used.dij_stop
+            and not config_used.mig_stop and not config_used.homoeologous_exchange_rate >0):  # dont add the extra line in the dij case, bc it makes the plot too complex
         #this_ax.axvline(x=half_bin_size+theoretical_ks_mean_now, color='r', linestyle='--',
         #               label="Expected Ks mean (2Na)")
-        this_ax.axvline(x=theoretical_ks_mean_now, color='r', linestyle='--',
-                        label="Expected Ks mean (2Na)")
+        #this_ax.axvline(x=theoretical_ks_mean_now, color='r', linestyle='--',
+        #                label="Expected Ks mean (2Na)")
+        print("foo, don't print the mean of Ks now for this fig")
 
     RC_rate_per_base_per_year=config_used.recombination_rate
     exp_num_RC_per_base_since_DIV=RC_rate_per_base_per_year*theoretical_ks_mean_now/config_used.Ks_per_YR
@@ -321,8 +327,8 @@ def plot_ks(i, this_ax, config_used, slim_ks_by_gene, spx_ks_by_gene,
 
     if config_used.dij_stop:
         dij_start_as_Ks=config_used.t_wgd_as_ks- (config_used.Ks_per_YR*config_used.dij_start)
-        this_ax.axvline(x=config_used.t_wgd_as_ks, color='r', linestyle='-.',
-                        label="input Twgd as Ks", linewidth=1)
+        #this_ax.axvline(x=config_used.t_wgd_as_ks, color='r', linestyle='-.',
+        #                label="input Twgd as Ks", linewidth=1)
         this_ax.axvline(x=dij_start_as_Ks, color='gray', linestyle=':', label="tetrasomic start", linewidth=1)
 
         if "," in str(config_used.dij_stop):
